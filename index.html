@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<script>
+window.ts = window.ts || {};
+window.ts.chrome = window.ts.chrome || {};
+window.ts.chrome = true;
+</script>
+<script src="lib/ts.app-umd.js"></script>
+</head>
+<body>
+<iframe id="Tradeshift.ForeignSandbox" src="//localhost:8081/frame.html?name=Tradeshift.ForeignSandbox" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+<iframe id="Tradeshift.Foreign" src="//localhost:8081/frame.html?name=Tradeshift.Foreign"></iframe>
+<iframe id="Tradeshift.SameSandbox" src="frame.html?name=Tradeshift.SameSandbox" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+<iframe id="Tradeshift.Same" src="frame.html?name=Tradeshift.Same"></iframe>
+<script>
+(function() {
+  // *** BEG - THIS CODE SHOULD BE IN THE CHROME - BEG ***
+  var chrome = {
+    /**
+     * Get the appId from a frame.
+     * @TODO What if there are more instances of the same app?
+     */
+    appIdByWindow: function(win) {
+      if (win === window.top) {
+        return 'Tradeshift.Chrome';
+      }
+
+      const appIds = [
+        'Tradeshift.ForeignSandbox',
+        'Tradeshift.Foreign',
+        'Tradeshift.SameSandbox',
+        'Tradeshift.Same'
+      ];
+
+      var frames = window.frames;
+      for (var i = 0; i < frames.length; i++) {
+        if (win === frames[i]) {
+          return appIds[i];
+        }
+      }
+      return 'UNKNOWN';
+    },
+    /**
+     * Get the frame's window object from a name.
+     */
+    windowByAppId: function(appId, sourceWindow) {
+      if (appId === 'Tradeshift.Chrome') {
+        return window.top;
+      }
+
+      try {
+        return document.getElementById(appId).contentWindow;
+      } catch (error) {
+        console.warn('%o is not a valid frame!', appId, error);
+        return null;
+      }
+    }
+  };
+  // *** END - THIS CODE SHOULD BE IN THE CHROME - END ***
+
+  setTimeout(function() {
+    var hub = ts.app(chrome);
+
+    var top = hub.top();
+    top.on(message => {
+      console.log('[hub.top] message %o', message);
+    });
+    setTimeout(function() {
+      top.publish('Tradeshift.ForeignSandbox', 'heyo1', 'yea');
+      top.publish('Tradeshift.Foreign', 'hey2o', 'yea');
+      top.publish('Tradeshift.SameSandbox', 'heyo3', 'yea');
+      top.publish('Tradeshift.Same', 'hey4o', 'yea');
+    }, 1000);
+  }, 0);
+})();
+</script>
+</body>
+</html>
