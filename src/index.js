@@ -1,21 +1,7 @@
-/**
- * Broadcast Message to one or more apps.
- * @param {array|string} appIds List of apps to receive the message, supports glob
- * Examples:
- * * ['Tradeshift.Developer', 'Tradeshift.DeveloperDemo'] (matches Tradeshift.Developer and Tradeshift.DeveloperDemo)
- * * 'Tradeshift.Developer' (matches Tradeshift.Developer)
- * * '*' (matches any app)
- * * 'Tradeshift.*' (matches all Tradeshift apps)
- * * 'Tradeshift.??Y' (matches Tradeshift.Buy, Tradeshift.Pay, etc.)
- * @param {string} key The key/subject of the event
- * @param {object} data Data to be sent with the event
- */
-export function broadcast(appIds, key, data) {
-	const content = stringify(appIds, key, data);
-	if (name === 'Tradeshift.Chrome' || top !== self) {
-		top.postMessage(content, '*');
-	}
-}
+import { BROADCAST_PREFIX } from './constants';
+import stringify from './stringify';
+export { broadcast } from './ts.app.broadcast';
+
 
 /**
  * Subscribe to messages from one or more apps.
@@ -25,8 +11,6 @@ export function broadcast(appIds, key, data) {
 export function subscribe(appIds) {
 	return new Listener(appIds);
 }
-
-const BROADCAST_PREFIX = 'app-broadcast:';
 
 /**
  * Message listener for one or more apps.
@@ -142,27 +126,3 @@ class Listener {
 		return this;
 	}
 }
-
-// Private .................................................................
-
-/**
- * Encode broadcast to be posted.
- * @param {array|string} appIds List of apps to receive the message, supports glob
- * @param {string} key The key/subject of the event
- * @param {object} data Data to be sent with the event
- * @return {string} message
- */
-const stringify = (appIds, key, data) => {
-	const prefix = BROADCAST_PREFIX;
-	let content = {};
-	content.appIds = appIds || '';
-	content.key = key || '';
-	content.data = data || {};
-	let subfix = '';
-	try {
-		subfix = JSON.stringify(content);
-	} catch (e) {
-		console.warn(e);
-	}
-	return prefix + subfix;
-};

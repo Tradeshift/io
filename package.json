@@ -1,21 +1,28 @@
 {
   "name": "@tradeshift/tradeshift-app",
   "version": "1.0.0",
-  "main": "dist/ts.app.js",
-  "module": "dist/ts.app.es.js",
-  "jsnext:main": "dist/ts.app.es.js",
-  "browser": "dist/ts.app.umd.js",
+  "main": "dist/ts.app-cjs.js",
+  "module": "dist/ts.app-es.js",
+  "jsnext:main": "dist/ts.app-es.js",
+  "browser": "dist/ts.app-iife.js",
   "devDependencies": {
     "@babel/core": "7.0.0-beta.34",
+    "@babel/plugin-external-helpers": "^7.0.0-beta.34",
     "@babel/preset-env": "7.0.0-beta.34",
-    "rollup": "^0.50.0",
-    "rollup-plugin-babel": "4.0.0-beta.0"
+    "http-server": "0.10.0",
+    "jasmine": "2.8.0",
+    "rollup": "0.50.0",
+    "rollup-plugin-babel": "4.0.0-beta.0",
+    "rollup-plugin-multi-entry": "2.0.2"
   },
   "scripts": {
+    "watch": "npm run build -- -w",
     "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "test": "node test/test.js",
-    "pretest": "npm run build"
+    "prebuild": "rm -rf dist/* && rm -rf test/src/*",
+    "postbuild": "cp dist/ts.app-iife.js test/src/ts.app-iife.js && cp dist/ts.app-iife.js.map test/src/ts.app-iife.js.map",
+    "pretest": "npm run build",
+    "test": "http-server ./test -p 4200",
+    "test:local": "npm run test -- -o"
   },
   "files": [
     "dist"

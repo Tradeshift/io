@@ -61,3 +61,7 @@ node_modules/
 
 # Dist
 dist
+/test/spec/bundle.js
+/test/spec/bundle.js.map
+/test/src/ts.app-iife.js
+/test/src/ts.app-iife.js.map
