@@ -328,7 +328,7 @@ It is valid for a PUBLISH Message to contain a zero length payload.
 
 #### `PUBACK` – Publish acknowledgment
 
-A PUBACK Message is the response to a PUBLISH Packet with QoS level 1.
+A PUBACK Message is the response to a PUBLISH Message with QoS level 1.
 
 ```json
 {
