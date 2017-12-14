@@ -165,7 +165,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
   try {
     // Connect to Server
-    const client = tsApp.connect({
+    const client = await tsApp.connect({
       userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
       companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
       appId: 'Tradeshift.GodzillaFactory'
@@ -210,7 +210,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
 	try {
 		// Connect to Server
-		const client = tsApp.connect({
+		const client = await tsApp.connect({
 			userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
 			companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
 			appId: 'Tradeshift.NoviceWizard'
