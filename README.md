@@ -225,34 +225,85 @@ function handler(appId, topic, payload) {
 }
 ```
 
+### Receive message from any app and respond back (with error handling)
+
+```js
+import tsApp from '@tradeshift/tradeshift-app';
+
+async function init() {
+  try {
+    // Connect to Server
+    const client = await tsApp.connect();
+
+    // Handle messages directed at my appId
+    client.listen((appId, topic, payload) => {
+      switch (topic) {
+        case 'cast/magic-missile':
+          if (payload.level < 1) {
+            return client.publish({
+              appId,
+              topic,
+              payload: {
+                err: 'Magic Missile has to be 1st-level or higher!'
+              }
+            });
+          }
+          // Respond back to the sender app with the same topic
+          const numMissiles = payload.level + 3;
+          return client.publish({
+            appId,
+            topic,
+            payload: {
+              numMissiles,
+              dmg: numMissiles * (rollDice(4) + 1)
+            }
+          });
+      }
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+init();
+
+function rollDice(sides) {
+  return Math.floor(Math.random() * 4) + 1;
+}
+```
+
 ### Send message to single app and handle response
 
 ```js
 import tsApp from '@tradeshift/tradeshift-app';
 
 async function init() {
-	try {
-		// Connect to Server
-		const client = await tsApp.connect();
+  try {
+    // Connect to Server
+    const client = await tsApp.connect();
 
-		// Exchange message with specific app
-		const payloads = await client.exchange([
-			{
-				appId: 'Tradeshift.SpellCaster',
-				topic: 'cast/magic-missile',
-				payload: {
-					level: 3
-				}
-			}
-		]);
+    // Exchange message with specific app
+    const spellCasterResponse = await client.exchange([
+      {
+        appId: 'Tradeshift.SpellCaster',
+        topic: 'cast/magic-missile',
+        payload: {
+          level: 3
+        }
+      }
+    ]);
 
-		// Handle response
-		console.log(
-			`Magic Missile dealt ${payloads[0].dmg} points of force damage.`
-		);
-	} catch (e) {
-		console.error(e);
-	}
+    // Handle response
+    if (spellCasterResponse.err) {
+      console.error('Something went wrong while casting Magic Missile!');
+      console.error(spellCasterResponse.err);
+    } else {
+      console.log(
+        `Magic Missile dealt ${spellCasterResponse.dmg} points of force damage.`
+      );
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 init();
 ```
