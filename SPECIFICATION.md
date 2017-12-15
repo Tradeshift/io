@@ -123,21 +123,21 @@ The `CONNECT` Control Message contains a number of attributes specifying the beh
 
 ```json
 {
-	"cmd": "connect",
-	"version": "2.0.0",
-	"clientId": {
-		"userId": "48dc8179-9b31-4da4-b7d6-697b9d22c96d",
-		"companyId": "f7508a3a-d8ef-4a7a-8725-5ef089c4b846",
-		"appId": "Tradeshift.ChromeService"
-	},
-	"clean": false,
-	"will": {
-		"topic": "Tradeshift/ChromeService/status",
-		"payload": "dead",
-		"qos": 0,
-		"retain": false
-	},
-	"keepAlive": 0
+  "cmd": "connect",
+  "version": "2.0.0",
+  "clientId": {
+    "userId": "48dc8179-9b31-4da4-b7d6-697b9d22c96d",
+    "companyId": "f7508a3a-d8ef-4a7a-8725-5ef089c4b846",
+    "appId": "Tradeshift.ChromeService"
+  },
+  "clean": false,
+  "will": {
+    "topic": "Tradeshift/ChromeService/status",
+    "payload": "dead",
+    "qos": 0,
+    "retain": false
+  },
+  "keepAlive": 0
 }
 ```
 
@@ -226,9 +226,9 @@ If the Client does not receive a CONNACK Message from the Server within 20 secon
 
 ```json
 {
-	"cmd": "connack",
-	"returnCode": 0,
-	"sessionPresent": false
+  "cmd": "connack",
+  "returnCode": 0,
+  "sessionPresent": false
 }
 ```
 
@@ -271,12 +271,12 @@ The action of the recipient when it receives a PUBLISH Message depends on the Qo
 
 ```json
 {
-	"cmd": "publish",
-	"messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc",
-	"dup": false,
-	"qos": 1,
-	"retain": false,
-	"topic": "Tradeshift/Chrome/Tradeshift/ChromeService/analytics/track"
+  "cmd": "publish",
+  "messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc",
+  "dup": false,
+  "qos": 1,
+  "retain": false,
+  "topic": "Tradeshift/Chrome/Tradeshift/ChromeService/analytics/track"
 }
 ```
 
@@ -332,8 +332,8 @@ A PUBACK Message is the response to a PUBLISH Message with QoS level 1.
 
 ```json
 {
-	"cmd": "puback",
-	"messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc"
+  "cmd": "puback",
+  "messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc"
 }
 ```
 
@@ -345,8 +345,8 @@ A PUBREC Message is the response to a PUBLISH Message with QoS 2. It is the seco
 
 ```json
 {
-	"cmd": "pubrec",
-	"messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc"
+  "cmd": "pubrec",
+  "messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc"
 }
 ```
 
@@ -358,8 +358,8 @@ A PUBREL Message is the response to a PUBREC Message. It is the third message of
 
 ```json
 {
-	"cmd": "pubrel",
-	"messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc"
+  "cmd": "pubrel",
+  "messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc"
 }
 ```
 
@@ -371,8 +371,8 @@ The PUBCOMP Message is the response to a PUBREL Message. It is the fourth and fi
 
 ```json
 {
-	"cmd": "pubcomp",
-	"messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc"
+  "cmd": "pubcomp",
+  "messageId": "26675c0e-1728-4558-b94d-eab3cf3628fc"
 }
 ```
 
@@ -384,26 +384,26 @@ The SUBSCRIBE Message is sent from the Client to the Server to create one or mor
 
 ```json
 {
-	"cmd": "subscribe",
-	"messageId": "82830139-7bca-4176-b22e-3bda8ee0f757",
-	"subscriptions": [
-		{
-			"topic": "Tradeshift/Chrome/#",
-			"qos": 0
-		},
-		{
-			"topic": "+/+/Tradeshift/ChromeService/#",
-			"qos": 1
-		},
-		{
-			"topic": "+/+/Tradeshift/Inbox/#",
-			"qos": 0
-		},
-		{
-			"topic": "+/+/+/+/analytics/#",
-			"qos": 0
-		}
-	]
+  "cmd": "subscribe",
+  "messageId": "82830139-7bca-4176-b22e-3bda8ee0f757",
+  "subscriptions": [
+    {
+      "topic": "Tradeshift/Chrome/#",
+      "qos": 0
+    },
+    {
+      "topic": "+/+/Tradeshift/ChromeService/#",
+      "qos": 1
+    },
+    {
+      "topic": "+/+/Tradeshift/Inbox/#",
+      "qos": 0
+    },
+    {
+      "topic": "+/+/+/+/analytics/#",
+      "qos": 0
+    }
+  ]
 }
 ```
 
@@ -417,9 +417,9 @@ A SUBACK Message contains a list of return codes, that specify the maximum QoS l
 
 ```json
 {
-	"cmd": "suback",
-	"messageId": "82830139-7bca-4176-b22e-3bda8ee0f757",
-	"subscriptions": [0, 1, 128, 0]
+  "cmd": "suback",
+  "messageId": "82830139-7bca-4176-b22e-3bda8ee0f757",
+  "subscriptions": [0, 1, 128, 0]
 }
 ```
 
@@ -438,9 +438,9 @@ An UNSUBSCRIBE Message is sent by the Client to the Server, to unsubscribe from 
 
 ```json
 {
-	"cmd": "unsubscribe",
-	"messageId": "fd4c19b2-d06b-4e41-a37e-7f2477c3ba27",
-	"unsubscriptions": ["+/+/Tradeshift/Inbox/#", "+/+/+/+/analytics/#"]
+  "cmd": "unsubscribe",
+  "messageId": "fd4c19b2-d06b-4e41-a37e-7f2477c3ba27",
+  "unsubscriptions": ["+/+/Tradeshift/Inbox/#", "+/+/+/+/analytics/#"]
 }
 ```
 
@@ -463,8 +463,8 @@ The UNSUBACK Message is sent by the Server to the Client to confirm receipt of a
 
 ```json
 {
-	"cmd": "unsuback",
-	"messageId": "fd4c19b2-d06b-4e41-a37e-7f2477c3ba27"
+  "cmd": "unsuback",
+  "messageId": "fd4c19b2-d06b-4e41-a37e-7f2477c3ba27"
 }
 ```
 
@@ -482,7 +482,7 @@ This Message is used in Keep Alive processing.
 
 ```json
 {
-	"cmd": "pingreq"
+  "cmd": "pingreq"
 }
 ```
 
@@ -494,7 +494,7 @@ A PINGRESP Message is sent by the Server to the Client in response to a PINGREQ 
 
 ```json
 {
-	"cmd": "pingresp"
+  "cmd": "pingresp"
 }
 ```
 
@@ -506,7 +506,7 @@ The DISCONNECT Message is the final Control Message sent from the Client to the 
 
 ```json
 {
-	"cmd": "disconnect"
+  "cmd": "disconnect"
 }
 ```
 

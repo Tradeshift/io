@@ -17,9 +17,10 @@ Handle any messages sent to my `appId`
 * `handler` (Function `ts.app.MessageHandler`, required)
 
 Arguments passed to `handler`:
-  * `appId` (string, required): Incoming message sender
-  * `topic` (string, required): Incoming message topic
-  * `payload` (any, optional): Incoming message payload
+
+* `appId` (string, required): Incoming message sender
+* `topic` (string, required): Incoming message topic
+* `payload` (any, optional): Incoming message payload
 
 ### `ts.app.publish(message)`
 
@@ -90,19 +91,19 @@ Examples listed:
 import tsApp from '@tradeshift/tradeshift-app';
 
 async function init() {
-	try {
-		// Connect to Server
-		const client = await tsApp.connect();
+  try {
+    // Connect to Server
+    const client = await tsApp.connect();
 
-		// Tell Tradeshift.RaptorFactory to unleash 300 raptors
-		client.publish({
-			appId: 'Tradeshift.RaptorFactory',
-			topic: 'unleash/raptors',
-			payload: 300
-		});
-	} catch (e) {
-		console.error(e);
-	}
+    // Tell Tradeshift.RaptorFactory to unleash 300 raptors
+    client.publish({
+      appId: 'Tradeshift.RaptorFactory',
+      topic: 'unleash/raptors',
+      payload: 300
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
 init();
 ```
@@ -113,19 +114,19 @@ init();
 import tsApp from '@tradeshift/tradeshift-app';
 
 async function init() {
-	try {
-		// Connect to Server
-		const client = await tsApp.connect();
+  try {
+    // Connect to Server
+    const client = await tsApp.connect();
 
-		// Tell every Tradeshift app to unleash 500 godzillas
-		client.publish({
-			appId: 'Tradeshift.+',
-			topic: 'unleash/godzilla',
-			payload: 500
-		});
-	} catch (e) {
-		console.error(e);
-	}
+    // Tell every Tradeshift app to unleash 500 godzillas
+    client.publish({
+      appId: 'Tradeshift.+',
+      topic: 'unleash/godzilla',
+      payload: 500
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
 init();
 ```
@@ -136,23 +137,23 @@ init();
 import tsApp from '@tradeshift/tradeshift-app';
 
 async function init() {
-	try {
-		// Connect to Server
-		const client = await tsApp.connect();
+  try {
+    // Connect to Server
+    const client = await tsApp.connect();
 
-		// Handle messages directed at my appId
-		client.listen((appId, topic, payload) => {
-			switch (topic) {
-				case 'unleash/raptors':
-					console.log(
-						`${appId} sent the order: Time to unleash ${payload} raptors!`
-					);
-					break;
-			}
-		});
-	} catch (e) {
-		console.error(e);
-	}
+    // Handle messages directed at my appId
+    client.listen((appId, topic, payload) => {
+      switch (topic) {
+        case 'unleash/raptors':
+          console.log(
+            `${appId} sent the order: Time to unleash ${payload} raptors!`
+          );
+          break;
+      }
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
 init();
 ```
@@ -204,36 +205,36 @@ function handler(appId, topic, payload) {
 import tsApp from '@tradeshift/tradeshift-app';
 
 async function init() {
-	try {
-		// Connect to Server
-		const client = await tsApp.connect();
+  try {
+    // Connect to Server
+    const client = await tsApp.connect();
 
-		// Subscribe to specific topics
-		client.subscribe([
-			{
-				topic: '+/spells', // /^[0-9a-zA-Z_- ]*\/spells$/
-				handler
-			},
-			{
-				topic: '#/set/#', // /^(.*)\/set\/(.*)$/
-				handler
-			},
-			{
-				topic: 'wand/carving',
-				handler
-			}
-		]);
-	} catch (e) {
-		console.error(e);
-	}
+    // Subscribe to specific topics
+    client.subscribe([
+      {
+        topic: '+/spells', // /^[0-9a-zA-Z_- ]*\/spells$/
+        handler
+      },
+      {
+        topic: '#/set/#', // /^(.*)\/set\/(.*)$/
+        handler
+      },
+      {
+        topic: 'wand/carving',
+        handler
+      }
+    ]);
+  } catch (e) {
+    console.error(e);
+  }
 }
 init();
 
 // Simple message handler
 function handler(appId, topic, payload) {
-	console.log(`Message from app: ${appId}`);
-	console.log(`Topic: ${topic}`);
-	console.log(`Payload: ${payload}`);
+  console.log(`Message from app: ${appId}`);
+  console.log(`Topic: ${topic}`);
+  console.log(`Payload: ${payload}`);
 }
 ```
 
