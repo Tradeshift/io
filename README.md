@@ -263,37 +263,37 @@ init();
 import tsApp from '@tradeshift/tradeshift-app';
 
 async function init() {
-	try {
-		// Connect to Server
-		const client = await tsApp.connect();
+  try {
+    // Connect to Server
+    const client = await tsApp.connect();
 
-		// Exchange message with multiple apps
-		const payloads = await client.exchange([
-			{
-				appId: 'Tradeshift.Jazz',
-				topic: 'music/play',
-				payload: {
-					smoothness: 8
-				}
-			},
-			{
-				appId: 'Tradeshift.Lights',
-				topic: 'scene/set',
-				payload: {
-					relaxing: 42
-				}
-			}
-		]);
+    // Exchange message with multiple apps
+    const [jazzResponse, lightsResponse] = await client.exchange([
+      {
+        appId: 'Tradeshift.Jazz',
+        topic: 'music/play',
+        payload: {
+          smoothness: 8
+        }
+      },
+      {
+        appId: 'Tradeshift.Lights',
+        topic: 'scene/set',
+        payload: {
+          relaxing: 42
+        }
+      }
+    ]);
 
-		// Handle responses
-		console.log(
-			`Playing ${payloads[0].track} while setting ${
-				payload[1].lights
-			} lights to ${payload[1].color}`
-		);
-	} catch (e) {
-		console.error(e);
-	}
+    // Handle responses
+    console.log(
+      `Playing ${jazzResponse.track} while setting ${
+        lightsResponse.lights
+      } lights to ${lightsResponse.color}`
+    );
+  } catch (e) {
+    console.error(e);
+  }
 }
 init();
 ```
@@ -304,29 +304,29 @@ init();
 import tsApp from '@tradeshift/tradeshift-app';
 
 async function init() {
-	try {
-		// Connect to Server
-		const client = await tsApp.connect();
+  try {
+    // Connect to Server
+    const client = await tsApp.connect();
 
-		// Load app and wait for user selection or some other response
-		const payload = await client.load({
-			appId: 'Tradeshift.ShipSelector',
-			topic: 'ship/select',
-			payload: {
-				minCapacity: 500,
-				minSpeed: 30
-			}
-		});
+    // Load app and wait for user selection or some other response
+    const shipSelectorResult = await client.load({
+      appId: 'Tradeshift.ShipSelector',
+      topic: 'ship/select',
+      payload: {
+        minCapacity: 500,
+        minSpeed: 30
+      }
+    });
 
-		// Handle response
-		console.log(
-			`Selected ship: ${payload.name}, capacity: ${payload.capacity}, speed: ${
-				payload.speed
-			}`
-		);
-	} catch (e) {
-		console.error(e);
-	}
+    // Handle response
+    console.log(
+      `Selected ship: ${shipSelectorResult.name}, capacity: ${
+        shipSelectorResult.capacity
+      }, speed: ${shipSelectorResult.speed}`
+    );
+  } catch (e) {
+    console.error(e);
+  }
 }
 init();
 ```
