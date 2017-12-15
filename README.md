@@ -10,19 +10,22 @@ Connect to Server/Broker
 
 `userId`, `companyId` and `appId` are already known by `Tradeshift.Chrome` AKA the Broker.
 
-### `ts.app.onMessage(appId, topic, payload)`
+### `ts.app.listen(handler)`
 
 Handle any messages sent to my `appId`
 
-* `appId` (string, required): Incoming message sender
-* `topic` (string, required): Incoming message topic
-* `payload` (any, optional): Incoming message payload
+* `handler` (Function `ts.app.MessageHandler`, required)
+
+Arguments passed to `handler`:
+  * `appId` (string, required): Incoming message sender
+  * `topic` (string, required): Incoming message topic
+  * `payload` (any, optional): Incoming message payload
 
 ### `ts.app.publish(message)`
 
 Publish messages
 
-* `message` (`ts.app.Message`, required)
+* `message` (object `ts.app.Message`, required)
   * `appId` (string, required): Message recipient (wildcards NOT allowed)
   * `topic` (string, required): Message topic (wildcards NOT allowed)
   * `payload` (any, optional): Message payload
@@ -31,10 +34,10 @@ Publish messages
 
 Subscribe to appIds and/or topics
 
-* `subscriptions` (`Array<ts.app.Subscription>``, required)
+* `subscriptions` (`Array<ts.app.Subscription>`, required)
   * `appId` (string, optional if `topic` is defined): AppId to subscribe to (wildcards allowed)
   * `topic` (string, optional if `appId` is defined): Topic to subscribe to (wildcards allowed)
-  * `handler` (function, required): Handle incoming messages for subscription, see `ts.app.onMessage`
+  * `handler` (function, required): Handle incoming messages for subscription, see `ts.app.listen` & `ts.app.MessageHandler`
 
 ### `ts.app.unsubscribe(unsubscriptions)`
 
@@ -126,7 +129,7 @@ async function init() {
 		const client = await tsApp.connect();
 
 		// Handle messages directed at my appId
-		client.onMessage = (appId, topic, payload) => {
+		client.listen((appId, topic, payload) => {
 			switch (topic) {
 				case 'unleash/raptors':
 					console.log(
@@ -134,7 +137,7 @@ async function init() {
 					);
 					break;
 			}
-		};
+		});
 	} catch (e) {
 		console.error(e);
 	}
