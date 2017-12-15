@@ -8,10 +8,7 @@
 
 Connect to Server/Broker
 
-* `clientIds` (`ts.app.ClientIds`, required)
-  * `userId` (string, required): Current userId
-  * `companyId` (string, required): Current companyId
-  * `appId` (string, required): Current appId
+`userId`, `companyId` and `appId` are already known by `Tradeshift.Chrome` AKA the Broker.
 
 ### `ts.app.onMessage(appId, topic, payload)`
 
@@ -80,11 +77,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
 	try {
 		// Connect to Server
-		const client = await tsApp.connect({
-			userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
-			companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
-			appId: 'Tradeshift.FlamingSkull'
-		});
+		const client = await tsApp.connect();
 
 		// Tell Tradeshift.RaptorFactory to unleash 300 raptors
 		client.publish({
@@ -107,11 +100,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
 	try {
 		// Connect to Server
-		const client = await tsApp.connect({
-			userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
-			companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
-			appId: 'Tradeshift.FlamingSkull'
-		});
+		const client = await tsApp.connect();
 
 		// Tell every Tradeshift app to unleash 500 godzillas
 		client.publish({
@@ -134,11 +123,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
 	try {
 		// Connect to Server
-		const client = await tsApp.connect({
-			userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
-			companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
-			appId: 'Tradeshift.RaptorFactory'
-		});
+		const client = await tsApp.connect();
 
 		// Handle messages directed at my appId
 		client.onMessage = (appId, topic, payload) => {
@@ -165,11 +150,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
   try {
     // Connect to Server
-    const client = await tsApp.connect({
-      userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
-      companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
-      appId: 'Tradeshift.GodzillaFactory'
-    });
+    const client = await tsApp.connect();
 
     // Subscribe to specific apps
     client.subscribe([
@@ -210,11 +191,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
 	try {
 		// Connect to Server
-		const client = await tsApp.connect({
-			userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
-			companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
-			appId: 'Tradeshift.NoviceWizard'
-		});
+		const client = await tsApp.connect();
 
 		// Subscribe to specific topics
 		client.subscribe([
@@ -253,11 +230,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
 	try {
 		// Connect to Server
-		const client = await tsApp.connect({
-			userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
-			companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
-			appId: 'Tradeshift.Merlin'
-		});
+		const client = await tsApp.connect();
 
 		// Exchange message with specific app
 		const payloads = await client.exchange([
@@ -289,11 +262,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
 	try {
 		// Connect to Server
-		const client = await tsApp.connect({
-			userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
-			companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
-			appId: 'Tradeshift.CoolGuy'
-		});
+		const client = await tsApp.connect();
 
 		// Exchange message with multiple apps
 		const payloads = await client.exchange([
@@ -334,11 +303,7 @@ import tsApp from '@tradeshift/tradeshift-app';
 async function init() {
 	try {
 		// Connect to Server
-		const client = await tsApp.connect({
-			userId: '48dc8179-9b31-4da4-b7d6-697b9d22c96d',
-			companyId: 'f7508a3a-d8ef-4a7a-8725-5ef089c4b846',
-			appId: 'Tradeshift.Captain'
-		});
+		const client = await tsApp.connect();
 
 		// Load app and wait for user selection or some other response
 		const payload = await client.load({
