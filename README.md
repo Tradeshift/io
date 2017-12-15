@@ -72,6 +72,18 @@ Load specific app, wait for and handle user interaction
 
 ## API use-cases
 
+Examples listed:
+
+* [Send message to a single app](#send-message-to-a-single-app)
+* [Send message to multiple apps](#send-message-to-multiple-apps)
+* [Receive message from any app](#receive-message-from-any-app)
+* [Receive message from specific apps and/or topics](#receive-message-from-specific-apps-andor-topics)
+* [Receive message for specific topics](#receive-message-for-specific-topics)
+* [Receive message from any app and respond back (with error handling)](#receive-message-from-any-app-and-respond-back-with-error-handling)
+* [Send message to single app and handle response](#send-message-to-single-app-and-handle-response)
+* [Send message to multiple apps and handle response(s)](#send-message-to-multiple-apps-and-handle-responses)
+* [Load app and handle response](#load-app-and-handle-response)
+
 ### Send message to a single app
 
 ```js
