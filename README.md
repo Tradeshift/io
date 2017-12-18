@@ -2,6 +2,12 @@
 
 # AKA `Tradeshift App Messaging Protocol`
 
+This is the standard way for apps on the Tradeshift Platform to
+
+* communicate with the Chrome,
+* communicate with other apps,
+* open other apps in separate iframes and wait for the result of user interactions.
+
 ## API reference
 
 ### `ts.app.connect(clientIds)`
@@ -362,7 +368,7 @@ async function init() {
 init();
 ```
 
-### Load app and handle response
+### Load explicit app and handle response
 
 ```js
 import tsApp from '@tradeshift/tradeshift-app';
@@ -376,6 +382,53 @@ async function init() {
     const shipSelectorResult = await client.load({
       appId: 'Tradeshift.ShipSelector',
       topic: 'ship/select',
+      payload: {
+        minCapacity: 500,
+        minSpeed: 30
+      }
+    });
+
+    // Handle response
+    console.log(
+      `Selected ship: ${shipSelectorResult.name}, capacity: ${
+        shipSelectorResult.capacity
+      }, speed: ${shipSelectorResult.speed}`
+    );
+  } catch (e) {
+    console.error(e);
+  }
+}
+init();
+```
+
+
+### Load implicit app and handle response
+
+#### Possible list of Identifiers
+
+This is very WIP, suggestions are welcome on how we should keep this list organized and maintained.
+
+* `tradeshift:user`
+* `tradeshift:tax`
+* `tradeshift:document`
+* `tradeshift:document:invoice`
+
+
+```js
+import tsApp from '@tradeshift/tradeshift-app';
+
+async function init() {
+  try {
+    // Connect to Server
+    const client = await tsApp.connect();
+
+    // Load app and wait for user selection or some other response
+    const shipSelectorResult = await client.load({
+      // We specify some thing by its identifier, that we want to handle
+      intent: 'tradeshift:ship:space',
+      // We specify the action we want to do with the thing
+      // @TODO why wouldn't we just call this `action`? Are there other use-cases?
+      topic: 'select',
       payload: {
         minCapacity: 500,
         minSpeed: 30
