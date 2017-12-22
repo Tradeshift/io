@@ -8,12 +8,26 @@ This is the standard way for apps on the Tradeshift Platform to
 * communicate with other apps,
 * open other apps in separate iframes and wait for the result of user interactions.
 
-* [API](API.md)
+## Quick terminology
+
+* `ts.app`
+
+**Tradeshift App Messaging** (Client) - This is the API that is consumed and used within Tradeshift Apps.
+
+* `ts.amp`
+
+**Tradeshift App Messaging Protocol** - This is the API that is used while communicating across iframes.
+
+## Detailed resources
+
+* [API Documentation & Lifecycle Diagrams](API.md)
+
 API docs in more detail with diagrams and everything
-* [SPEC](SPECIFICATION.md)
+* [Specification for `ts.amp`](SPECIFICATION.md)
+
 WIP specification
 
-## `ts.app` API reference
+## `ts.app` API reference (quick overview)
 
 ### `ts.app.connect()`
 
