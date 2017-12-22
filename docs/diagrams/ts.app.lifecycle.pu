@@ -1,0 +1,762 @@
+@startuml
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		BoxBorderColor #9DB4C0
+		Group {
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+title Connecting - ""ts.app.connect()""
+
+...
+
+"Tradeshift.MyApp" -> "ts.app": ""ts.app.connect()""
+create "ts.amp.Client"
+"ts.app" -> "ts.amp.Client": Create internal ""ts.amp.Client"" instance
+"ts.amp.Client" -> "ts.amp.Server": ""CONNECT""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Client" <-- "ts.amp.Server": ""CONNACK(returnCode=0)""
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server#subscribe(ts.app.Subscription)""
+note right of "ts.amp.Server": Subscribe Client to ""+/+/VendorId/AppId/#""\nOnly start publishing to Client after ""CONNACK"" was sent
+
+...
+
+newpage Identifying Clients
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+note over "ts.amp.Client", "ts.amp.Server": Any incoming request will be followed by an identification check
+"ts.amp.Client" -> "ts.amp.Server": ""CONNECT"" /\n""PUBLISH"" / ""PUBACK"" / ""PUBREC"" / ""PUBCOMP"" /\n""SUBSCRIBE"" / ""UNSUBSCRIBE"" /\n""PINGREQ"" /\n""DISCONNECT""
+group Identify
+	"ts.amp.Server" -> "tradeshift-chrome": Identify ""clientId"" based on ""postMessage"" origin
+	"ts.amp.Server" <-- "tradeshift-chrome"
+	note right of "ts.amp.Server": If message sender can't be identified or recognized,\nthe message is ignored
+end
+note over "ts.amp.Server": From now on this step will be shown as follows:
+hnote over "ts.amp.Server": Identify Client
+
+...
+
+newpage Keeping Connection Alive
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+loop Within ""keepAlive"" seconds if no other messages are sent
+		"ts.amp.Client" ->> "ts.amp.Server": ""PINGREQ""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Client" <<-- "ts.amp.Server": ""PINGRES""
+	end
+
+...
+
+newpage Publishing - ""ts.app.publish()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+"Tradeshift.MyApp" ->> "ts.app": ""ts.app.publish(ts.app.Message)""
+"ts.app" ->> "ts.amp.Client"
+alt QoS Level 0
+	"ts.amp.Client" ->> "ts.amp.Server": ""PUBLISH("topic", payload, QoS=0)""
+	hnote over "ts.amp.Server": Identify Client
+else QoS Level 1
+	"ts.amp.Client" ->> "ts.amp.Server": ""PUBLISH("topic", payload, QoS=1)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" ->> "ts.amp.Server": Persist message
+	"ts.amp.Client" <<-- "ts.amp.Server": ""PUBACK""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Client" ->> "ts.amp.Client": Delete message
+else QoS Level 2
+	"ts.amp.Client" ->> "ts.amp.Server": ""PUBLISH("topic", payload, QoS=2)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" ->> "ts.amp.Server": Persist message
+	"ts.amp.Client" <<-- "ts.amp.Server": ""PUBREC""
+	"ts.amp.Client" ->> "ts.amp.Server": ""PUBREL""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Client" <<-- "ts.amp.Server": ""PUBCOMP""
+	"ts.amp.Client" ->> "ts.amp.Client": Delete message
+end
+loop For each client subscribed to "topic"
+	alt QoS Level 0
+		"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("topic", payload, QoS=0)""
+	else QoS Level 1
+		"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("topic", payload, QoS=1)""
+		"ts.amp.Server" <<-- "Other ts.amp.Client": ""PUBACK""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "ts.amp.Server": Delete message
+	else QoS Level 2
+		"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("topic", payload, QoS=2)""
+		"ts.amp.Server" <<-- "Other ts.amp.Client": ""PUBREC""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBREL"
+		"ts.amp.Server" <<-- "Other ts.amp.Client": ""PUBCOMP""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "ts.amp.Server": Delete message
+	end
+end
+
+...
+
+newpage Listening - ""ts.app.listen()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+alt QoS Level 0
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("topic", payload, Qos=0)""
+	hnote over "ts.amp.Server": Identify Client
+else QoS Level 1
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("topic", payload, Qos=1)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" -->> "Other ts.amp.Client": ""PUBACK""
+	"ts.amp.Server" ->> "ts.amp.Server": Delete message
+else QoS Level 2
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("topic", payload, Qos=2)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" -->> "Other ts.amp.Client": ""PUBREC""
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBREL""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" -->> "Other ts.amp.Client": ""PUBCOMP""
+	"ts.amp.Server" ->> "ts.amp.Server": Delete message
+end
+loop For each client subscribed to "topic"
+	alt QoS Level 0
+		"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("topic", payload, Qos=0)""
+		"ts.app" <<- "ts.amp.Client" : ""ts.app.listen(ts.app.MessageHandler)""
+		"Tradeshift.MyApp" <- "ts.app" : ""messageHandler""
+	else QoS Level 1
+		"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("topic", payload, Qos=1)""
+		"ts.amp.Client" -->> "ts.amp.Server": ""PUBACK""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "ts.amp.Server": Delete message
+		"ts.app" <<- "ts.amp.Client" : ""ts.app.listen(ts.app.MessageHandler)""
+		"Tradeshift.MyApp" <- "ts.app" : ""messageHandler""
+	else QoS Level 2
+		"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("topic", payload, Qos=2)""
+		"ts.amp.Client" -->> "ts.amp.Server": ""PUBREC""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Client" <<- "ts.amp.Server": ""PUBREL""
+		"ts.amp.Client" -->> "ts.amp.Server": ""PUBCOMP""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "ts.amp.Server": Delete message
+		"ts.app" <<- "ts.amp.Client" : ""ts.app.listen(ts.app.MessageHandler)""
+		"Tradeshift.MyApp" <- "ts.app" : ""messageHandler""
+	end
+end
+
+...
+
+newpage Subscribing - ""ts.app.subscribe()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+"Tradeshift.MyApp" ->> "ts.app": ""ts.app.subscribe(Array<ts.app.Subscription>)""
+activate "ts.app"
+"ts.app" ->> "ts.amp.Client"
+"ts.amp.Client" ->> "ts.amp.Server": ""SUBSCRIBE({"topic0", QoS=0}, {"topic1", QoS=1}, {"topic2", QoS=2}, {"topic3", QoS=1})""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server.unsubscribe(Array<ts.app.Subscription>)""
+"ts.amp.Client" <<-- "ts.amp.Server": ""SUBACK(0, 1, 2, 128)""
+note right of "ts.amp.Server": Server will forward the messages for requested subscription after sending ""SUBACK""\nSee @Receiving
+deactivate "ts.app"
+
+...
+
+newpage Unsubscribing - ""ts.app.unsubscribe()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+"Tradeshift.MyApp" ->> "ts.app": ""ts.app.unsubscribe(Array<ts.app.Subscription>)""
+activate "ts.app"
+"ts.app" ->> "ts.amp.Client"
+"ts.amp.Client" ->> "ts.amp.Server": ""UNSUBSCRIBE("topic0", "topic1", "topic2)""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server.subscribe(Array<ts.app.Subscription>)""
+"ts.amp.Client" <<-- "ts.amp.Server": ""UNSUBACK""
+note right of "ts.amp.Server": Server will not forward any more messages for this subscription after sending ""UNSUBACK""\nIt does finish sending any messages that were in progress(QoS1, QoS2)
+deactivate "ts.app"
+
+...
+
+newpage Exchange - ""ts.app.exchange()"" / Load - ""ts.app.load()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+"ts.app" ->> "ts.amp.Client": ""ts.app.exchange(ts.app.Message)""
+activate "ts.app"
+"ts.amp.Client" ->> "ts.amp.Server": ""SUBSCRIBE("exchange topic", QoS=1, retain=false)""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server.subscribe(Array<ts.app.Subscription>)""
+"ts.amp.Client" <<-- "ts.amp.Server": ""SUBACK(1)""
+"ts.amp.Client" ->> "ts.amp.Server": ""PUBLISH("exchange topic", payload={request}, QoS=1, retain=false)""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Client" <<-- "ts.amp.Server": ""PUBACK""
+"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("exchange topic", payload={request}, QoS=1, retain=false)""
+"ts.amp.Server" <<-- "Other ts.amp.Client": ""PUBACK""
+hnote over "ts.amp.Server": Identify Client
+alt Success, other app is listening and responding
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("exchange topic", payload={loading: true}, QoS=1, retain=false)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" -->> "Other ts.amp.Client": ""PUBACK""
+	loop While we're waiting for user interaction to finish
+		"ts.amp.Server" <<- "Other ts.amp.Client": ""PINGREQ""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" -->> "Other ts.amp.Client": ""PINGRES""
+		"ts.amp.Client" ->> "ts.amp.Server": ""PINGREQ""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Client" <<-- "ts.amp.Server": ""PINGRES""
+	end
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("exchange topic", payload={response}, QoS=1, retain=false)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" -->> "Other ts.amp.Client": ""PUBACK""
+	"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("exchange topic", payload={response}, QoS=1, retain=false)""
+	"ts.amp.Client" -->> "ts.amp.Server": ""PUBACK""
+	hnote over "ts.amp.Server": Identify Client
+else Failure, other app is not listening or responding
+	note over "ts.amp.Server":No meaningful response from other app within ""keepAlive"" seconds
+	"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("exchange topic", payload={err}, QoS=1, retain=false)""
+	"ts.amp.Client" -->> "ts.amp.Server": ""PUBACK""
+	hnote over "ts.amp.Server": Identify Client
+end
+deactivate "ts.app"
+"ts.amp.Client" ->> "ts.amp.Server": ""UNSUBSCRIBE("exchange topic")""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server.unsubscribe(Array<ts.app.Subscription>)""
+"ts.amp.Client" <<-- "ts.amp.Server": ""UNSUBACK""
+
+...
+
+newpage Unexpected Disconnect
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+note over "ts.amp.Client": No messages sent for ""keepAlive"" seconds
+"ts.amp.Server" -> "ts.amp.Server": ""ts.amp.Server.unsubscribe()""
+note right of "ts.amp.Server": Unsubscribe Client from all of its subscriptions
+
+opt If ""ts.amp.Client"" has a ""will"" defined
+	loop For each client subscribed to "will topic"
+		alt QoS Level 0
+			"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("will topic", payload, QoS=0)""
+		else QoS Level 1
+			"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("will topic", payload, QoS=1)""
+			"ts.amp.Server" <<-- "Other ts.amp.Client": ""PUBACK""
+			hnote over "ts.amp.Server": Identify Client
+			"ts.amp.Server" ->> "ts.amp.Server": Delete message
+		else QoS Level 2
+			"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("will topic", payload, QoS=2)""
+			"ts.amp.Server" <<-- "Other ts.amp.Client": ""PUBREC""
+			hnote over "ts.amp.Server": Identify Client
+			"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBREL"
+			"ts.amp.Server" <<-- "Other ts.amp.Client": ""PUBCOMP""
+			hnote over "ts.amp.Server": Identify Client
+			"ts.amp.Server" ->> "ts.amp.Server": Delete message
+		end
+	end
+end
+
+...
+
+newpage Disconnecting - ""ts.app.disconnect()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		BoxBorderColor #9DB4C0
+		Group {
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+[-> "ts.app": ""ts.app.disconnect()""
+"ts.app" -> "ts.amp.Client"
+"ts.amp.Client" -> "ts.amp.Server": ""DISCONNECT""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" -> "ts.amp.Server": ""ts.amp.Server.unsubscribe()""
+note right of "ts.amp.Server": Unsubscribe Client from all of its subscriptions
+
+@enduml
