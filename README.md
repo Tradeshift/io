@@ -1,6 +1,6 @@
 # `ts.app`
 
-# AKA `Tradeshift App Messaging Protocol`
+# AKA `Tradeshift App Messaging`
 
 This is the standard way for apps on the Tradeshift Platform to
 
@@ -8,11 +8,22 @@ This is the standard way for apps on the Tradeshift Platform to
 * communicate with other apps,
 * open other apps in separate iframes and wait for the result of user interactions.
 
-## API reference
+* [API](API.md)
+API docs in more detail with diagrams and everything
+* [SPEC](SPECIFICATION.md)
+WIP specification
 
-### `ts.app.connect(clientIds)`
+## `ts.app` API reference
+
+### `ts.app.connect()`
 
 Connect to Server/Broker
+
+`userId`, `companyId` and `appId` are already known by `Tradeshift.Chrome` AKA the Broker.
+
+### `ts.app.disconnect()`
+
+Disconnect from Server/Broker
 
 `userId`, `companyId` and `appId` are already known by `Tradeshift.Chrome` AKA the Broker.
 
@@ -289,7 +300,6 @@ function rollDice(sides) {
   return Math.floor(Math.random() * 4) + 1;
 }
 ```
-
 ### Send message to single app and handle response
 
 ```js
