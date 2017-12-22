@@ -1,3 +1,16 @@
+## Table of Contents
+* [API](#api)
+  * [ts.app](#tsapp)
+    * [ts.app.Message](#tsappmessage)
+    * [ts.app.MessageHandler](#tsappmessagehandler)
+    * [ts.app.Subscription](#tsappsubscription)
+  * [ts.amp](#tsamp)
+    * [ts.amp.Message](#tsampmessage)
+    * [ts.amp.Connection](#tsampconnection)
+    * [ts.amp.Client](#tsampclient)
+    * [ts.amp.Server](#tsampserver)
+* [Lifecycle Diagrams](#lifecycle)
+
 # API
 
 ## `ts.app`
@@ -137,13 +150,13 @@ Tradeshift App Messaging Protocol Server
 
 # Lifecycle
 
-![./docs/diagrams/01 - Connecting.svg](./docs/diagrams/01 - Connecting.svg)
-![./docs/diagrams/02 - Identifying Clients.svg](./docs/diagrams/02 - Identifying Clients.svg)
-![./docs/diagrams/03 - Keeping Connection Alive.svg](./docs/diagrams/03 - Keeping Connection Alive.svg)
-![./docs/diagrams/04 - Publishing.svg](./docs/diagrams/04 - Publishing.svg)
-![./docs/diagrams/05 - Listening.svg](./docs/diagrams/05 - Listening.svg)
-![./docs/diagrams/06 - Subscribing.svg](./docs/diagrams/06 - Subscribing.svg)
-![./docs/diagrams/07 - Unsubscribing.svg](./docs/diagrams/07 - Unsubscribing.svg)
-![./docs/diagrams/08 - Exchange.svg](./docs/diagrams/08 - Exchange.svg)
-![./docs/diagrams/09 - Unexpected Disconnect.svg](./docs/diagrams/09 - Unexpected Disconnect.svg)
-![./docs/diagrams/10 - Disconnecting.svg](./docs/diagrams/10 - Disconnecting.svg)
+![01 - Connecting.svg](./docs/diagrams/01%20-%20Connecting.svg)
+![02 - Identifying Clients.svg](./docs/diagrams/02%20-%20Identifying%20Clients.svg)
+![03 - Keeping Connection Alive.svg](./docs/diagrams/03%20-%20Keeping%20Connection%20Alive.svg)
+![04 - Publishing.svg](./docs/diagrams/04%20-%20Publishing.svg)
+![05 - Listening.svg](./docs/diagrams/05%20-%20Listening.svg)
+![06 - Subscribing.svg](./docs/diagrams/06%20-%20Subscribing.svg)
+![07 - Unsubscribing.svg](./docs/diagrams/07%20-%20Unsubscribing.svg)
+![08 - Exchange.svg](./docs/diagrams/08%20-%20Exchange.svg)
+![09 - Unexpected Disconnect.svg](./docs/diagrams/09%20-%20Unexpected%20Disconnect.svg)
+![10 - Disconnecting.svg](./docs/diagrams/10%20-%20Disconnecting.svg)
