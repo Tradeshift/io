@@ -27,6 +27,15 @@ API docs in more detail with diagrams and everything
 
 WIP specification
 
+## @TODO
+
+* QoS Cleanup
+  * Remove QoS 0 and make QoS 1 the default
+  * Instead of QoS 2 PUBLISH/PUBREC/PUBREL/PUBCOMP, it should be the same as QoS 1 but make sure it's only received exactly once
+* `ts.amp.Store` - Storage of messages so they wait to be sent
+* Examples on how communication would
+* Provide TypeScript definitions
+
 ## `ts.app` API reference (quick overview)
 
 ### `ts.app.connect()`
