@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="466px" preserveAspectRatio="none" style="width:2328px;height:466px;" version="1.1" viewBox="0 0 2328 466" width="2328px" zoomAndPan="magnify"><defs><filter height="300%" id="f72can5mp9cs8" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="Open Sans" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="176" x="1071.75" y="29.9639">Keeping Connection Alive</text><rect fill="#E0FBFC" height="408.8491" style="stroke: #9DB4C0; stroke-width: 1.0;" width="883" x="29" y="47.0654"/><text fill="#000000" font-family="Open Sans" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="163" x="389" y="65.9604">Tradeshift.MyApp iframe</text><rect fill="#C2DFE3" height="408.8491" style="stroke: #9DB4C0; stroke-width: 1.0;" width="591.5" x="1499" y="47.0654"/><text fill="#000000" font-family="Open Sans" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="186" x="1701.75" y="65.9604">tradeshift-chrome topframe</text><rect fill="#9DB4C0" height="408.8491" style="stroke: #9DB4C0; stroke-width: 1.0;" width="168" x="2112.5" y="47.0654"/><text fill="#000000" font-family="Open Sans" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="115" x="2139" y="65.9604">Other.App iframe</text><rect fill="#F4FFFF" filter="url(#f72can5mp9cs8)" height="165.0146" style="stroke: #9DB4C0; stroke-width: 1.0;" width="853" x="781" y="183.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="107" x2="107" y1="126.8345" y2="138.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="107" x2="107" y1="138.8345" y2="176.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="107" x2="107" y1="176.8345" y2="355.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="107" x2="107" y1="355.8491" y2="393.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="107" x2="107" y1="393.8491" y2="394.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="107" x2="107" y1="394.8491" y2="404.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="509" x2="509" y1="126.8345" y2="138.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="509" x2="509" y1="138.8345" y2="176.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="509" x2="509" y1="176.8345" y2="355.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="509" x2="509" y1="355.8491" y2="393.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="509" x2="509" y1="393.8491" y2="394.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="509" x2="509" y1="394.8491" y2="404.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="849" x2="849" y1="126.8345" y2="138.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="849" x2="849" y1="138.8345" y2="176.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="849" x2="849" y1="176.8345" y2="355.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="849" x2="849" y1="355.8491" y2="393.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="849" x2="849" y1="393.8491" y2="394.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="849" x2="849" y1="394.8491" y2="404.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="1563" x2="1563" y1="126.8345" y2="138.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="1563" x2="1563" y1="138.8345" y2="176.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="1563" x2="1563" y1="176.8345" y2="355.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="1563" x2="1563" y1="355.8491" y2="393.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="1563" x2="1563" y1="393.8491" y2="394.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="1563" x2="1563" y1="394.8491" y2="404.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="2011.5" x2="2011.5" y1="126.8345" y2="138.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="2011.5" x2="2011.5" y1="138.8345" y2="176.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="2011.5" x2="2011.5" y1="176.8345" y2="355.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="2011.5" x2="2011.5" y1="355.8491" y2="393.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="2011.5" x2="2011.5" y1="393.8491" y2="394.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="2011.5" x2="2011.5" y1="394.8491" y2="404.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="2196.5" x2="2196.5" y1="126.8345" y2="138.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="2196.5" x2="2196.5" y1="138.8345" y2="176.8345"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="2196.5" x2="2196.5" y1="176.8345" y2="355.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="2196.5" x2="2196.5" y1="355.8491" y2="393.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0;" x1="2196.5" x2="2196.5" y1="393.8491" y2="394.8491"/><line style="stroke: #5C6B73; stroke-width: 1.0; stroke-dasharray: 1.0,4.0;" x1="2196.5" x2="2196.5" y1="394.8491" y2="404.8491"/><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="144" x="33" y="78.769"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="120" x="45" y="105.7329">Tradeshift.MyApp</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="144" x="33" y="403.8491"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="120" x="45" y="430.813">Tradeshift.MyApp</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="66" x="474" y="78.769"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="42" x="486" y="105.7329">ts.app</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="66" x="474" y="403.8491"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="42" x="486" y="430.813">ts.app</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="113" x="791" y="78.769"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="89" x="803" y="105.7329">ts.amp.Client</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="113" x="791" y="403.8491"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="89" x="803" y="430.813">ts.amp.Client</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="117" x="1503" y="78.769"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="93" x="1515" y="105.7329">ts.amp.Server</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="117" x="1503" y="403.8491"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="93" x="1515" y="430.813">ts.amp.Server</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="146" x="1936.5" y="78.769"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="122" x="1948.5" y="105.7329">tradeshift-chrome</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="146" x="1936.5" y="403.8491"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="122" x="1948.5" y="430.813">tradeshift-chrome</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="156" x="2116.5" y="78.769"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="132" x="2128.5" y="105.7329">Other ts.amp.Client</text><rect fill="#5C6B73" filter="url(#f72can5mp9cs8)" height="43.0654" style="stroke: #5C6B73; stroke-width: 1.5;" width="156" x="2116.5" y="403.8491"/><text fill="#FFFFFF" font-family="Open Sans" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="132" x="2128.5" y="430.813">Other ts.amp.Client</text><line style="stroke: #000000; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="3" x2="2316.5" y1="137.8345" y2="137.8345"/><rect fill="none" height="165.0146" style="stroke: #9DB4C0; stroke-width: 1.0;" width="853" x="781" y="183.8345"/><polygon fill="#EAFFFF" points="781,183.8345,864,183.8345,864,202.8345,854,212.8345,781,212.8345,781,183.8345" style="stroke: #9DB4C0; stroke-width: 1.0;"/><text fill="#000000" font-family="Open Sans" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="28" x="801" y="203.7295">loop</text><text fill="#000000" font-family="Open Sans" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="45" x="884" y="203.6606">[Within</text><text fill="#000000" font-family="monospace" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="63" x="932" y="204.3462">keepAlive</text><text fill="#000000" font-family="Open Sans" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="229" x="998" y="203.6606">seconds if no other messages are sent]</text><line style="stroke: #253237; stroke-width: 2.0;" x1="1561.5" x2="1551.5" y1="255.8799" y2="251.8799"/><line style="stroke: #253237; stroke-width: 2.0;" x1="1561.5" x2="1551.5" y1="255.8799" y2="259.8799"/><line style="stroke: #253237; stroke-width: 2.0;" x1="849.5" x2="1562.5" y1="255.8799" y2="255.8799"/><text fill="#000000" font-family="monospace" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="56" x="861.5" y="245.9468">PINGREQ</text><polygon fill="#E8F6FF" filter="url(#f72can5mp9cs8)" points="1515,269.0127,1612,269.0127,1622,286.0127,1612,304.0127,1515,304.0127,1505,286.0127,1515,269.0127" style="stroke: #224F6B; stroke-width: 1.0;"/><text fill="#1F2D3D" font-family="Open Sans" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="83" x="1522" y="291.9077">Identify Client</text><line style="stroke: #253237; stroke-width: 2.0;" x1="849.5" x2="859.5" y1="340.7163" y2="336.7163"/><line style="stroke: #253237; stroke-width: 2.0;" x1="849.5" x2="859.5" y1="340.7163" y2="344.7163"/><line style="stroke: #253237; stroke-width: 2.0; stroke-dasharray: 2.0,2.0;" x1="849.5" x2="1562.5" y1="340.7163" y2="340.7163"/><text fill="#000000" font-family="monospace" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="56" x="871.5" y="330.7832">PINGRES</text><line style="stroke: #000000; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="3" x2="2316.5" y1="393.8491" y2="393.8491"/><!--
+@startuml
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		BoxBorderColor #9DB4C0
+		Group {
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+title Connecting - ""ts.app.connect()""
+
+...
+
+"Tradeshift.MyApp" -> "ts.app": ""ts.app.connect()""
+create "ts.amp.Client"
+"ts.app" -> "ts.amp.Client": Create internal ""ts.amp.Client"" instance
+"ts.amp.Client" -> "ts.amp.Server": ""CONNECT""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Client" <- - "ts.amp.Server": ""CONNACK(returnCode=0)""
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server#subscribe(ts.amp.Subscription)""
+note right of "ts.amp.Server": Subscribe Client to ""+/+/VendorId/AppId/#""\nOnly start publishing to Client after ""CONNACK"" was sent
+
+...
+
+newpage Identifying Clients
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+note over "ts.amp.Client", "ts.amp.Server": Any incoming request will be followed by an identification check
+"ts.amp.Client" -> "ts.amp.Server": ""CONNECT"" /\n""PUBLISH"" / ""PUBACK"" / ""PUBREC"" / ""PUBCOMP"" /\n""SUBSCRIBE"" / ""UNSUBSCRIBE"" /\n""PINGREQ"" /\n""DISCONNECT""
+group Identify
+	"ts.amp.Server" -> "tradeshift-chrome": Identify ""clientId"" based on ""postMessage"" origin
+	"ts.amp.Server" <- - "tradeshift-chrome"
+	note right of "ts.amp.Server": If message sender can't be identified or recognized,\nthe message is ignored
+end
+note over "ts.amp.Server": From now on this step will be shown as follows:
+hnote over "ts.amp.Server": Identify Client
+
+...
+
+newpage Keeping Connection Alive
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+loop Within ""keepAlive"" seconds if no other messages are sent
+		"ts.amp.Client" ->> "ts.amp.Server": ""PINGREQ""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Client" <<- - "ts.amp.Server": ""PINGRES""
+	end
+
+...
+
+newpage Publishing - ""ts.app.publish()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+"Tradeshift.MyApp" ->> "ts.app": ""ts.app.publish(ts.app.Message)""
+"ts.app" ->> "ts.amp.Client"
+alt QoS Level 0
+	"ts.amp.Client" ->> "ts.amp.Server": ""PUBLISH("topic", payload, QoS=0)""
+	hnote over "ts.amp.Server": Identify Client
+else QoS Level 1
+	"ts.amp.Client" ->> "ts.amp.Server": ""PUBLISH("topic", payload, QoS=1)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" ->> "ts.amp.Server": Persist message
+	"ts.amp.Client" <<- - "ts.amp.Server": ""PUBACK""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Client" ->> "ts.amp.Client": Delete message
+else QoS Level 2
+	"ts.amp.Client" ->> "ts.amp.Server": ""PUBLISH("topic", payload, QoS=2)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" ->> "ts.amp.Server": Persist message
+	"ts.amp.Client" <<- - "ts.amp.Server": ""PUBREC""
+	"ts.amp.Client" ->> "ts.amp.Server": ""PUBREL""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Client" <<- - "ts.amp.Server": ""PUBCOMP""
+	"ts.amp.Client" ->> "ts.amp.Client": Delete message
+end
+loop For each client subscribed to "topic"
+	alt QoS Level 0
+		"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("topic", payload, QoS=0)""
+	else QoS Level 1
+		"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("topic", payload, QoS=1)""
+		"ts.amp.Server" <<- - "Other ts.amp.Client": ""PUBACK""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "ts.amp.Server": Delete message
+	else QoS Level 2
+		"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("topic", payload, QoS=2)""
+		"ts.amp.Server" <<- - "Other ts.amp.Client": ""PUBREC""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBREL"
+		"ts.amp.Server" <<- - "Other ts.amp.Client": ""PUBCOMP""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "ts.amp.Server": Delete message
+	end
+end
+
+...
+
+newpage Listening - ""ts.app.listen()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+alt QoS Level 0
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("topic", payload, Qos=0)""
+	hnote over "ts.amp.Server": Identify Client
+else QoS Level 1
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("topic", payload, Qos=1)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" - ->> "Other ts.amp.Client": ""PUBACK""
+	"ts.amp.Server" ->> "ts.amp.Server": Delete message
+else QoS Level 2
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("topic", payload, Qos=2)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" - ->> "Other ts.amp.Client": ""PUBREC""
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBREL""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" - ->> "Other ts.amp.Client": ""PUBCOMP""
+	"ts.amp.Server" ->> "ts.amp.Server": Delete message
+end
+loop For each client subscribed to "topic"
+	alt QoS Level 0
+		"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("topic", payload, Qos=0)""
+		"ts.app" <<- "ts.amp.Client" : ""ts.app.listen(ts.app.MessageHandler)""
+		"Tradeshift.MyApp" <- "ts.app" : ""messageHandler""
+	else QoS Level 1
+		"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("topic", payload, Qos=1)""
+		"ts.amp.Client" - ->> "ts.amp.Server": ""PUBACK""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "ts.amp.Server": Delete message
+		"ts.app" <<- "ts.amp.Client" : ""ts.app.listen(ts.app.MessageHandler)""
+		"Tradeshift.MyApp" <- "ts.app" : ""messageHandler""
+	else QoS Level 2
+		"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("topic", payload, Qos=2)""
+		"ts.amp.Client" - ->> "ts.amp.Server": ""PUBREC""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Client" <<- "ts.amp.Server": ""PUBREL""
+		"ts.amp.Client" - ->> "ts.amp.Server": ""PUBCOMP""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" ->> "ts.amp.Server": Delete message
+		"ts.app" <<- "ts.amp.Client" : ""ts.app.listen(ts.app.MessageHandler)""
+		"Tradeshift.MyApp" <- "ts.app" : ""messageHandler""
+	end
+end
+
+...
+
+newpage Subscribing - ""ts.app.subscribe()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+"Tradeshift.MyApp" ->> "ts.app": ""ts.app.subscribe(Array<ts.app.Subscription>)""
+activate "ts.app"
+"ts.app" ->> "ts.amp.Client"
+"ts.amp.Client" ->> "ts.amp.Server": ""SUBSCRIBE({"topic0", QoS=0}, {"topic1", QoS=1}, {"topic2", QoS=2}, {"topic3", QoS=1})""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server.unsubscribe(Array<ts.amp.Subscription>)""
+"ts.amp.Client" <<- - "ts.amp.Server": ""SUBACK(0, 1, 2, 128)""
+note right of "ts.amp.Server": Server will forward the messages for requested subscription after sending ""SUBACK""\nSee @Receiving
+deactivate "ts.app"
+
+...
+
+newpage Unsubscribing - ""ts.app.unsubscribe()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+"Tradeshift.MyApp" ->> "ts.app": ""ts.app.unsubscribe(Array<ts.app.Subscription>)""
+activate "ts.app"
+"ts.app" ->> "ts.amp.Client"
+"ts.amp.Client" ->> "ts.amp.Server": ""UNSUBSCRIBE("topic0", "topic1", "topic2)""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server.subscribe(Array<ts.amp.Subscription>)""
+"ts.amp.Client" <<- - "ts.amp.Server": ""UNSUBACK""
+note right of "ts.amp.Server": Server will not forward any more messages for this subscription after sending ""UNSUBACK""\nIt does finish sending any messages that were in progress(QoS1, QoS2)
+deactivate "ts.app"
+
+...
+
+newpage Exchange - ""ts.app.exchange()"" / Load - ""ts.app.load()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+"ts.app" ->> "ts.amp.Client": ""ts.app.exchange(ts.app.Message)""
+activate "ts.app"
+"ts.amp.Client" ->> "ts.amp.Server": ""SUBSCRIBE("exchange topic", QoS=1, retain=false)""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server.subscribe(Array<ts.amp.Subscription>)""
+"ts.amp.Client" <<- - "ts.amp.Server": ""SUBACK(1)""
+"ts.amp.Client" ->> "ts.amp.Server": ""PUBLISH("exchange topic", payload={request}, QoS=1, retain=false)""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Client" <<- - "ts.amp.Server": ""PUBACK""
+"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("exchange topic", payload={request}, QoS=1, retain=false)""
+"ts.amp.Server" <<- - "Other ts.amp.Client": ""PUBACK""
+hnote over "ts.amp.Server": Identify Client
+alt Success, other app is listening and responding
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("exchange topic", payload={loading: true}, QoS=1, retain=false)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" - ->> "Other ts.amp.Client": ""PUBACK""
+	loop While we're waiting for user interaction to finish
+		"ts.amp.Server" <<- "Other ts.amp.Client": ""PINGREQ""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Server" - ->> "Other ts.amp.Client": ""PINGRES""
+		"ts.amp.Client" ->> "ts.amp.Server": ""PINGREQ""
+		hnote over "ts.amp.Server": Identify Client
+		"ts.amp.Client" <<- - "ts.amp.Server": ""PINGRES""
+	end
+	"ts.amp.Server" <<- "Other ts.amp.Client": ""PUBLISH("exchange topic", payload={response}, QoS=1, retain=false)""
+	hnote over "ts.amp.Server": Identify Client
+	"ts.amp.Server" - ->> "Other ts.amp.Client": ""PUBACK""
+	"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("exchange topic", payload={response}, QoS=1, retain=false)""
+	"ts.amp.Client" - ->> "ts.amp.Server": ""PUBACK""
+	hnote over "ts.amp.Server": Identify Client
+else Failure, other app is not listening or responding
+	note over "ts.amp.Server":No meaningful response from other app within ""keepAlive"" seconds
+	"ts.amp.Client" <<- "ts.amp.Server": ""PUBLISH("exchange topic", payload={err}, QoS=1, retain=false)""
+	"ts.amp.Client" - ->> "ts.amp.Server": ""PUBACK""
+	hnote over "ts.amp.Server": Identify Client
+end
+deactivate "ts.app"
+"ts.amp.Client" ->> "ts.amp.Server": ""UNSUBSCRIBE("exchange topic")""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" ->> "ts.amp.Server": ""ts.amp.Server.unsubscribe(Array<ts.amp.Subscription>)""
+"ts.amp.Client" <<- - "ts.amp.Server": ""UNSUBACK""
+
+...
+
+newpage Unexpected disconnect
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		Group {
+			FontSize 12
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+note over "ts.amp.Client": No messages sent for ""keepAlive"" seconds
+"ts.amp.Server" -> "ts.amp.Server": ts.amp.Server.unsubscribe()
+note right of "ts.amp.Server": Unsubscribe Client from all of its subscriptions
+
+opt If ""ts.amp.Client"" has a ""will"" defined
+	loop For each client subscribed to "will topic"
+		alt QoS Level 0
+			"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("will topic", payload, QoS=0)""
+		else QoS Level 1
+			"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("will topic", payload, QoS=1)""
+			"ts.amp.Server" <<- - "Other ts.amp.Client": ""PUBACK""
+			hnote over "ts.amp.Server": Identify Client
+			"ts.amp.Server" ->> "ts.amp.Server": Delete message
+		else QoS Level 2
+			"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBLISH("will topic", payload, QoS=2)""
+			"ts.amp.Server" <<- - "Other ts.amp.Client": ""PUBREC""
+			hnote over "ts.amp.Server": Identify Client
+			"ts.amp.Server" ->> "Other ts.amp.Client": ""PUBREL"
+			"ts.amp.Server" <<- - "Other ts.amp.Client": ""PUBCOMP""
+			hnote over "ts.amp.Server": Identify Client
+			"ts.amp.Server" ->> "ts.amp.Server": Delete message
+		end
+	end
+end
+
+...
+
+newpage Disconnecting - ""ts.app.disconnect()""
+
+skinparam {
+	DefaultFontName Open Sans
+	Padding 5
+	BoxPadding 10
+	Note {
+		BackgroundColor #E8F6FF
+		FontColor #1F2D3D
+		BorderColor #224F6B
+	}
+
+	sequence {
+		BoxBorderColor #9DB4C0
+		Group {
+			BackgroundColor #EAFFFF
+			BodyBackgroundColor #F4FFFF
+			BorderColor #9DB4C0
+			BorderThickness 1
+		}
+
+		Arrow {
+			Color #253237
+			Thickness 2
+		}
+
+		LifeLine {
+			BorderColor #5C6B73
+		}
+
+		Participant {
+			BorderColor #5C6B73
+			BackgroundColor #5C6B73
+			FontColor #FFFFFF
+		}
+
+	}
+}
+
+box "Tradeshift.MyApp iframe" #E0FBFC
+	participant "Tradeshift.MyApp"
+	participant "ts.app"
+	participant "ts.amp.Client"
+end box
+box "tradeshift-chrome topframe" #C2DFE3
+	participant "ts.amp.Server"
+	participant "tradeshift-chrome"
+end box
+box "Other.App iframe" #9DB4C0
+	participant "Other ts.amp.Client"
+end box
+
+...
+
+[-> "ts.app": ts.app.disconnect()
+"ts.app" -> "ts.amp.Client"
+"ts.amp.Client" -> "ts.amp.Server": ""DISCONNECT""
+hnote over "ts.amp.Server": Identify Client
+"ts.amp.Server" -> "ts.amp.Server": ts.amp.Server.unsubscribe()
+note right of "ts.amp.Server": Unsubscribe Client from all of its subscriptions
+
+@enduml
+
+PlantUML version 1.2017.15(Mon Jul 03 18:45:34 CEST 2017)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 1.8.0_152-release-1024-b8
+Operating System: Mac OS X
+OS Version: 10.13.2
+Default Encoding: UTF-8
+Language: en
+Country: DK
+--></g></svg>
