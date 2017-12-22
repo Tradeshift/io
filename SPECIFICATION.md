@@ -85,8 +85,8 @@ A `ts.app` Control Message is in JSON format and consist of up to three parts, a
 | CONNACK     | Server to Client                     | Connect acknowledgment                     | client is ready to sub & pub |
 | PUBLISH     | Client to Server or Server to Client | Publish message                            |                              |
 | PUBACK      | Client to Server or Server to Client | Publish acknowledgment                     |                              |
-| PUREC       | Client to Server or Server to Client | Publish received (assured delivery part 1) |                              |
-| PUREL       | Client to Server or Server to Client | Publish release (assured delivery part 2)  |                              |
+| PUBREC       | Client to Server or Server to Client | Publish received (assured delivery part 1) |                              |
+| PUBREL       | Client to Server or Server to Client | Publish release (assured delivery part 2)  |                              |
 | PUBCOMP     | Client to Server or Server to Client | Publish complete (assured delivery part 3) |                              |
 | SUBSCRIBE   | Client to Server                     | Client subscribe request                   |                              |
 | SUBACK      | Server to Client                     | Subscribe acknowledgment                   |                              |
@@ -104,8 +104,8 @@ A `ts.app` Control Message is in JSON format and consist of up to three parts, a
 | CONNACK     | NO               | None     |
 | PUBLISH     | YES (If QoS > 0) | Optional |
 | PUBACK      | YES              | None     |
-| PUREC       | YES              | None     |
-| PUREL       | YES              | None     |
+| PUBREC       | YES              | None     |
+| PUBREL       | YES              | None     |
 | PUBCOMP     | YES              | None     |
 | SUBSCRIBE   | YES              | Required |
 | SUBACK      | YES              | Required |
@@ -430,7 +430,7 @@ A SUBACK Message contains a list of return codes, that specify the maximum QoS l
 | 0           | Success     | 0           |
 | 1           | Success     | 1           |
 | 2           | Success     | 2           |
-| 2           | Failure     |             |
+| 128         | Failure     |             |
 
 #### `UNSUBSCRIBE` – Unsubscribe from topics
 
