@@ -2,15 +2,35 @@ import babel from 'rollup-plugin-babel';
 import multiEntry from 'rollup-plugin-multi-entry';
 import pkg from './package.json';
 
+const name = 'ts.app';
+const extend = true;
+const sourcemap = true;
+
 export default [
 	{
 		input: 'src/index.js',
-		sourcemap: true,
-		name: 'ts.app',
 		output: [
-			{ file: pkg.main, format: 'cjs' },
-			{ file: pkg.module, format: 'es' },
-			{ file: pkg.browser, format: 'iife' }
+			{
+				name,
+				extend,
+				sourcemap,
+				file: pkg.main,
+				format: 'cjs'
+			},
+			{
+				name,
+				extend,
+				sourcemap,
+				file: pkg.module,
+				format: 'es'
+			},
+			{
+				name,
+				extend,
+				sourcemap,
+				file: pkg.browser,
+				format: 'iife'
+			}
 		],
 		plugins: [
 			babel({
@@ -19,13 +39,13 @@ export default [
 		]
 	},
 	{
-		input: {
-			include: ['test/spec/**/*.js'],
-			exclude: ['test/spec/bundle.js']
+		input: 'test/spec/**/*Spec.js',
+		output: {
+			name: 'spec',
+			sourcemap,
+			file: 'test/spec/bundle.js',
+			format: 'iife'
 		},
-		sourcemap: true,
-		name: 'spec',
-		output: { file: 'test/spec/bundle.js', format: 'iife' },
 		plugins: [
 			multiEntry(),
 			babel({
