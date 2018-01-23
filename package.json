@@ -1,17 +1,34 @@
 {
   "name": "@tradeshift/tradeshift-app",
   "version": "1.0.0",
+  "private": true,
+  "description": "The Tradeshift App Messaging Library",
+  "homepage": "https://ui.tradeshift.com/",
+  "bugs": {
+    "url": "https://github.com/Tradeshift/tradeshift-app/issues",
+    "email": "dsp@tradeshift.com"
+  },
+  "author": "Tradeshift UI Team",
+  "contributors": [
+    "Wired Earp <jmo@tradeshift.com> (https://github.com/wiredearp)",
+    "Leo Zhang <lza@tradeshift.com> (https://github.com/zdlm)",
+    "Daniel Spitzer <dsp@tradeshift.com> (https://github.com/sampi)"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "main": "dist/ts.app-cjs.js",
   "module": "dist/ts.app-es.js",
   "jsnext:main": "dist/ts.app-es.js",
   "browser": "dist/ts.app-iife.js",
   "devDependencies": {
-    "@babel/core": "7.0.0-beta.34",
-    "@babel/plugin-external-helpers": "^7.0.0-beta.34",
-    "@babel/preset-env": "7.0.0-beta.34",
-    "http-server": "0.10.0",
-    "jasmine": "2.8.0",
-    "rollup": "0.50.0",
+    "@babel/core": "7.0.0-beta.38",
+    "@babel/plugin-external-helpers": "^7.0.0-beta.38",
+    "@babel/preset-env": "7.0.0-beta.38",
+    "http-server": "0.11.1",
+    "jasmine": "2.9.0",
+    "rollup": "0.55.0",
     "rollup-plugin-babel": "4.0.0-beta.0",
     "rollup-plugin-multi-entry": "2.0.2"
   },
@@ -25,8 +42,23 @@
     "test:local": "npm run test -- -o"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE.md",
+    "README.md"
   ],
+  "keywords": [
+    "tradeshift",
+    "ts",
+    "app",
+    "messaging",
+    "library",
+    "client-side",
+    "javascript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tradeshift/tradeshift-app.git"
+  },
   "browserslist": [
     "last 2 versions",
     "not ie 10"
