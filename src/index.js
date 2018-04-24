@@ -17,7 +17,10 @@ export function broadcast(appIds, key, data) {
 		appIds = [appIds];
 	}
 	const content = stringify(appIds, key, data);
-	if (appIds.indexOf('Tradeshift.Chrome') !== -1 || window.top !== window.self) {
+	if (
+		appIds.indexOf('Tradeshift.Chrome') !== -1 ||
+		window.top !== window.self
+	) {
 		window.top.postMessage(content, '*');
 	}
 }
@@ -66,12 +69,44 @@ class Listener {
 			) {
 				return this;
 			}
-			let content = JSON.parse(e.data.replace(BROADCAST_PREFIX, ''));
-			if (content.key !== key || (this.appIds !== '*' && content.appIds !== this.appIds)) {
+			const data = JSON.parse(e.data.replace(BROADCAST_PREFIX, ''));
+			// Not enough data to handle
+			if (!data.appIds || !data.key) {
 				return this;
 			}
+			// This is not the key we need
+			if (data.key !== key) {
+				return this;
+			}
+
+			// Did we get appIds as a string?
+			const isString = typeof data.appIds === 'string';
+			// Did we get appIds as an Array?
+			const isArray = Array.isArray(data.appIds);
+			// We got something else, do not handle
+			if (!(isString ^ isArray)) {
+				return this;
+			}
+			// Convert appIds to Array
+			const appIds = isString ? [data.appIds] : data.appIds;
+
+			// We match any app
+			const hasAnyApp = this.appIds === '*';
+			// We match a single app (string)
+			const hasStrApp =
+				this.appIds === 'string' && appIds.indexOf(this.appIds) !== -1;
+			// We match a multiple apps (Array)
+			const hasArrApp =
+				Array.isArray(this.appIds) &&
+				this.appIds.every(a => appIds.indexOf(a) !== -1);
+
+			// If we don't match '*', we should match as a string or array
+			if (!hasAnyApp || (!hasStrApp || !hasArrApp)) {
+				return this;
+			}
+
 			if (callback) {
-				callback(content.data);
+				callback(data.data);
 			}
 		};
 		window.addEventListener('message', handler);
