@@ -5,3 +5,9 @@
 export function isChromeWindow() {
 	return window.ts && window.ts.chrome !== undefined;
 }
+
+/**
+ * Heartbeat regularity in ms.
+ * @type {number}
+ */
+export const HEARTBEAT = 5000;

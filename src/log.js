@@ -122,7 +122,7 @@ class Log {
 		 * @param {any[]} optionalParams Optional Params
 		 */
 		this.log = (message, ...optionalParams) => {
-			const now = performance.now();
+			const now = window.performance.now();
 			const deltaTime = now - (this.previousTime || now);
 			this.previousTime = now;
 			console.log(

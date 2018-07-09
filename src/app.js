@@ -164,24 +164,31 @@ export function app() {
 			token = message.token || '';
 			debug = log('ts:app:sub:' + appId);
 			debug('CONNECTED');
+
 			return;
 		}
 
-		debug(
-			'%o (%o) from %o - %O',
-			message.type,
-			message.topic,
-			message.source,
-			message
-		);
-
 		// Call the matching handlers for the message topic.
-		if (message.type === 'PUBLISH') {
-			handlersByTopic.forEach(
-				(handlers, topic) =>
-					matchTopic(topic, message.topic) &&
-					handlers.forEach(handler => handler(message))
-			);
+		switch (message.type) {
+			case 'PUBLISH':
+				debug(
+					'%o (%o) from %o - %O',
+					message.type,
+					message.topic,
+					message.source,
+					message
+				);
+				handlersByTopic.forEach(
+					(handlers, topic) =>
+						matchTopic(topic, message.topic) &&
+						handlers.forEach(handler => handler(message))
+				);
+				break;
+			case 'PING':
+				postMessage({ type: 'PONG', token });
+				break;
+			default:
+				break;
 		}
 	}
 

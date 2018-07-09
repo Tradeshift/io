@@ -2,6 +2,7 @@ import uuid from 'uuid';
 import { log } from './log';
 import { app } from './app';
 import { postMessage, hubMessageValid, publishMessageValid } from './msg';
+import { HEARTBEAT } from './lib';
 
 export function hub(chrome) {
 	const debug = log('ts:app:top');
@@ -10,6 +11,40 @@ export function hub(chrome) {
 	 * @type {WeakMap<Window, Object<appId: string, token: string>}
 	 */
 	const appWindows = new WeakMap();
+	/**
+	 * Map of when the last PONG, or any other message was sent from an app.
+	 * @type {Map<token: string, Object<lastPong: DOMHighResTimeStamp, timeoutIds: Set<timeoutId: number>}
+	 */
+	const appPongs = new Map();
+
+	/*
+	1. after sending CONNACK to an app, PING it after HEARTBEAT ms
+	2. if it replies, wait HEARTBEAT ms and PING again, - repeat forever
+	3. if it doesn't reply within 4 * HEARTBEAT ms, consider the client dead and remove it from the list while removing all traces of it
+	*/
+	function pingApp(opts) {
+		const { appId, token, targetWindow } = opts;
+
+		const now = window.performance.now();
+		const appPongInfo = appPongs.get(token);
+		const lastPong = (appPongInfo && appPongInfo.lastPong) || now;
+		if (now - lastPong < 3 * HEARTBEAT) {
+			appPongInfo.timeoutIds.add(setTimeout(() => pingApp(opts), HEARTBEAT));
+			postMessage(
+				{ type: 'PING', viaHub: true, target: appId, token },
+				targetWindow
+			);
+		} else {
+			debug('App timed out, considering it dead! %o', appId);
+			try {
+				appWindows.delete(targetWindow);
+				appPongInfo.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
+				appPongs.delete(token);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	}
 
 	window.addEventListener('message', function(event) {
 		const message = event.data;
@@ -31,6 +66,12 @@ export function hub(chrome) {
 					{ type: 'CONNACK', viaHub: true, target: appId, token },
 					event.source
 				);
+				const pingOpts = { targetWindow: event.source, appId, token };
+				const timeoutId = setTimeout(() => pingApp(pingOpts), HEARTBEAT);
+				appPongs.set(token, {
+					lastPong: window.performance.now(),
+					timeoutIds: new Set([timeoutId])
+				});
 				return;
 			} else {
 				console.warn(
@@ -50,8 +91,8 @@ export function hub(chrome) {
 		}
 
 		const appWindow = appWindows.get(event.source);
-		message.source = appWindow.appId;
-		message.token = appWindow.token;
+		const appId = (message.source = appWindow.appId);
+		const token = (message.token = appWindow.token);
 		message.viaHub = true;
 
 		if (message.source === message.target) {
@@ -83,6 +124,12 @@ export function hub(chrome) {
 					message
 				);
 				postMessage(message, targetWindow);
+				break;
+			case 'PONG':
+				appPongs.set(token, {
+					...appPongs.get(token),
+					lastPong: window.performance.now()
+				});
 				break;
 			default:
 				debug('* %o', event.data);

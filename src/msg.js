@@ -64,7 +64,7 @@ export function appMessageValid(message) {
 	return (
 		messageValid(message) &&
 		message.viaHub &&
-		['CONNACK', 'PUBLISH', 'PINGRES'].includes(message.type)
+		['CONNACK', 'PUBLISH', 'PING'].includes(message.type)
 	);
 }
 
@@ -76,7 +76,7 @@ export function hubMessageValid(message) {
 	return (
 		messageValid(message) &&
 		!message.viaHub &&
-		['CONNECT', 'PUBLISH', 'PINGREQ'].includes(message.type)
+		['CONNECT', 'PUBLISH', 'PONG'].includes(message.type)
 	);
 }
 
