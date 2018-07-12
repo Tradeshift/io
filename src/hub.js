@@ -4,6 +4,18 @@ import { app } from './app';
 import { postMessage, hubMessageValid, publishMessageValid } from './msg';
 import { HEARTBEAT } from './lib';
 
+/**
+ * Special features supplied by the Tradeshift® Chrome™.
+ * @typedef {object} ChromeWindowFeatures
+ * @property {function(Window): string} appIdByWindow Called to get an appId based on a Window object.
+ * @property {function(string, Window): Window} windowByAppId Called to get a window object based on an appId and the requesting app's Window object.
+ * @property {function(Window): void} appTimeout Called when an app fails to reply in time to a PING request.
+ */
+
+/**
+ * The Message Broker AKA The Hub.
+ * @param {ChromeWindowFeatures} chrome Special features supplied by the Tradeshift® Chrome™
+ */
 export function hub(chrome) {
 	const debug = log('ts:app:top');
 	/**
@@ -37,6 +49,7 @@ export function hub(chrome) {
 		} else {
 			debug('App timed out, considering it dead! %o', appId);
 			try {
+				chrome.appTimeout(targetWindow);
 				appWindows.delete(targetWindow);
 				appPongInfo.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
 				appPongs.delete(token);
@@ -91,8 +104,8 @@ export function hub(chrome) {
 		}
 
 		const appWindow = appWindows.get(event.source);
-		const appId = (message.source = appWindow.appId);
 		const token = (message.token = appWindow.token);
+		message.source = appWindow.appId;
 		message.viaHub = true;
 
 		if (message.source === message.target) {

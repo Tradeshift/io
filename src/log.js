@@ -67,12 +67,12 @@ function debugEnabled(namespace) {
 				error.code === 25) /* DATA_CLONE_ERR */
 		) {
 			console.warn(
-				'ts.app error while setting up debug logging. You should ignore this message or set %o while sandboxing your iframe. %O',
+				'ts.talk error while setting up debug logging. You should ignore this message or set %o while sandboxing your iframe. %O',
 				'allow-same-origin',
 				error
 			);
 		} else {
-			console.warn('ts.app error while setting up debug logging.', error);
+			console.warn('ts.talk error while setting up debug logging.', error);
 		}
 	}
 	// No expression, no logging.

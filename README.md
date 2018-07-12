@@ -27,9 +27,11 @@ This is the standard way for apps on the client-side of the Tradeshift Platform 
 
 ## Rules
 
-- There can be only one App (client) in a single `Window` context (iframe/popup).
+- There can be only one App (Client) in a single `Window` context (iframe/popup).
+- Any messages sent by an App (Client) are sent to `window.top` where the Hub (The Broker) runs.
+- Any messages received by an App (Client) are sent from `window.top` through the Hub (The Broker).
 - The Tradeshift® Chrome™ keeps track of all apps and decides which ones have access to which ones.
-  - Spawned iframes can only communicate with their spawner and their own spawnees.
+  - Spawned iframes can only communicate with their spawner and their own spawnees and `Tradeshift.Chrome`.
 
 ## `ts.app` API reference (quick overview)
 
@@ -107,6 +109,7 @@ try {
   // Something went horribly wrong
 }
 
+// This next API is under consideration, it might not be implemented.
 // Load app and keep it open in the background (or could be in a SideBar or a floating window)
 try {
   const openedApp = client.open(appId, data);

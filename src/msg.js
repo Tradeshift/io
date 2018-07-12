@@ -1,6 +1,6 @@
 /**
  * The Message.
- * @typedef {Object} Message
+ * @typedef {object} Message
  * @property {string} type The type of the message. (one of ['CONNECT', 'CONNACK', 'PUBLISH', 'PINGREQ', 'PINGRES'])
  * @property {string=} topic The topic of the message. (required for 'PUBLISH' type)
  * @property {string=} target Target appId. (required for ['PUBLISH', 'CONNACK', 'PINGREQ'] types)
@@ -27,7 +27,7 @@ export function postMessage(message, targetWindow) {
 				error.code === 25) /* DATA_CLONE_ERR */
 		) {
 			throw new Error(
-				"ts.app.publish called with { data } argument that can't be cloned using the structural clone algorithm."
+				"ts.talk.publish called with { data } argument that can't be cloned using the structural clone algorithm."
 			);
 		} else {
 			console.warn('Something went wrong while sending postMessage.', error);
