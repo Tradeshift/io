@@ -5,7 +5,7 @@
 [npm-image]: https://img.shields.io/npm/v/@tradeshift/talk.svg
 [npm-url]: https://npmjs.org/package/@tradeshift/talk
 
-![ts.talk](./.github/ts.talk.svg)
+<center><img src="./.github/ts.talk.svg" width="50%" alt="ts.talk" /></center>
 
 # `ts.talk`
 
