@@ -42,7 +42,7 @@
 	"module": "lib/ts.talk-esm.js",
 	"browser": "lib/ts.talk-umd.js",
 	"types": "lib/ts.talk.d.ts",
-	"repository": "github:Tradeshift/tradeshift-talk",
+	"repository": "github:Tradeshift/talk",
 	"author": "Daniel Spitzer <dsp@tradeshift.com>",
 	"contributors": [
 		"Wired Earp <jmo@tradeshift.com> (https://github.com/wiredearp)",
