@@ -5,6 +5,8 @@
 [npm-image]: https://img.shields.io/npm/v/@tradeshift/talk.svg
 [npm-url]: https://npmjs.org/package/@tradeshift/talk
 
+![ts.talk](./.github/ts.talk.svg)
+
 # `ts.talk`
 
 ## Tradeshift App Messaging Library
