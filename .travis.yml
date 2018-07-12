@@ -6,6 +6,8 @@ cache:
     - ~/.npm
 notifications:
   email: false
+before_install:
+  - npm i -g npm@latest
 after_success:
   - npm run travis-deploy-once "npm run semantic-release"
 branches:
