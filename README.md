@@ -1,23 +1,13 @@
-[![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![peerDependencies][peerdeps-image]][peerdeps-url]
+[![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url]
 
-[![semantic-release][semantic-release-img]][semantic-release-url] [![Commitizen friendly][commitizen-friendly-img]][commitizen-friendly-url]
+[travis-image]: https://travis-ci.org/Tradeshift/talk.svg?branch=master
+[travis-url]: https://travis-ci.org/Tradeshift/talk
+[npm-image]: https://img.shields.io/npm/v/@tradeshift/talk.svg
+[npm-url]: https://npmjs.org/package/@tradeshift/talk
 
-[commitizen-friendly-img]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
-[commitizen-friendly-url]: http://commitizen.github.io/cz-cli/
-[semantic-release-img]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
-[semantic-release-url]: https://github.com/semantic-release/semantic-release
-[travis-image]: https://travis-ci.org/Tradeshift/tradeshift-app.svg?branch=master
-[travis-url]: https://travis-ci.org/Tradeshift/tradeshift-app
-[npm-image]: https://img.shields.io/npm/v/@tradeshift/tradeshift-api.svg
-[npm-url]: https://npmjs.org/package/@tradeshift/tradeshift-app
-[downloads-image]: https://img.shields.io/npm/dm/tradeshift-app.svg
-[downloads-url]: https://npmjs.org/package/tradeshift-app
-[peerdeps-url]: https://david-dm.org/Tradeshift/tradeshift-app?type=peer
-[peerdeps-image]: https://david-dm.org/Tradeshift/tradeshift-app/peer-status.svg
+# `ts.talk`
 
-# `ts.app`
-
-# AKA `Tradeshift App Messaging`
+## Tradeshift App Messaging Library
 
 This is the standard way for apps on the client-side of the Tradeshift Platform to
 
@@ -33,16 +23,16 @@ This is the standard way for apps on the client-side of the Tradeshift Platform 
 - The Tradeshift® Chrome™ keeps track of all apps and decides which ones have access to which ones.
   - Spawned iframes can only communicate with their spawner and their own spawnees and `Tradeshift.Chrome`.
 
-## `ts.app` API reference (quick overview)
+## `ts.talk` API reference (quick overview)
 
 ### In the frame/window of the Tradeshift® Chrome™
 
 ```js
 const ts = ts || {};
-ts.app = require('@tradeshift/tradeshift-app');
+ts.talk = require('@tradeshift/talk');
 
 // Create Hub (The Broker)
-const hub = ts.app({
+const hub = ts.talk({
   appIdByWindow: win => {
     // Return appId based on a Window object.
     // Used for identifying new Apps (clients).
@@ -64,10 +54,10 @@ top.on(message => {
 
 ```js
 const ts = ts || {};
-ts.app = require('@tradeshift/tradeshift-app');
+ts.talk = require('@tradeshift/tradeshift-app');
 
 // Create App (a client) and connect to Hub (The Broker)
-const app = ts.app();
+const app = ts.talk();
 
 // Listen to incoming messages
 /*
@@ -130,10 +120,10 @@ try {
 
 ```js
 // Create App (a client) and connect to Hub (The Broker)
-const spawnedClient = ts.app();
+const spawnedClient = ts.talk();
 spawnedClient.on((msg, resolve, reject) => {
   // Listen to incoming messages
-  if (msg.topic === ts.app.TOPIC_SPAWN) {
+  if (msg.topic === ts.talk.TOPIC_SPAWN) {
     // Do stuff here to open the panel with some fancy animation
     // ...
     // Wait for user input
@@ -146,7 +136,7 @@ spawnedClient.on((msg, resolve, reject) => {
     // Either close the window automatically here
     // or...
   }
-  if (msg.topic === ts.app.TOPIC_UNSPAWN) {
+  if (msg.topic === ts.talk.TOPIC_UNSPAWN) {
     // Wait for this message to close the window.
     /**
      * NOTE!
