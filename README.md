@@ -27,31 +27,6 @@ This is the standard way for apps on the client-side of the Tradeshift Platform 
 
 ## `ts.talk` API reference (quick overview)
 
-### In the frame/window of the Tradeshift® Chrome™
-
-```js
-const ts = ts || {};
-ts.talk = require('@tradeshift/talk');
-
-// Create Hub (The Broker)
-const hub = ts.talk({
-  appIdByWindow: win => {
-    // Return appId based on a Window object.
-    // Used for identifying new Apps (clients).
-  },
-  windowByAppId: (appId, sourceWindow) => {
-    // Return window object based on an appId string.
-    // Used for identifying where to relay messages.
-  }
-});
-
-// Create App (a client) for the Tradeshift® Chrome™ and connect to Hub (The Broker)
-const top = hub.top();
-top.on(message => {
-  // Handle messages sent to 'Tradeshift.Chrome'
-});
-```
-
 ### In the frame/window of Tradeshift® Apps™
 
 ```js
@@ -148,5 +123,30 @@ spawnedClient.on((msg, resolve, reject) => {
      * and tells the spawned app that it won't work?
      */
   }
+});
+```
+
+### In the frame/window of the Tradeshift® Chrome™
+
+```js
+const ts = ts || {};
+ts.talk = require('@tradeshift/talk');
+
+// Create Hub (The Broker)
+const hub = ts.talk({
+  appIdByWindow: win => {
+    // Return appId based on a Window object.
+    // Used for identifying new Apps (clients).
+  },
+  windowByAppId: (appId, sourceWindow) => {
+    // Return window object based on an appId string.
+    // Used for identifying where to relay messages.
+  }
+});
+
+// Create App (a client) for the Tradeshift® Chrome™ and connect to Hub (The Broker)
+const top = hub.top();
+top.on(message => {
+  // Handle messages sent to 'Tradeshift.Chrome'
 });
 ```
