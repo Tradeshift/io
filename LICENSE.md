@@ -1,24 +1,22 @@
 **TL;DR**
 
-* You can always create forks on GitHub, submit Issues and Pull Requests.
-* You can only use ts.talk to make apps on a Tradeshift platform, e.g. tradeshift.com.
-* You can fix a bug until the bugfix is deployed by Tradeshift.
-* You can host ts.talk yourself.
-* If you want to make a bigger change or just want to talk with us, reach out to our team here on GitHub.
+- You can always create forks on GitHub, submit Issues and Pull Requests.
+- You can only use ts.talk to make apps on a Tradeshift platform, e.g. tradeshift.com.
+- You can fix a bug until the bugfix is deployed by Tradeshift.
+- You can host ts.talk yourself.
+- If you want to make a bigger change or just want to talk with us, reach out to our team here on GitHub.
 
-*Disclaimer: This is only a short summary of the license agreement, it is not legal advice.*
+_Disclaimer: This is only a short summary of the license agreement, it is not legal advice._
 
-________________________________________________________________________________
+---
 
 ### LICENCE AGREEMENT FOR USE OF TRADESHIFT’S APP MESSAGING LIBRARY (TALK) SOURCE CODE
-
 
 #### `1.` SCOPE
 
 `1.1` These licence terms are related to your use of Porta Holdings Ltd.’ (hereinafter “Tradeshift”) App Messaging Library (hereinafter “ts.talk”) and apply with regard to all conditions concerning your use of ts.talk.
 
 `1.2` If you use ts.talk, you are obligated to accept these licence terms. In return, the use is free of charge. If you cannot accept these licence terms, you are not entitled to use ts.talk.
-
 
 #### `2.` YOUR USE
 
@@ -29,7 +27,6 @@ ________________________________________________________________________________
 `2.3` The right of use consists of a worldwide, non-exclusive, non-licensable, non-transferable, royalty-free, revocable right to use ts.talk in connection with developing Tradeshift Apps for a commercial or non-commercial purpose. The use cannot be for any other commercial or non-commercial purpose.
 
 `2.4` The permitted use is including creation of forks, submission of issues and pulling of requests on GitHub. The right of use also includes hosting ts.talk yourself.
-
 
 #### `3.` ALTERATIONS
 
@@ -49,7 +46,6 @@ ________________________________________________________________________________
 
 `4.2` Intellectual property rights related to your alterations, see section 3 above, are also retained by and/or transferred to Tradeshift and you do not acquire any intellectual property rights in these instances, apart from necessary licence to enable the permitted use of the altered UI Code according to this agreement.
 
-
 #### `5.` VIOLATION OF THIRD PARTY RIGHTS
 
 `5.1` You are liable for your use of ts.talk in relations to violation of any third party rights. In relation to you, Tradeshift is liable to the extent that ts.talk itself, apart from the alterations, does not infringe any intellectual property rights of a third party. You are liable for ensuring that your alterations do not violate any third party rights, including but not limited to third party intellectual property rights.
@@ -57,7 +53,6 @@ ________________________________________________________________________________
 `5.2` If a lawsuit is filed against you concerning your use of ts.talk, where it is claimed that your use violates third party rights, you shall immediately inform Tradeshift of this. Tradeshift will at its own discretion and within reasonable time hereafter inform you, whether Tradeshift will take over the case. In case Tradeshift chooses to take over the case, you will give Tradeshift an irrevocable power of attorney, at Tradeshift’s own account, to conduct the case and/or enter into a settlement concerned the alleged violations.
 
 `5.3` In case a judgment is passed in accordance with the claim of the third party in question, Tradeshift is entitled to at its own choice either 1) to provide you with a right to use ts.talk continuously, 2) to put an end to the violation by changing or replacing the Code by new code, which in essence has the same functionality as ts.talk, or 3) to cancel this licence agreement with immediate effect and without reimbursement. No matter which of the above measures Tradeshift chooses to take, you cannot raise other or further claims against Tradeshift.
-
 
 #### `6.` LIABILITY AND LIMITATION OF LIABILITY
 
@@ -67,15 +62,12 @@ ________________________________________________________________________________
 
 `6.3` In case Tradeshift irrespective of the above might become liable, Tradeshift’s total liability for loss or damage is limited to DKK 5,000. In addition to this, Tradeshift can never be liable for faults or defects which are unrelated to ts.talk.
 
-
 #### `7.` BREACH
 
 `7.1` If you do not comply with the present licence terms and thereby are in breach of your obligations in accordance with these licence terms, your rights in accordance with these licence terms are terminated with immediate effect and you are obligated, without any right of reimbursement, to stop usage of ts.talk, including any back-ups with related documentation. In addition to this, the general rules of Danish law will apply.
-
 
 #### `8.` CHOICE OF LAW AND VENUE
 
 `8.1` Your use of ts.talk and these licence terms are subject to Danish law. Any dispute which may originate from these licence terms or your use of ts.talk shall be subject to the Danish courts with venue at Tradeshift’s registered office in Denmark.
 
-
-*Copenhagen, July 2018*
+_Copenhagen, July 2018_
