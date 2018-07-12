@@ -6,13 +6,13 @@ window.ts = window.ts || {};
 window.ts.chrome = window.ts.chrome || {};
 window.ts.chrome = true;
 </script>
-<script src="lib/ts.app-umd.js"></script>
+<script src="../lib/ts.app-umd.js"></script>
 </head>
 <body>
-<iframe id="Tradeshift.ForeignSandbox" src="//localhost:8081/frame.html?name=Tradeshift.ForeignSandbox" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
-<iframe id="Tradeshift.Foreign" src="//localhost:8081/frame.html?name=Tradeshift.Foreign"></iframe>
-<iframe id="Tradeshift.SameSandbox" src="frame.html?name=Tradeshift.SameSandbox" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
-<iframe id="Tradeshift.Same" src="frame.html?name=Tradeshift.Same"></iframe>
+<iframe id="Tradeshift.ForeignSandbox" src="//localhost:8081/test/frame.html?name=Tradeshift.ForeignSandbox" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+<iframe id="Tradeshift.Foreign" src="//localhost:8081/test/frame.html?name=Tradeshift.Foreign"></iframe>
+<iframe id="Tradeshift.SameSandbox" src="/test/frame.html?name=Tradeshift.SameSandbox" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+<iframe id="Tradeshift.Same" src="/test/frame.html?name=Tradeshift.Same"></iframe>
 <script>
 (function() {
   // *** BEG - THIS CODE SHOULD BE IN THE CHROME - BEG ***
