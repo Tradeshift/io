@@ -1,6 +1,9 @@
 import { log } from './log';
 import { postMessage, matchTopic, appMessageValid } from './msg';
 
+/**
+ * The Message Client AKA The App.
+ */
 export function app() {
 	let debug = log('ts:app:sub');
 

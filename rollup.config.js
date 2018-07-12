@@ -5,7 +5,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 import pkg from './package.json';
 
-const name = 'ts.app';
+const name = 'ts.talk';
 const extend = true;
 const sourcemap = true;
 

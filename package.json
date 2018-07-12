@@ -1,13 +1,8 @@
 {
-	"name": "@tradeshift/tradeshift-app",
-	"description": "Tradeshift App Messaging Library",
-	"version": "0.0.0-development",
-	"main": "lib/ts.app-cjs.js",
-	"module": "lib/ts.app-esm.js",
-	"browser": "lib/ts.app-umd.js",
-	"types": "lib/ts.app.d.ts",
+	"name": "@tradeshift/talk",
+	"description": "ts.talk - Tradeshift App Messaging Library",
 	"scripts": {
-		"prebuild": "rm -rf ./lib/* && cp ./src/idx.d.ts ./lib/ts.app.d.ts",
+		"prebuild": "rm -rf ./lib/* && cp ./src/idx.d.ts ./lib/ts.talk.d.ts",
 		"build": "rollup -c",
 		"dev": "rollup -c -w",
 		"prelint": "prettier --write --config .prettierrc \"src/**/*.{js,less,json}\"",
@@ -18,23 +13,14 @@
 		"travis-deploy-once": "travis-deploy-once",
 		"semantic-release": "semantic-release"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Tradeshift/tradeshift-app.git"
-	},
-	"author": "Daniel Spitzer <dsp@tradeshift.com>",
-	"bugs": {
-		"url": "https://github.com/Tradeshift/tradeshift-app/issues"
-	},
-	"homepage": "https://github.com/Tradeshift/tradeshift-app#readme",
 	"devDependencies": {
-		"@babel/cli": "^7.0.0-beta.52",
-		"@babel/core": "^7.0.0-beta.52",
-		"@babel/plugin-proposal-class-properties": "^7.0.0-beta.52",
-		"@babel/plugin-transform-runtime": "^7.0.0-beta.52",
-		"@babel/polyfill": "^7.0.0-beta.52",
-		"@babel/preset-env": "^7.0.0-beta.52",
-		"@babel/runtime": "^7.0.0-beta.52",
+		"@babel/cli": "^7.0.0-beta.53",
+		"@babel/core": "^7.0.0-beta.53",
+		"@babel/plugin-proposal-class-properties": "^7.0.0-beta.53",
+		"@babel/plugin-transform-runtime": "^7.0.0-beta.53",
+		"@babel/polyfill": "^7.0.0-beta.53",
+		"@babel/preset-env": "^7.0.0-beta.53",
+		"@babel/runtime": "^7.0.0-beta.53",
 		"debug": "^3.1.0",
 		"eslint": "5.1.0",
 		"eslint-config-tradeshift": "5.1.0",
@@ -45,10 +31,42 @@
 		"rollup-plugin-node-builtins": "^2.1.2",
 		"rollup-plugin-node-globals": "^1.2.1",
 		"rollup-plugin-node-resolve": "^3.3.0",
-		"semantic-release": "^15.6.3",
+		"semantic-release": "^15.7.1",
 		"travis-deploy-once": "^5.0.1"
 	},
 	"dependencies": {
 		"uuid": "^3.3.2"
-	}
+	},
+	"version": "0.0.0-development",
+	"main": "lib/ts.talk-cjs.js",
+	"module": "lib/ts.talk-esm.js",
+	"browser": "lib/ts.talk-umd.js",
+	"types": "lib/ts.talk.d.ts",
+	"repository": "github:Tradeshift/tradeshift-talk",
+	"author": "Daniel Spitzer <dsp@tradeshift.com>",
+	"contributors": [
+		"Wired Earp <jmo@tradeshift.com> (https://github.com/wiredearp)",
+		"Leo Zhang <lza@tradeshift.com> (https://github.com/zdlm)",
+		"Daniel Spitzer <dsp@tradeshift.com> (https://github.com/sampi)"
+	],
+	"bugs": {
+		"url": "https://github.com/Tradeshift/talk/issues",
+		"email": "dsp@tradeshift.com"
+	},
+	"homepage": "https://github.com/Tradeshift/talk#readme",
+	"license": "SEE LICENSE IN LICENSE.md",
+	"keywords": [
+		"tradeshift",
+		"talk",
+		"ts.talk",
+		"postmessage",
+		"iframe",
+		"messaging",
+		"library",
+		"messaging-library",
+		"api",
+		"api-client",
+		"api-server",
+		"docs"
+	]
 }
