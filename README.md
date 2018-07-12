@@ -1,13 +1,15 @@
-[![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url]
+<div align="center">[![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url]</div>
 
 [travis-image]: https://travis-ci.org/Tradeshift/talk.svg?branch=master
 [travis-url]: https://travis-ci.org/Tradeshift/talk
 [npm-image]: https://img.shields.io/npm/v/@tradeshift/talk.svg
 [npm-url]: https://npmjs.org/package/@tradeshift/talk
 
-<p align="center"><img src="./.github/ts.talk.svg" width="50%" alt="ts.talk" /></p>
+<div align="center"><img src="./.github/ts.talk.svg" width="50%" alt="ts.talk" /></div>
 
+<div align="center">
 # `ts.talk`
+</div>
 
 ## Tradeshift App Messaging Library
 
