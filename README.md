@@ -1,9 +1,11 @@
-[![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url]
+[![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![greenkeeper][greenkeeper-image]][greenkeeper-url]
 
 [travis-image]: https://travis-ci.org/Tradeshift/talk.svg?branch=master
 [travis-url]: https://travis-ci.org/Tradeshift/talk
 [npm-image]: https://img.shields.io/npm/v/@tradeshift/talk.svg
 [npm-url]: https://npmjs.org/package/@tradeshift/talk
+[greenkeeper-image]: https://badges.greenkeeper.io/Tradeshift/talk.svg
+[greenkeeper-url]: https://greenkeeper.io/
 
 <div align="center"><img src="https://raw.githubusercontent.com/Tradeshift/talk/master/.github/ts.talk.svg?sanitize=true" width="50%" alt="ts.talk" /></div>
 
