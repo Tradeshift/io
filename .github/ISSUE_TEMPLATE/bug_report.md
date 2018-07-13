@@ -10,7 +10,7 @@ A clear and concise description of what the bug is.
 **To Reproduce**
 Code or link to code to reproduce the behavior:
 ```
-const app = ts.talk();
+const app = ts.io();
 app.doSomething();
 ```
 

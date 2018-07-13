@@ -27,7 +27,7 @@ export function postMessage(message, targetWindow) {
 				error.code === 25) /* DATA_CLONE_ERR */
 		) {
 			throw new Error(
-				"ts.talk.publish called with { data } argument that can't be cloned using the structural clone algorithm."
+				"ts.io.publish called with { data } argument that can't be cloned using the structural clone algorithm."
 			);
 		} else {
 			console.warn('Something went wrong while sending postMessage.', error);

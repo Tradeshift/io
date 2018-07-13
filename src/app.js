@@ -5,7 +5,7 @@ import { postMessage, matchTopic, appMessageValid } from './msg';
  * The Message Client AKA The App.
  */
 export function app() {
-	let debug = log('ts:app:sub');
+	let debug = log('ts:io:sub');
 
 	let appId = '';
 	let token = '';
@@ -165,7 +165,7 @@ export function app() {
 		if (message.type === 'CONNACK') {
 			appId = message.target || '';
 			token = message.token || '';
-			debug = log('ts:app:sub:' + appId);
+			debug = log('ts:io:sub:' + appId);
 			debug('CONNECTED');
 
 			return;

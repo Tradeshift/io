@@ -1,13 +1,11 @@
 [![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url]
 
-[travis-image]: https://travis-ci.org/Tradeshift/talk.svg?branch=master
-[travis-url]: https://travis-ci.org/Tradeshift/talk
-[npm-image]: https://img.shields.io/npm/v/@tradeshift/talk.svg
-[npm-url]: https://npmjs.org/package/@tradeshift/talk
+[travis-image]: https://travis-ci.org/Tradeshift/io.svg?branch=master
+[travis-url]: https://travis-ci.org/Tradeshift/io
+[npm-image]: https://img.shields.io/npm/v/@tradeshift/io.svg
+[npm-url]: https://npmjs.org/package/@tradeshift/io
 
-<div align="center"><img src="https://raw.githubusercontent.com/Tradeshift/talk/master/.github/ts.talk.svg?sanitize=true" width="50%" alt="ts.talk" /></div>
-
-# `ts.talk`
+# `ts.io`
 
 ## Tradeshift App Messaging Library
 
@@ -25,16 +23,16 @@ This is the standard way for apps on the client-side of the Tradeshift Platform 
 - The Tradeshift® Chrome™ keeps track of all apps and decides which ones have access to which ones.
   - Spawned iframes can only communicate with their spawner and their own spawnees and `Tradeshift.Chrome`.
 
-## `ts.talk` API reference (quick overview)
+## `ts.io` API reference (quick overview)
 
 ### In the frame/window of Tradeshift® Apps™
 
 ```js
 const ts = ts || {};
-ts.talk = require('@tradeshift/tradeshift-app');
+ts.io = require('@tradeshift/io');
 
 // Create App (a client) and connect to Hub (The Broker)
-const app = ts.talk();
+const app = ts.io();
 
 // Listen to incoming messages
 /*
@@ -97,10 +95,10 @@ try {
 
 ```js
 // Create App (a client) and connect to Hub (The Broker)
-const spawnedClient = ts.talk();
+const spawnedClient = ts.io();
 spawnedClient.on((msg, resolve, reject) => {
   // Listen to incoming messages
-  if (msg.topic === ts.talk.TOPIC_SPAWN) {
+  if (msg.topic === ts.io.TOPIC_SPAWN) {
     // Do stuff here to open the panel with some fancy animation
     // ...
     // Wait for user input
@@ -113,7 +111,7 @@ spawnedClient.on((msg, resolve, reject) => {
     // Either close the window automatically here
     // or...
   }
-  if (msg.topic === ts.talk.TOPIC_UNSPAWN) {
+  if (msg.topic === ts.io.TOPIC_UNSPAWN) {
     // Wait for this message to close the window.
     /**
      * NOTE!
@@ -130,10 +128,10 @@ spawnedClient.on((msg, resolve, reject) => {
 
 ```js
 const ts = ts || {};
-ts.talk = require('@tradeshift/talk');
+ts.io = require('@tradeshift/io');
 
 // Create Hub (The Broker)
-const hub = ts.talk({
+const hub = ts.io({
   appIdByWindow: win => {
     // Return appId based on a Window object.
     // Used for identifying new Apps (clients).

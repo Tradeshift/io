@@ -1,8 +1,8 @@
 {
-	"name": "@tradeshift/talk",
-	"description": "ts.talk - Tradeshift App Messaging Library",
+	"name": "@tradeshift/io",
+	"description": "ts.io - Tradeshift App Messaging Library",
 	"scripts": {
-		"prebuild": "rm -rf ./lib/* && cp ./src/idx.d.ts ./lib/ts.talk.d.ts",
+		"prebuild": "rm -rf ./lib/* && cp ./src/idx.d.ts ./lib/ts.io.d.ts",
 		"build": "rollup -c",
 		"dev": "rollup -c -w",
 		"prelint": "prettier --write --config .prettierrc \"src/**/*.{js,less,json}\"",
@@ -38,11 +38,11 @@
 		"uuid": "^3.3.2"
 	},
 	"version": "0.0.0-development",
-	"main": "lib/ts.talk-cjs.js",
-	"module": "lib/ts.talk-esm.js",
-	"browser": "lib/ts.talk-umd.js",
-	"types": "lib/ts.talk.d.ts",
-	"repository": "github:Tradeshift/talk",
+	"main": "lib/ts.io-cjs.js",
+	"module": "lib/ts.io-esm.js",
+	"browser": "lib/ts.io-umd.js",
+	"types": "lib/ts.io.d.ts",
+	"repository": "github:Tradeshift/io",
 	"author": "Daniel Spitzer <dsp@tradeshift.com>",
 	"contributors": [
 		"Wired Earp <jmo@tradeshift.com> (https://github.com/wiredearp)",
@@ -50,17 +50,16 @@
 		"Daniel Spitzer <dsp@tradeshift.com> (https://github.com/sampi)"
 	],
 	"bugs": {
-		"url": "https://github.com/Tradeshift/talk/issues",
+		"url": "https://github.com/Tradeshift/io/issues",
 		"email": "dsp@tradeshift.com"
 	},
-	"homepage": "https://github.com/Tradeshift/talk#readme",
+	"homepage": "https://github.com/Tradeshift/io#readme",
 	"license": "SEE LICENSE IN LICENSE.md",
 	"keywords": [
 		"tradeshift",
-		"talk",
+		"io",
 		"ts",
-		"ts.app",
-		"ts.talk",
+		"ts.io",
 		"postmessage",
 		"iframe",
 		"messaging",

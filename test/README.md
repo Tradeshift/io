@@ -4,7 +4,7 @@ Until there is a real test framework in place, this is how you can check if ever
 ```sh
 > npm i -g http-serve
 
-> cd ~/wherever/you/store/@tradeshift/talk
+> cd ~/wherever/you/store/@tradeshift/io
 
 > http-serve -p 8080 & http-serve -p 8081
 ```

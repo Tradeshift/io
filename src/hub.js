@@ -17,7 +17,7 @@ import { HEARTBEAT } from './lib';
  * @param {ChromeWindowFeatures} chrome Special features supplied by the Tradeshift® Chrome™
  */
 export function hub(chrome) {
-	const debug = log('ts:app:top');
+	const debug = log('ts:io:top');
 	/**
 	 * WeakMap of frames with apps.
 	 * @type {WeakMap<Window, Object<appId: string, token: string>}
