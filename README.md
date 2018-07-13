@@ -15,6 +15,13 @@ This is the standard way for apps on the client-side of the Tradeshift Platform 
 - communicate with other apps,
 - open other apps in separate iframes/popups and wait for the result of user interactions.
 
+## Why?
+
+- allow third-party app developers to utilize first-party app panels & modals all across the Tradeshift Web UI,
+- allow first-party legacy apps to utilize first-party app panels & modals all across the Tradeshift Web UI,
+- allow pinning `ts.ui` versions for specific legacy apps within the Tradeshift Platform to facilitate easy upgrades,
+- have a generic, controlled and secure way of communicating between apps, regardless of iframe sandboxing or cross-domain requests.
+
 ## Rules
 
 - There can be only one App (Client) in a single `Window` context (iframe/popup).
