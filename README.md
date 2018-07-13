@@ -4,6 +4,7 @@
 [travis-url]: https://travis-ci.org/Tradeshift/io
 [npm-image]: https://img.shields.io/npm/v/@tradeshift/io.svg
 [npm-url]: https://npmjs.org/package/@tradeshift/io
+[![Greenkeeper badge](https://badges.greenkeeper.io/Tradeshift/io.svg)](https://greenkeeper.io/)
 
 # `ts.io`
 
