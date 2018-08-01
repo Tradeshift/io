@@ -4,6 +4,8 @@ import { app } from './app';
 import { postMessage, hubMessageValid, publishMessageValid } from './msg';
 import { HEARTBEAT } from './lib';
 
+let hubInstance;
+
 /**
  * Special features supplied by the Tradeshift® Chrome™.
  * @typedef {object} ChromeWindowFeatures
@@ -17,6 +19,10 @@ import { HEARTBEAT } from './lib';
  * @param {ChromeWindowFeatures} chrome Special features supplied by the Tradeshift® Chrome™
  */
 export function hub(chrome) {
+	if (hubInstance) {
+		return hubInstance;
+	}
+
 	const debug = log('ts:io:top');
 	/**
 	 * WeakMap of frames with apps.
@@ -150,7 +156,8 @@ export function hub(chrome) {
 		}
 	});
 
-	return {
+	hubInstance = {
 		top: app
 	};
+	return hubInstance;
 }

@@ -1,10 +1,16 @@
 import { log } from './log';
 import { postMessage, matchTopic, appMessageValid } from './msg';
 
+let appInstance;
+
 /**
  * The Message Client AKA The App.
  */
 export function app() {
+	if (appInstance) {
+		return appInstance;
+	}
+
 	let debug = log('ts:io:sub');
 
 	let appId = '';
@@ -16,7 +22,7 @@ export function app() {
 	 */
 	const handlersByTopic = new Map();
 
-	const api = {
+	appInstance = {
 		/**
 		 * Handle messages.
 		 * @returns {Function} Deregistrator of listener.
@@ -206,5 +212,5 @@ export function app() {
 	debug('Connecting…');
 	postMessage({ type: 'CONNECT' });
 
-	return api;
+	return appInstance;
 }
