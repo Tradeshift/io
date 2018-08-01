@@ -11,3 +11,9 @@ export function isChromeWindow() {
  * @type {number}
  */
 export const HEARTBEAT = 5000;
+
+/**
+ * Harcoded appId for the Tradeshift® Chrome™
+ * @type {string}
+ */
+export const CHROME_APP_ID = 'Tradeshift.Chrome';
