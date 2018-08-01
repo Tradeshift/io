@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <script src="../lib/ts.app-umd.js"></script>
+  <script src="../lib/ts.io-umd.js"></script>
 </head>
 <body>
 <!-- <button onclick="init()">init</button> -->
@@ -19,10 +19,13 @@
   });
 
   setTimeout(function() {
-    var app = ts.app();
-    // setTimeout(function() {
-    //   var sameApp = ts.app();
-    // }, 3000);
+    var app = ts.io();
+
+    setTimeout(function() {
+      var sameApp = ts.io();
+      console.log('same instance for another ts.io()', app === sameApp);
+    }, 3000);
+
     app.on(function(message) {
       console.log(appId, '>', message.topic);
     });

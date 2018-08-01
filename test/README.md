@@ -1,7 +1,8 @@
 Until there is a real test framework in place, this is how you can check if everything works:
 
-
 ```sh
+> npm run build
+
 > npm i -g http-serve
 
 > cd ~/wherever/you/store/@tradeshift/io

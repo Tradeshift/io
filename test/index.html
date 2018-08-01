@@ -6,7 +6,7 @@ window.ts = window.ts || {};
 window.ts.chrome = window.ts.chrome || {};
 window.ts.chrome = true;
 </script>
-<script src="../lib/ts.app-umd.js"></script>
+<script src="../lib/ts.io-umd.js"></script>
 </head>
 <body>
 <iframe id="Tradeshift.ForeignSandbox" src="//localhost:8081/test/frame.html?name=Tradeshift.ForeignSandbox" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
@@ -60,7 +60,12 @@ window.ts.chrome = true;
   // *** END - THIS CODE SHOULD BE IN THE CHROME - END ***
 
   setTimeout(function() {
-    var hub = ts.app(chrome);
+    var hub = ts.io(chrome);
+
+    setTimeout(function() {
+      var sameHub = ts.io();
+      console.log('same instance for another ts.io()', hub === sameHub);
+    }, 3000);
 
     var top = hub.top();
     top.on(message => {
