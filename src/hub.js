@@ -18,7 +18,7 @@ let hubInstance;
  * The Message Broker AKA The Hub.
  * @param {ChromeWindowFeatures} chrome Special features supplied by the Tradeshift® Chrome™
  */
-export function hub(chrome) {
+export function hub({ appIdByWindow, windowByAppId, appTimeout }) {
 	if (hubInstance) {
 		return hubInstance;
 	}
@@ -71,7 +71,7 @@ export function hub(chrome) {
 		} else {
 			debug('App timed out, considering it dead! %o', appId);
 			try {
-				chrome.appTimeout(targetWindow);
+				appTimeout(targetWindow);
 				appWindows.delete(targetWindow);
 				appPongInfo.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
 				appPongs.delete(token);
@@ -93,7 +93,7 @@ export function hub(chrome) {
 		if (!appWindows.has(event.source)) {
 			// The only command should be CONNECT, we fail otherwise.
 			if (message.type === 'CONNECT') {
-				const appId = chrome.appIdByWindow(event.source);
+				const appId = appIdByWindow(event.source);
 				const token = uuid();
 				debug('CONNECT %o', appId);
 				appWindows.set(event.source, { appId, token });
@@ -150,7 +150,7 @@ export function hub(chrome) {
 				/**
 				 * @TODO Handle the case when the Chrome blocks certain targets for certain sources
 				 */
-				const targetWindow = chrome.windowByAppId(message.target, event.source);
+				const targetWindow = windowByAppId(message.target, event.source);
 				debug(
 					'Routing %o from %o to %o - %O',
 					'PUBLISH',
