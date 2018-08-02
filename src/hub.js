@@ -11,17 +11,19 @@ let hubInstance;
  * @typedef {object} ChromeWindowFeatures
  * @property {function(Window): string} appIdByWindow Called to get an appId based on a Window object.
  * @property {function(string, Window): Window} windowByAppId Called to get a window object based on an appId and the requesting app's Window object.
- * @property {function(Window): void} appTimeout Called when an app fails to reply in time to a PING request.
+ * @property {function(Window, string): void} appTimeout Called when an app fails to reply in time to a PING request.
  */
 
 /**
  * The Message Broker AKA The Hub.
  * @param {ChromeWindowFeatures} chrome Special features supplied by the Tradeshift® Chrome™
  */
-export function hub({ appIdByWindow, windowByAppId, appTimeout }) {
+export function hub(chrome) {
 	if (hubInstance) {
 		return hubInstance;
 	}
+
+	const { appIdByWindow, windowByAppId, appTimeout } = chrome;
 
 	/**
 	 * Quickly test that appIdByWindow & windowByAppId work for 'Tradeshift.Chrome'
@@ -72,14 +74,26 @@ export function hub({ appIdByWindow, windowByAppId, appTimeout }) {
 			);
 		} else {
 			debug('App timed out, considering it dead! %o', appId);
+			appTimeout(targetWindow, appId);
 			try {
-				appTimeout(targetWindow);
-				appWindows.delete(targetWindow);
-				appPongInfo.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
-				appPongs.delete(token);
+				killApp(targetWindow);
 			} catch (error) {
 				console.error(error);
 			}
+		}
+	}
+
+	function killApp(targetWindow) {
+		try {
+			const { appId, token } = appWindows.get(targetWindow);
+			debug('Killing app %o', appId);
+			appPongs
+				.get(token)
+				.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
+			appPongs.delete(token);
+			appWindows.delete(targetWindow);
+		} catch (error) {
+			console.error(error);
 		}
 	}
 
@@ -175,7 +189,8 @@ export function hub({ appIdByWindow, windowByAppId, appTimeout }) {
 	});
 
 	hubInstance = {
-		top: app
+		top: app,
+		killApp
 	};
 	return hubInstance;
 }
