@@ -23,20 +23,22 @@ export function hub({ appIdByWindow, windowByAppId, appTimeout }) {
 		return hubInstance;
 	}
 
-	if (chrome.appIdByWindow(window.top) !== CHROME_APP_ID) {
-		throw new Error(
-			`Can't initialize ts.io() Hub. Expected appIdByWindow(window.top) to be '${CHROME_APP_ID}', received '${chrome.appIdByWindow(
-				window.top
-			)}' instead.`
-		);
-	}
-
-	if (chrome.windowByAppId(CHROME_APP_ID) !== window.top) {
-		throw new Error(
-			`Can't initialize ts.io() Hub. Expected windowByAppId('${CHROME_APP_ID}') to be window.top, received '${chrome.windowByAppId(
-				CHROME_APP_ID
-			)}' instead.`
-		);
+	/**
+	 * Quickly test that appIdByWindow & windowByAppId work for 'Tradeshift.Chrome'
+	 */
+	{
+		const testChromeWindow = windowByAppId(CHROME_APP_ID);
+		const testNotWindow = !(testChromeWindow instanceof Window);
+		const testNotAppId = appIdByWindow(testChromeWindow) !== CHROME_APP_ID;
+		if (testNotWindow) {
+			throw new Error(
+				`Can't initialize ts.io() Hub. Expected windowByAppId('${CHROME_APP_ID}') to return a 'Window' object.`
+			);
+		} else if (testNotAppId) {
+			throw new Error(
+				`Can't initialize ts.io() Hub. Expected appIdByWindow(windowByAppId('${CHROME_APP_ID}')) to return '${CHROME_APP_ID}'.`
+			);
+		}
 	}
 
 	const debug = log('ts:io:top');
