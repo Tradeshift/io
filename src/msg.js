@@ -9,6 +9,8 @@
  * @property {*=} data Data to be passed with the message. Can be any type that is compatible with the structured clone algorithm,
  */
 
+const targetOrigin = '*';
+
 /**
  * Send message to target window.
  * @param {Message} message
@@ -19,7 +21,7 @@ export function postMessage(message, targetWindow) {
 		targetWindow = window.top;
 	}
 	try {
-		targetWindow.postMessage(message, '*');
+		targetWindow.postMessage(message, targetOrigin);
 	} catch (error) {
 		if (
 			error instanceof DOMException &&
@@ -33,6 +35,33 @@ export function postMessage(message, targetWindow) {
 			console.warn('Something went wrong while sending postMessage.', error);
 		}
 	}
+}
+
+const messageQueue = [];
+
+export function queueMessage(message, targetWindow) {
+	if (!targetWindow) {
+		targetWindow = window.top;
+	}
+	messageQueue.push({
+		targetWindow,
+		message
+	});
+}
+
+export function flushQueue(token) {
+	if (messageQueue.length) {
+		messageQueue
+			.reverse()
+			.forEach(queuedMessage =>
+				queuedMessage.targetWindow.postMessage(
+					{ ...queuedMessage.message, token },
+					targetOrigin
+				)
+			);
+		return true;
+	}
+	return false;
 }
 
 /**

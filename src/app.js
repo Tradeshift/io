@@ -1,5 +1,11 @@
 import { log } from './log';
-import { postMessage, matchTopic, appMessageValid } from './msg';
+import {
+	postMessage,
+	queueMessage,
+	flushQueue,
+	matchTopic,
+	appMessageValid
+} from './msg';
 
 let appInstance;
 
@@ -98,8 +104,13 @@ export function app() {
 					arguments
 				);
 			}
-			debug('%o (%o) to %o - %o', 'PUBLISH', topic, target, data);
-			postMessage({ type: 'PUBLISH', target, topic, data, token });
+			if (token) {
+				debug('%o (%o) to %o - %o', 'PUBLISH', topic, target, data);
+				postMessage({ type: 'PUBLISH', target, topic, data, token });
+			} else {
+				debug('%o (%o) to %o - %o', 'PUBLISH(queued)', topic, target, data);
+				queueMessage({ type: 'PUBLISH', target, topic, data });
+			}
 			return this;
 		},
 		/**
@@ -139,7 +150,9 @@ export function app() {
 			token = message.token || '';
 			debug = log('ts:io:sub:' + appId);
 			debug('CONNECTED');
-
+			if (flushQueue(token)) {
+				debug('Publishing queued messages');
+			}
 			return;
 		}
 

@@ -34,21 +34,19 @@
       unregister();
     });
 
-    setTimeout(function() {
-      var target = appIds[Math.floor(Math.random() * appIds.length)];
-      try {
-        app
-          .publish(target, 'hello', {
-            world: true
-          })
-          .publish(target, 'hello', {
-            world: false
-          })
-          .publish(target, 'bye');
-      } catch (error) {
-        console.warn('Error caught:\n', error);
-      }
-    }, 1000);
+    var target = appIds[Math.floor(Math.random() * appIds.length)];
+    try {
+      app
+        .publish(target, 'hello', {
+          world: true
+        })
+        .publish(target, 'hello', {
+          world: false
+        })
+        .publish(target, 'bye');
+    } catch (error) {
+      console.warn('Error caught:\n', error);
+    }
   }, 0);
 })();
 </script>
