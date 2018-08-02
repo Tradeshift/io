@@ -55,7 +55,10 @@ export function app() {
 				topic = arguments[0];
 				handler = arguments[1];
 			} else {
-				throw new Error('ts.app.on called with invalid arguments.', arguments);
+				throw new Error(
+					'ts.io().on() called with invalid arguments.',
+					arguments
+				);
 			}
 
 			if (handlersByTopic.has(topic)) {
@@ -83,52 +86,17 @@ export function app() {
 		},
 		/**
 		 * Publish message..
-		 * @alias publish
+		 * @param {string} target Target appId. - No wildcards supported
+		 * @param {string} topic Topic.
+		 * @param {*=} data Data.
 		 * @returns {Object} Chainable
 		 */
-		publish: function() {
-			/**
-			 * Target appId.
-			 * No wildcards supported.
-			 * @type {string}
-			 */
-			let target = '';
-			/**
-			 * Topic.
-			 * @optional
-			 * @type {string}
-			 */
-			let topic = '';
-			/**
-			 * Data.
-			 * @optional
-			 * @type {*}
-			 */
-			let data = {};
-
-			if (arguments.length === 1 && typeof arguments[0] === 'object') {
-				/**
-				 * Single argument - {target, topic, data}
-				 */
-				target = arguments[0].target;
-				topic = arguments[0].topic;
-				data = arguments[0].data;
-			} else if (
-				arguments.length >= 2 &&
-				typeof arguments[0] === 'string' &&
-				typeof arguments[1] === 'string'
-			) {
-				/**
-				 * Two arguments - target, topic
-				 */
-				target = arguments[0];
-				topic = arguments[1];
-				if (arguments.length === 3) {
-					/**
-					 * Three arguments - target, topic, data
-					 */
-					data = arguments[2];
-				}
+		publish: function(target, topic, data = {}) {
+			if (arguments.length < 2) {
+				throw new Error(
+					'ts.io().publish() called with invalid arguments.',
+					arguments
+				);
 			}
 			debug('%o (%o) to %o - %o', 'PUBLISH', topic, target, data);
 			postMessage({ type: 'PUBLISH', target, topic, data, token });
@@ -141,13 +109,11 @@ export function app() {
 		request: function() {},
 		/**
 		 * Spawn an app...
-		 * @alias spawn
 		 * @returns {Promise}
 		 */
 		spawn: function() {},
 		/**
 		 * Open an app..
-		 * @alias open
 		 * @returns {Promise}
 		 */
 		open: function() {}
