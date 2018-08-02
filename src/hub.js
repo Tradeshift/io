@@ -1,7 +1,12 @@
 import uuid from 'uuid';
 import { log } from './log';
 import { app } from './app';
-import { postMessage, hubMessageValid, publishMessageValid } from './msg';
+import {
+	postMessage,
+	hubMessageValid,
+	publishMessageValid,
+	spawnMessageValid
+} from './msg';
 import { HEARTBEAT, CHROME_APP_ID } from './lib';
 
 let hubInstance;
@@ -12,6 +17,7 @@ let hubInstance;
  * @property {function(Window): string} appIdByWindow Called to get an appId based on a Window object.
  * @property {function(string, Window): Window} windowByAppId Called to get a window object based on an appId and the requesting app's Window object.
  * @property {function(Window, string): void} appTimeout Called when an app fails to reply in time to a PING request.
+ * @property {object: void} handlers Contains all handlers for SPAWN, etc.
  */
 
 /**
@@ -23,7 +29,7 @@ export function hub(chrome) {
 		return hubInstance;
 	}
 
-	const { appIdByWindow, windowByAppId, appTimeout } = chrome;
+	const { appIdByWindow, windowByAppId, appTimeout, handlers } = chrome;
 
 	/**
 	 * Quickly test that appIdByWindow & windowByAppId work for 'Tradeshift.Chrome'
@@ -155,7 +161,7 @@ export function hub(chrome) {
 		}
 
 		switch (message.type) {
-			case 'PUBLISH':
+			case 'PUBLISH': {
 				if (!publishMessageValid(message)) {
 					console.warn(
 						'Message incomplete for a PUBLISH command!\n' +
@@ -176,6 +182,25 @@ export function hub(chrome) {
 				);
 				postMessage(message, targetWindow);
 				break;
+			}
+			case 'SPAWN': {
+				if (!spawnMessageValid(message)) {
+					console.warn(
+						'Message incomplete for a SPAWN command!\n' +
+							JSON.stringify(message)
+					);
+					return;
+				}
+
+				debug(
+					'Spawning %o from %o - %O',
+					message.target,
+					message.source,
+					message
+				);
+				handlers.onspawn(message);
+				break;
+			}
 			case 'PONG':
 				appPongs.set(token, {
 					...appPongs.get(token),

@@ -104,12 +104,13 @@ export function app() {
 					arguments
 				);
 			}
+			const message = { type: 'PUBLISH', target, topic, data, token };
 			if (token) {
 				debug('%o (%o) to %o - %o', 'PUBLISH', topic, target, data);
-				postMessage({ type: 'PUBLISH', target, topic, data, token });
+				postMessage(message);
 			} else {
 				debug('%o (%o) to %o - %o', 'PUBLISH(queued)', topic, target, data);
-				queueMessage({ type: 'PUBLISH', target, topic, data });
+				queueMessage(message);
 			}
 			return this;
 		},
@@ -120,9 +121,27 @@ export function app() {
 		request: function() {},
 		/**
 		 * Spawn an app...
-		 * @returns {Promise}
+		 * @param {string} target Target appId. - No wildcards supported
+		 * @param {string} topic Topic.
+		 * @param {*=} data Data.
+		 * @returns {Object} Chainable
 		 */
-		spawn: function() {},
+		spawn: function(target, topic, data = {}) {
+			if (arguments.length < 2) {
+				throw new Error(
+					'ts.io().spawn() called with invalid arguments.',
+					arguments
+				);
+			}
+			const message = { type: 'SPAWN', target, topic, data, token };
+			if (token) {
+				debug('%o (%o) to %o - %o', 'SPAWN', topic, target, data);
+				postMessage(message);
+			} else {
+				debug('%o (%o) to %o - %o', 'SPAWN(queued)', topic, target, data);
+				queueMessage(message);
+			}
+		},
 		/**
 		 * Open an app..
 		 * @returns {Promise}
@@ -160,7 +179,7 @@ export function app() {
 		switch (message.type) {
 			case 'PUBLISH':
 				debug(
-					'%o (%o) from %o - %O',
+					'%s (%o) from %o - %O',
 					message.type,
 					message.topic,
 					message.source,

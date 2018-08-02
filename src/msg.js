@@ -72,17 +72,24 @@ export function messageValid(message) {
 	return message && message.type;
 }
 
+function complexMessageValid(message) {
+	return messageValid(message) && message.topic && message.target;
+}
+
 /**
  * Validate message for 'PUBLISH' type.
  * @param {Message} message
  */
 export function publishMessageValid(message) {
-	return (
-		messageValid(message) &&
-		message.type === 'PUBLISH' &&
-		message.topic &&
-		message.target
-	);
+	return complexMessageValid(message) && message.type === 'PUBLISH';
+}
+
+/**
+ * Validate message for 'SPAWN' type.
+ * @param {Message} message
+ */
+export function spawnMessageValid(message) {
+	return complexMessageValid(message) && message.type === 'SPAWN';
 }
 
 /**
@@ -105,7 +112,7 @@ export function hubMessageValid(message) {
 	return (
 		messageValid(message) &&
 		!message.viaHub &&
-		['CONNECT', 'PUBLISH', 'PONG'].includes(message.type)
+		['CONNECT', 'PUBLISH', 'PONG', 'SPAWN'].includes(message.type)
 	);
 }
 

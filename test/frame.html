@@ -35,18 +35,22 @@
     });
 
     var target = appIds[Math.floor(Math.random() * appIds.length)];
-    try {
-      app
-        .publish(target, 'hello', {
-          world: true
-        })
-        .publish(target, 'hello', {
-          world: false
-        })
-        .publish(target, 'bye');
-    } catch (error) {
-      console.warn('Error caught:\n', error);
-    }
+    // try {
+    //   app
+    //     .publish(target, 'hello', {
+    //       world: true
+    //     })
+    //     .publish(target, 'hello', {
+    //       world: false
+    //     })
+    //     .publish(target, 'bye');
+    // } catch (error) {
+    //   console.warn('Error caught:\n', error);
+    // }
+
+    setTimeout(function() {
+      app.spawn(target, 'some-topic', {some: 'data'});
+    }, 500);
   }, 0);
 })();
 </script>
