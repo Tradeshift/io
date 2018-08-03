@@ -33,7 +33,7 @@ export function app() {
 		 * Handle messages.
 		 * @returns {Function} Deregistrator of listener.
 		 */
-		on: function() {
+		on() {
 			/**
 			 * Specific topic that we will call the handler for.
 			 * @type {string|undefined}
@@ -97,7 +97,7 @@ export function app() {
 		 * @param {*=} data Data.
 		 * @returns {Object} Chainable
 		 */
-		publish: function(target, topic, data = {}) {
+		publish(target, topic, data = {}) {
 			if (arguments.length < 2) {
 				throw new Error(
 					'ts.io().publish() called with invalid arguments.',
@@ -116,17 +116,28 @@ export function app() {
 		},
 		/**
 		 * Request a response.
-		 * @returns {Promise}
-		 */
-		request: function() {},
-		/**
-		 * Spawn an app...
+		 * @async
 		 * @param {string} target Target appId. - No wildcards supported
 		 * @param {string} topic Topic.
 		 * @param {*=} data Data.
-		 * @returns {Object} Chainable
+		 * @returns {Promise}
 		 */
-		spawn: function(target, topic, data = {}) {
+		async request(target, topic, data = {}) {
+			const error = null;
+			const result = {};
+			return new Promise(resolve => {
+				resolve([error, result]);
+			});
+		},
+		/**
+		 * Spawn an app...
+		 * @async
+		 * @param {string} target Target appId. - No wildcards supported
+		 * @param {string} topic Topic.
+		 * @param {*=} data Data.
+		 * @returns {Promise}
+		 */
+		async spawn(target, topic, data = {}) {
 			if (arguments.length < 2) {
 				throw new Error(
 					'ts.io().spawn() called with invalid arguments.',
@@ -141,12 +152,13 @@ export function app() {
 				debug('%o (%o) to %o - %o', 'SPAWN(queued)', topic, target, data);
 				queueMessage(message);
 			}
-		},
-		/**
-		 * Open an app..
-		 * @returns {Promise}
-		 */
-		open: function() {}
+			// Wait for response from the app or some sort of failure
+			const error = null;
+			const result = {};
+			return new Promise(resolve => {
+				resolve([error, result]);
+			});
+		}
 	};
 
 	/**
