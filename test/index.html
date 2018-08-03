@@ -71,12 +71,12 @@ window.ts.chrome = true;
     top.on(message => {
       console.log('[hub.top] message %o', message);
     });
-    // setTimeout(function() {
-    //   top.publish('Tradeshift.ForeignSandbox', 'heyo1', 'yea');
-    //   top.publish('Tradeshift.Foreign', 'hey2o', 'yea');
-    //   top.publish('Tradeshift.SameSandbox', 'heyo3', 'yea');
-    //   top.publish('Tradeshift.Same', 'hey4o', 'yea');
-    // }, 1000);
+    setTimeout(function() {
+      top.publish('Tradeshift.ForeignSandbox', 'heyo1', 'yea');
+      top.publish('Tradeshift.Foreign', 'hey2o', 'yea');
+      top.publish('Tradeshift.SameSandbox', 'heyo3', 'yea');
+      top.publish('Tradeshift.Same', 'hey4o', 'yea');
+    }, 1000);
   }, 0);
 })();
 </script>
