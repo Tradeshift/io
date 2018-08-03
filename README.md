@@ -30,18 +30,17 @@ This is the standard way for apps on the client-side of the Tradeshift Platform 
 ### In the frame/window of Tradeshift® Apps™
 
 ```js
-const ts = ts || {};
-ts.io = require('@tradeshift/io');
+const io = require('@tradeshift/io');
 
-// Create App (a client) and connect to Hub (The Broker)
-const app = ts.io();
+// Create App (a client) and connect to Hub (The Broker) .......................
+const app = io();
 
-// Listen to incoming messages
+// Listen to incoming messages .................................................
 /*
  * IMPORTANT!
  * You can register as many handlers as you'd like,
  * but if multiples match the same topic,
- * they all will be called in the order they were created.
+ * they all will be called, in the order they were created.
  */
 let unregisterHandler = app.on(message => {
   //Handle messages sent to your app.
@@ -53,53 +52,41 @@ unregisterHandler = app.on(topicExpression, message => {
 });
 unregisterHandler();
 
-// Publish a Message
+// Publish a Message ...........................................................
 app.publish(target, topic, data);
 
-// Exchange a message
-try {
-  client
-    .request(target, topic, data)
-    .then(res => {}) // Success response from target app
-    .catch(err => {}); // Failure response from target app
-} catch (fatalErr) {
-  // Something went horribly wrong
+// Exchange a message ..........................................................
+const [err, data] = app.request(target, topic, data);
+if (err) {
+  if (err instanceof ts.io.Error) {
+    // Something went horribly wrong
+  } else {
+    // Failure response from target app
+  }
 }
+doSomethingWith(data); // Success response from target app
 
-// Load app and wait for user input
-try {
-  client
-    .spawn(target, data)
-    .then(res => {}) // Success response from target app
-    .catch(err => {}); // Failure response from target app
-} catch (fatalErr) {
-  // Something went horribly wrong
+// Load app and wait for user input ............................................
+const [err, data] = await app.spawn(target, topic, data);
+if (err) {
+  if (err instanceof ts.io.Error) {
+    // Something went horribly wrong
+  } else {
+    // Failure response from target app
+  }
 }
-
-// This next API is under consideration, it might not be implemented.
-// Load app and keep it open in the background (or could be in a SideBar or a floating window)
-try {
-  const openedApp = client.open(appId, data);
-  openedApp.publish(topic, data);
-  openedApp
-    .request(topic, data)
-    .then(res => {}) // Failure response from opened app
-    .catch(err => {}) // Failure response from opened app
-    .finally(() => {
-      openedApp.close();
-    });
-} catch (fatalErr) {
-  // Something went horribly wrong
-}
+doSomethingWith(data); // Success response from target app
 ```
 
 ### In the frame/window of Tradeshift® Apps™ spawned or opened by another Tradeshift® App™
 
 ```js
-// Create App (a client) and connect to Hub (The Broker)
-const spawnedClient = ts.io();
-spawnedClient.on((msg, resolve, reject) => {
-  // Listen to incoming messages
+const io = require('@tradeshift/io');
+// Create App (a client) and connect to Hub (The Broker) .......................
+const app = io();
+
+// Listen to incoming messages .................................................
+app.on((msg, resolve, reject) => {
   if (msg.topic === ts.io.TOPIC_SPAWN) {
     // Do stuff here to open the panel with some fancy animation
     // ...
@@ -113,14 +100,17 @@ spawnedClient.on((msg, resolve, reject) => {
     // Either close the window automatically here
     // or...
   }
+
+  // Wait for this message to close the window .................................
   if (msg.topic === ts.io.TOPIC_UNSPAWN) {
-    // Wait for this message to close the window.
     /**
      * NOTE!
      * This usage of the API is unclear,
      * maybe we want to keep the window open
      * in case the spawning app validates the message
      * and tells the spawned app that it won't work?
+     *
+     * It could also be used to animate closing the app.
      */
   }
 });
@@ -129,11 +119,10 @@ spawnedClient.on((msg, resolve, reject) => {
 ### In the frame/window of the Tradeshift® Chrome™
 
 ```js
-const ts = ts || {};
-ts.io = require('@tradeshift/io');
+const io = require('@tradeshift/io');
 
-// Create Hub (The Broker)
-const hub = ts.io({
+// Create Hub (The Broker) .....................................................
+const hub = io({
   appIdByWindow: win => {
     // Return appId based on a Window object.
     // Used for identifying new Apps (clients).
@@ -141,7 +130,14 @@ const hub = ts.io({
   windowByAppId: (appId, sourceWindow) => {
     // Return window object based on an appId string.
     // Used for identifying where to relay messages.
-  }
+  },
+  appTimeout: (targetWindow, appId) => {
+    // This is called by the Hub when an app times out.
+  },
+  // These handlers are called whenever an app tries to
+  // spawn/request/open another app.
+  onspawn: spawnMessage => {},
+  onrequest: requestMessage => {}
 });
 
 // Create App (a client) for the Tradeshift® Chrome™ and connect to Hub (The Broker)
