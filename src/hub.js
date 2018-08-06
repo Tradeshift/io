@@ -1,12 +1,9 @@
 import uuid from 'uuid';
 import { log } from './log';
 import { app } from './app';
-import {
-	postMessage,
-	hubMessageValid,
-	publishMessageValid,
-	spawnMessageValid
-} from './msg';
+import { LifecycleHandler } from './hlr';
+import { SpawnError } from './err';
+import { postMessage, hubMessageValid, complexMessageValid } from './msg';
 import { HEARTBEAT, CHROME_APP_ID } from './lib';
 
 let hubInstance;
@@ -20,6 +17,14 @@ let hubInstance;
  * @property {object: void} handlers Contains all handlers for SPAWN, etc.
  */
 
+function invalidFunction(name) {
+	return function() {
+		throw new Error(
+			`Can't initialize ts.io() Hub. ${name}() wasn't passed.`
+		);
+	};
+}
+
 /**
  * The Message Broker AKA The Hub.
  * @param {ChromeWindowFeatures} chrome Special features supplied by the Tradeshift® Chrome™
@@ -29,7 +34,14 @@ export function hub(chrome) {
 		return hubInstance;
 	}
 
-	const { appIdByWindow, windowByAppId, appTimeout, handlers } = chrome;
+	const {
+		appIdByWindow = invalidFunction('appIdByWindow'),
+		windowByAppId = invalidFunction('appTimeout'),
+		appTimeout = function() {},
+		handlers = {
+			spawn: new LifecycleHandler()
+		}
+	} = chrome;
 
 	/**
 	 * Quickly test that appIdByWindow & windowByAppId work for 'Tradeshift.Chrome'
@@ -61,6 +73,8 @@ export function hub(chrome) {
 	 */
 	const appPongs = new Map();
 
+	const appSpawns = [];
+
 	/*
 	1. after sending CONNACK to an app, PING it after HEARTBEAT ms
 	2. if it replies, wait HEARTBEAT ms and PING again, - repeat forever
@@ -73,7 +87,9 @@ export function hub(chrome) {
 		const appPongInfo = appPongs.get(token);
 		const lastPong = (appPongInfo && appPongInfo.lastPong) || now;
 		if (now - lastPong < 3 * HEARTBEAT) {
-			appPongInfo.timeoutIds.add(setTimeout(() => pingApp(opts), HEARTBEAT));
+			appPongInfo.timeoutIds.add(
+				setTimeout(() => pingApp(opts), HEARTBEAT)
+			);
 			postMessage(
 				{ type: 'PING', viaHub: true, target: appId, token },
 				targetWindow
@@ -119,12 +135,31 @@ export function hub(chrome) {
 				const token = uuid();
 				debug('CONNECT %o', appId);
 				appWindows.set(event.source, { appId, token });
-				postMessage(
-					{ type: 'CONNACK', viaHub: true, target: appId, token },
-					event.source
+				const spawnWaiting = appSpawns.findIndex(
+					spawn => spawn.appId === appId
 				);
+				const connackMessage = {
+					type: 'CONNACK',
+					viaHub: true,
+					target: appId,
+					token
+				};
+				if (spawnWaiting !== -1) {
+					handlers.spawn.onconnect(appId, event.source);
+					const { topic, data, source } = appSpawns[
+						spawnWaiting
+					].message;
+					connackMessage.source = source;
+					connackMessage.topic = topic;
+					connackMessage.data = data;
+					appSpawns.splice(spawnWaiting, 1);
+				}
+				postMessage(connackMessage, event.source);
 				const pingOpts = { targetWindow: event.source, appId, token };
-				const timeoutId = setTimeout(() => pingApp(pingOpts), HEARTBEAT);
+				const timeoutId = setTimeout(
+					() => pingApp(pingOpts),
+					HEARTBEAT
+				);
 				appPongs.set(token, {
 					lastPong: window.performance.now(),
 					timeoutIds: new Set([timeoutId])
@@ -161,30 +196,44 @@ export function hub(chrome) {
 		}
 
 		switch (message.type) {
-			case 'PUBLISH': {
-				if (!publishMessageValid(message)) {
+			case 'PUBLISH':
+			case 'SPAWN-RESOLVE':
+			case 'SPAWN-REJECT': {
+				if (!complexMessageValid(message)) {
 					console.warn(
-						'Message incomplete for a PUBLISH command!\n' +
-							JSON.stringify(message)
+						'Message incomplete for a %s command!\n%O',
+						message.type,
+						JSON.stringify(message)
 					);
 					return;
 				}
 				/**
 				 * @TODO Handle the case when the Chrome blocks certain targets for certain sources
 				 */
-				const targetWindow = windowByAppId(message.target, event.source);
+				const targetWindow = windowByAppId(
+					message.target,
+					event.source
+				);
 				debug(
 					'Routing %o from %o to %o - %O',
-					'PUBLISH',
+					message.type,
 					message.source,
 					message.target,
 					message
 				);
 				postMessage(message, targetWindow);
+				if (message.type.indexOf('SPAWN') === 0) {
+					handlers.spawn.onresolve(
+						message.source,
+						message.target,
+						message.topic,
+						message.data
+					);
+				}
 				break;
 			}
 			case 'SPAWN': {
-				if (!spawnMessageValid(message)) {
+				if (!complexMessageValid(message)) {
 					console.warn(
 						'Message incomplete for a SPAWN command!\n' +
 							JSON.stringify(message)
@@ -198,7 +247,27 @@ export function hub(chrome) {
 					message.source,
 					message
 				);
-				handlers.onspawn(message);
+				try {
+					const appId = handlers.spawn.onconstruct(
+						message.target,
+						message.source
+					);
+					appSpawns.push({ appId, message });
+				} catch (e) {
+					postMessage({
+						type: 'SPAWN-REJECT',
+						source: CHROME_APP_ID,
+						target: message.source,
+						token: appWindows.get(windowByAppId(CHROME_APP_ID))
+							.token,
+						topic: message.topic,
+						data: new SpawnError(
+							`${
+								message.target
+							} is not activated on the current user's account`
+						)
+					});
+				}
 				break;
 			}
 			case 'PONG':

@@ -1,4 +1,5 @@
 import { log } from './log';
+import { SpawnError } from './err';
 import {
 	postMessage,
 	queueMessage,
@@ -21,6 +22,8 @@ export function app() {
 
 	let appId = '';
 	let token = '';
+
+	let spawnResolve;
 
 	/**
 	 * Set of `on()` handlers keyed by `topic`
@@ -109,7 +112,13 @@ export function app() {
 				debug('%o (%o) to %o - %o', 'PUBLISH', topic, target, data);
 				postMessage(message);
 			} else {
-				debug('%o (%o) to %o - %o', 'PUBLISH(queued)', topic, target, data);
+				debug(
+					'%o (%o) to %o - %o',
+					'PUBLISH(queued)',
+					topic,
+					target,
+					data
+				);
 				queueMessage(message);
 			}
 			return this;
@@ -149,14 +158,18 @@ export function app() {
 				debug('%o (%o) to %o - %o', 'SPAWN', topic, target, data);
 				postMessage(message);
 			} else {
-				debug('%o (%o) to %o - %o', 'SPAWN(queued)', topic, target, data);
+				debug(
+					'%o (%o) to %o - %o',
+					'SPAWN(queued)',
+					topic,
+					target,
+					data
+				);
 				queueMessage(message);
 			}
 			// Wait for response from the app or some sort of failure
-			const error = null;
-			const result = {};
 			return new Promise(resolve => {
-				resolve([error, result]);
+				spawnResolve = resolve;
 			});
 		}
 	};
@@ -180,23 +193,74 @@ export function app() {
 			appId = message.target || '';
 			token = message.token || '';
 			debug = log('ts:io:sub:' + appId);
-			debug('CONNECTED');
+			debug('CONNECTED %o', message);
 			if (flushQueue(token)) {
 				debug('Publishing queued messages');
+			}
+
+			// If the app has been spawned, CONNACK will have a topic and optional data
+			if (message.topic) {
+				debug(
+					'SPAWNED (%o) from %o - %O',
+					message.topic,
+					message.source,
+					message
+				);
+				if (appInstance.onspawn) {
+					/**
+					 * @TODO Timeout handling!
+					 */
+					appInstance.onspawn(
+						message,
+						function resolve(data) {
+							postMessage({
+								type: 'SPAWN-RESOLVE',
+								target: message.source,
+								topic: message.topic,
+								data,
+								token
+							});
+						},
+						function reject(data) {
+							postMessage({
+								type: 'SPAWN-REJECT',
+								target: message.source,
+								topic: message.topic,
+								data,
+								token
+							});
+						}
+					);
+				} else {
+					// this app can't be spawned and we should send an error back to the source app
+					postMessage({
+						type: 'SPAWN-REJECT',
+						target: message.source,
+						topic: message.topic,
+						data: new SpawnError(
+							`${
+								message.target
+							} doesn't have an 'onspawn' handler, it's not compatible with this SPAWN request.`
+						),
+						token
+					});
+				}
 			}
 			return;
 		}
 
 		// Call the matching handlers for the message topic.
+		if (message.type !== 'PING') {
+			debug(
+				'%s (%o) from %o - %O',
+				message.type,
+				message.topic,
+				message.source,
+				message
+			);
+		}
 		switch (message.type) {
 			case 'PUBLISH':
-				debug(
-					'%s (%o) from %o - %O',
-					message.type,
-					message.topic,
-					message.source,
-					message
-				);
 				handlersByTopic.forEach(
 					(handlers, topic) =>
 						matchTopic(topic, message.topic) &&
@@ -206,6 +270,17 @@ export function app() {
 			case 'PING':
 				postMessage({ type: 'PONG', token });
 				break;
+			case 'SPAWN-RESOLVE':
+				spawnResolve([null, message.data]);
+			case 'SPAWN-REJECT':
+				if (
+					message.data &&
+					message.data.name &&
+					message.data.name === 'ts:io:SpawnError'
+				) {
+					message.data = new SpawnError(message.data.message);
+				}
+				spawnResolve([message.data, null]);
 			default:
 				break;
 		}

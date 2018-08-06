@@ -86,32 +86,17 @@ const io = require('@tradeshift/io');
 const app = io();
 
 // Listen to incoming messages .................................................
-app.on((msg, resolve, reject) => {
-  if (msg.topic === ts.io.TOPIC_SPAWN) {
-    // Do stuff here to open the panel with some fancy animation
-    // ...
-    // Wait for user input
-    // ...
-    if (userInput.is('good')) {
-      resolve(userInput); // Resolve the promise on the spawner side
-    } else {
-      reject(userInput); // Reject the promise on the spawner side
-    }
-    // Either close the window automatically here
-    // or...
-  }
-
-  // Wait for this message to close the window .................................
-  if (msg.topic === ts.io.TOPIC_UNSPAWN) {
-    /**
-     * NOTE!
-     * This usage of the API is unclear,
-     * maybe we want to keep the window open
-     * in case the spawning app validates the message
-     * and tells the spawned app that it won't work?
-     *
-     * It could also be used to animate closing the app.
-     */
+app.onspawn((msg, resolve, reject) => {
+  // Do stuff here to open the panel with some fancy animation
+  // ...
+  // Wait for user input
+  // ...
+  // Close the panel with fancy animations here
+  //
+  if (userInput.is('good')) {
+    resolve(userInput); // Resolve the promise on the spawner side
+  } else {
+    reject(userInput); // Reject the promise on the spawner side
   }
 });
 ```

@@ -1,3 +1,5 @@
+import { SpawnError } from './err';
+
 /**
  * The Message.
  * @typedef {object} Message
@@ -20,6 +22,9 @@ export function postMessage(message, targetWindow) {
 	if (!targetWindow) {
 		targetWindow = window.top;
 	}
+	if (message.data instanceof SpawnError) {
+		message.data = message.data.toJSON();
+	}
 	try {
 		targetWindow.postMessage(message, targetOrigin);
 	} catch (error) {
@@ -32,7 +37,10 @@ export function postMessage(message, targetWindow) {
 				"ts.io.publish called with { data } argument that can't be cloned using the structural clone algorithm."
 			);
 		} else {
-			console.warn('Something went wrong while sending postMessage.', error);
+			console.warn(
+				'Something went wrong while sending postMessage.',
+				error
+			);
 		}
 	}
 }
@@ -72,24 +80,12 @@ export function messageValid(message) {
 	return message && message.type;
 }
 
-function complexMessageValid(message) {
+/**
+ * Validate message for 'SPAWN', 'SPAWNED', 'PUBLISH', etc. complex types.
+ * @param {Message} message
+ */
+export function complexMessageValid(message) {
 	return messageValid(message) && message.topic && message.target;
-}
-
-/**
- * Validate message for 'PUBLISH' type.
- * @param {Message} message
- */
-export function publishMessageValid(message) {
-	return complexMessageValid(message) && message.type === 'PUBLISH';
-}
-
-/**
- * Validate message for 'SPAWN' type.
- * @param {Message} message
- */
-export function spawnMessageValid(message) {
-	return complexMessageValid(message) && message.type === 'SPAWN';
 }
 
 /**
@@ -100,7 +96,13 @@ export function appMessageValid(message) {
 	return (
 		messageValid(message) &&
 		message.viaHub &&
-		['CONNACK', 'PUBLISH', 'PING'].includes(message.type)
+		[
+			'CONNACK',
+			'PUBLISH',
+			'PING',
+			'SPAWN-RESOLVE',
+			'SPAWN-REJECT'
+		].includes(message.type)
 	);
 }
 
@@ -112,7 +114,14 @@ export function hubMessageValid(message) {
 	return (
 		messageValid(message) &&
 		!message.viaHub &&
-		['CONNECT', 'PUBLISH', 'PONG', 'SPAWN'].includes(message.type)
+		[
+			'CONNECT',
+			'PUBLISH',
+			'PONG',
+			'SPAWN',
+			'SPAWN-RESOLVE',
+			'SPAWN-REJECT'
+		].includes(message.type)
 	);
 }
 
