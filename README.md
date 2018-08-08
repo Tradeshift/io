@@ -30,104 +30,108 @@ This is the standard way for apps on the client-side of the Tradeshift Platform 
 ### In the frame/window of Tradeshift® Apps™
 
 ```js
-const io = require('@tradeshift/io');
+import io from '@tradeshift/io';
 
-// Create App (a client) and connect to Hub (The Broker) .......................
+// Create the App and connect to the Hub .......................................
 const app = io();
 
-// Listen to incoming messages .................................................
 /*
  * IMPORTANT!
  * You can register as many handlers as you'd like,
  * but if multiples match the same topic,
- * they all will be called, in the order they were created.
+ * they all will be called, in the order they were registered.
  */
-let unregisterHandler = app.on(message => {
-  //Handle messages sent to your app.
-});
-unregisterHandler(); // Unregister message handler
 
-unregisterHandler = app.on(topicExpression, message => {
-  // Handle messages matching topic expressions sent to your app.
-});
-unregisterHandler();
+// Listen to all messages sent to my App .......................................
+app.on('*', message => {});
 
-// Publish a Message ...........................................................
-app.publish(target, topic, data);
+// Listen to messages for a specific topic (sent to my App) ....................
+const myListener = message => {};
+const myTopic = 'my-topic';
+const unlisten = app.on(myTopic, myListener);
+// Stop listening
+unlisten();
+// OR
+app.off(myTopic, myListener); // nice to have
 
-// Exchange a message ..........................................................
-const [err, data] = app.request(target, topic, data);
-if (err) {
-  if (err instanceof ts.io.Error) {
-    // Something went horribly wrong
+// This listener will only be called once
+app.once(myTopic, myListener); // nice to have
+
+// Send messages to other Apps .................................................
+app.emit(topic, app, data);
+app.emit('fly-high', 'Tradeshift.FlamingSkull', { flameColor: 'red' });
+
+// Spawn an App ................................................................
+(async () => {
+  // Set up listeners for messages from the spawned App while it's running
+  const unspawnscribe = app.on('mid-spawn-topic-*', message => {});
+  // Do the actual spawn call
+  const [err, data] = await app.call('spawn', target, data);
+  // Stop listening to mid-spawn messages
+  unspawnscribe();
+  // Handle the results
+  if (err) {
+    // Something went horribly wrong while spawning app
   } else {
-    // Failure response from target app
+    doSomethingWith(data);
   }
-}
-doSomethingWith(data); // Success response from target app
-
-// Load app and wait for user input ............................................
-const [err, data] = await app.spawn(target, topic, data);
-if (err) {
-  if (err instanceof ts.io.Error) {
-    // Something went horribly wrong
-  } else {
-    // Failure response from target app
-  }
-}
-doSomethingWith(data); // Success response from target app
+})();
 ```
 
-### In the frame/window of Tradeshift® Apps™ spawned or opened by another Tradeshift® App™
+### In the frame/window of Tradeshift® Apps™ spawned by another App
 
 ```js
-const io = require('@tradeshift/io');
-// Create App (a client) and connect to Hub (The Broker) .......................
+import io from '@tradeshift/io';
+
+// Create the App and connect to the Hub .......................................
 const app = io();
 
-// Listen to incoming messages .................................................
-app.onspawn((msg, resolve, reject) => {
-  // Do stuff here to open the panel with some fancy animation
-  // ...
-  // Wait for user input
-  // ...
-  // Close the panel with fancy animations here
-  //
-  if (userInput.is('good')) {
-    resolve(userInput); // Resolve the promise on the spawner side
-  } else {
-    reject(userInput); // Reject the promise on the spawner side
-  }
+// Handle the spawn call .......................................................
+app.add('spawn', (data, submit, parent) => {
+  // CODE HERE: Animate opening your UI and wait for user input.
+
+  // Send messages your spawner App ..........................................
+  app.emit(topic, parent, data);
+
+  // CODE HERE: Animate closing your UI.
+
+  // Send message back to parent .............................................
+  submit(userData);
+
+  // Your app will be killed and its iframe destroyed.
 });
 ```
 
 ### In the frame/window of the Tradeshift® Chrome™
 
 ```js
-const io = require('@tradeshift/io');
+import io from '@tradeshift/io';
 
-// Create Hub (The Broker) .....................................................
+// Create The Hub ..............................................................
 const hub = io({
-  appIdByWindow: win => {
-    // Return appId based on a Window object.
-    // Used for identifying new Apps (clients).
+  appByWindow(win) {
+    return app;
   },
-  windowByAppId: (appId, sourceWindow) => {
-    // Return window object based on an appId string.
-    // Used for identifying where to relay messages.
-  },
-  appTimeout: (targetWindow, appId) => {
-    // This is called by the Hub when an app times out.
-  },
-  // These handlers are called whenever an app tries to
-  // spawn/request/open another app.
-  onspawn: spawnMessage => {},
-  onrequest: requestMessage => {}
+  windowByApp(app, sourceWindow) {
+    return win;
+  }
 });
+
+// Handle when an App times out ................................................
+// The App hasn't responded to PINGs within 3xHEARTBEAT (3x3333ms)
+hub.add('timeout', (app, win) => {});
+
+// Handle App spawn lifecycle ..................................................
+hub.add('spawn', (app, parentApp) => {});
+hub.add('spawn.submit', (app, parentApp, data) => {});
+hub.add('spawn.timeout', (app, parentApp) => {});
+
+// Terminate App Instance in target Window .....................................
+hub.call('kill', win);
 
 // Create App (a client) for the Tradeshift® Chrome™ and connect to Hub (The Broker)
 const top = hub.top();
-top.on(message => {
+top.on('*', message => {
   // Handle messages sent to 'Tradeshift.Chrome'
 });
 ```

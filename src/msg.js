@@ -1,5 +1,3 @@
-import { SpawnError } from './err';
-
 /**
  * The Message.
  * @typedef {object} Message
@@ -22,9 +20,6 @@ export function postMessage(message, targetWindow) {
 	if (!targetWindow) {
 		targetWindow = window.top;
 	}
-	if (message.data instanceof SpawnError) {
-		message.data = message.data.toJSON();
-	}
 	try {
 		targetWindow.postMessage(message, targetOrigin);
 	} catch (error) {
@@ -37,10 +32,7 @@ export function postMessage(message, targetWindow) {
 				"ts.io.publish called with { data } argument that can't be cloned using the structural clone algorithm."
 			);
 		} else {
-			console.warn(
-				'Something went wrong while sending postMessage.',
-				error
-			);
+			console.warn('Something went wrong while sending postMessage.', error);
 		}
 	}
 }
@@ -85,7 +77,7 @@ export function messageValid(message) {
  * @param {Message} message
  */
 export function complexMessageValid(message) {
-	return messageValid(message) && message.topic && message.target;
+	return messageValid(message) && message.target;
 }
 
 /**
@@ -96,13 +88,9 @@ export function appMessageValid(message) {
 	return (
 		messageValid(message) &&
 		message.viaHub &&
-		[
-			'CONNACK',
-			'PUBLISH',
-			'PING',
-			'SPAWN-RESOLVE',
-			'SPAWN-REJECT'
-		].includes(message.type)
+		['CONNACK', 'PUBLISH', 'PING', 'SPAWN-SUCCESS', 'SPAWN-FAIL'].includes(
+			message.type
+		)
 	);
 }
 
@@ -119,8 +107,8 @@ export function hubMessageValid(message) {
 			'PUBLISH',
 			'PONG',
 			'SPAWN',
-			'SPAWN-RESOLVE',
-			'SPAWN-REJECT'
+			'SPAWN-SUCCESS',
+			'SPAWN-FAIL'
 		].includes(message.type)
 	);
 }

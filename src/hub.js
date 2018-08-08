@@ -1,8 +1,6 @@
 import uuid from 'uuid';
 import { log } from './log';
 import { app } from './app';
-import { LifecycleHandler } from './hlr';
-import { SpawnError } from './err';
 import { postMessage, hubMessageValid, complexMessageValid } from './msg';
 import { HEARTBEAT, CHROME_APP_ID } from './lib';
 
@@ -11,17 +9,13 @@ let hubInstance;
 /**
  * Special features supplied by the Tradeshift® Chrome™.
  * @typedef {object} ChromeWindowFeatures
- * @property {function(Window): string} appIdByWindow Called to get an appId based on a Window object.
- * @property {function(string, Window): Window} windowByAppId Called to get a window object based on an appId and the requesting app's Window object.
- * @property {function(Window, string): void} appTimeout Called when an app fails to reply in time to a PING request.
- * @property {object: void} handlers Contains all handlers for SPAWN, etc.
+ * @property {function(Window): string} appByWindow Called to get an appId based on a Window object.
+ * @property {function(string, Window): Window} windowByApp Called to get a window object based on an appId and the requesting app's Window object.
  */
 
 function invalidFunction(name) {
 	return function() {
-		throw new Error(
-			`Can't initialize ts.io() Hub. ${name}() wasn't passed.`
-		);
+		throw new Error(`Can't initialize ts.io() Hub. ${name}() wasn't passed.`);
 	};
 }
 
@@ -35,33 +29,36 @@ export function hub(chrome) {
 	}
 
 	const {
-		appIdByWindow = invalidFunction('appIdByWindow'),
-		windowByAppId = invalidFunction('appTimeout'),
-		appTimeout = function() {},
-		handlers = {
-			spawn: new LifecycleHandler()
-		}
+		appByWindow = invalidFunction('appByWindow'),
+		windowByApp = invalidFunction('windowByApp')
 	} = chrome;
 
 	/**
-	 * Quickly test that appIdByWindow & windowByAppId work for 'Tradeshift.Chrome'
+	 * Quickly test that appByWindow & windowByApp work for 'Tradeshift.Chrome'
 	 */
 	{
-		const testChromeWindow = windowByAppId(CHROME_APP_ID);
+		const testChromeWindow = windowByApp(CHROME_APP_ID);
 		const testNotWindow = !(testChromeWindow instanceof Window);
-		const testNotAppId = appIdByWindow(testChromeWindow) !== CHROME_APP_ID;
+		const testNotAppId = appByWindow(testChromeWindow) !== CHROME_APP_ID;
 		if (testNotWindow) {
 			throw new Error(
-				`Can't initialize ts.io() Hub. Expected windowByAppId('${CHROME_APP_ID}') to return a 'Window' object.`
+				`Can't initialize ts.io() Hub. Expected windowByApp('${CHROME_APP_ID}') to return a 'Window' object.`
 			);
 		} else if (testNotAppId) {
 			throw new Error(
-				`Can't initialize ts.io() Hub. Expected appIdByWindow(windowByAppId('${CHROME_APP_ID}')) to return '${CHROME_APP_ID}'.`
+				`Can't initialize ts.io() Hub. Expected appByWindow(windowByApp('${CHROME_APP_ID}')) to return '${CHROME_APP_ID}'.`
 			);
 		}
 	}
 
 	const debug = log('ts:io:top');
+
+	/**
+	 * Set of `add()` handlers keyed by `method`.
+	 * @type {Map<method: string, handler: Function>}
+	 */
+	const methodHandlers = new Map();
+
 	/**
 	 * WeakMap of frames with apps.
 	 * @type {WeakMap<Window, Object<appId: string, token: string>}
@@ -75,6 +72,29 @@ export function hub(chrome) {
 
 	const appSpawns = [];
 
+	const add = (method, handler) => {
+		methodHandlers.set(method, handler);
+	};
+	const call = (method, argsArr) => {
+		if (methodHandlers.has(method)) {
+			return methodHandlers.get(method).apply({}, argsArr);
+		}
+	};
+
+	add('kill', function(targetWindow) {
+		try {
+			const { appId, token } = appWindows.get(targetWindow);
+			debug('Killing app %o', appId);
+			appPongs
+				.get(token)
+				.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
+			appPongs.delete(token);
+			appWindows.delete(targetWindow);
+		} catch (error) {
+			console.error(error);
+		}
+	});
+
 	/*
 	1. after sending CONNACK to an app, PING it after HEARTBEAT ms
 	2. if it replies, wait HEARTBEAT ms and PING again, - repeat forever
@@ -87,35 +107,19 @@ export function hub(chrome) {
 		const appPongInfo = appPongs.get(token);
 		const lastPong = (appPongInfo && appPongInfo.lastPong) || now;
 		if (now - lastPong < 3 * HEARTBEAT) {
-			appPongInfo.timeoutIds.add(
-				setTimeout(() => pingApp(opts), HEARTBEAT)
-			);
+			appPongInfo.timeoutIds.add(setTimeout(() => pingApp(opts), HEARTBEAT));
 			postMessage(
 				{ type: 'PING', viaHub: true, target: appId, token },
 				targetWindow
 			);
 		} else {
 			debug('App timed out, considering it dead! %o', appId);
-			appTimeout(targetWindow, appId);
+			call('timeout', [targetWindow, appId]);
 			try {
-				killApp(targetWindow);
+				call('kill', [targetWindow]);
 			} catch (error) {
 				console.error(error);
 			}
-		}
-	}
-
-	function killApp(targetWindow) {
-		try {
-			const { appId, token } = appWindows.get(targetWindow);
-			debug('Killing app %o', appId);
-			appPongs
-				.get(token)
-				.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
-			appPongs.delete(token);
-			appWindows.delete(targetWindow);
-		} catch (error) {
-			console.error(error);
 		}
 	}
 
@@ -131,7 +135,7 @@ export function hub(chrome) {
 		if (!appWindows.has(event.source)) {
 			// The only command should be CONNECT, we fail otherwise.
 			if (message.type === 'CONNECT') {
-				const appId = appIdByWindow(event.source);
+				const appId = appByWindow(event.source);
 				const token = uuid();
 				debug('CONNECT %o', appId);
 				appWindows.set(event.source, { appId, token });
@@ -145,21 +149,14 @@ export function hub(chrome) {
 					token
 				};
 				if (spawnWaiting !== -1) {
-					handlers.spawn.onconnect(appId, event.source);
-					const { topic, data, source } = appSpawns[
-						spawnWaiting
-					].message;
+					const { data, source } = appSpawns[spawnWaiting].message;
 					connackMessage.source = source;
-					connackMessage.topic = topic;
 					connackMessage.data = data;
 					appSpawns.splice(spawnWaiting, 1);
 				}
 				postMessage(connackMessage, event.source);
 				const pingOpts = { targetWindow: event.source, appId, token };
-				const timeoutId = setTimeout(
-					() => pingApp(pingOpts),
-					HEARTBEAT
-				);
+				const timeoutId = setTimeout(() => pingApp(pingOpts), HEARTBEAT);
 				appPongs.set(token, {
 					lastPong: window.performance.now(),
 					timeoutIds: new Set([timeoutId])
@@ -197,8 +194,8 @@ export function hub(chrome) {
 
 		switch (message.type) {
 			case 'PUBLISH':
-			case 'SPAWN-RESOLVE':
-			case 'SPAWN-REJECT': {
+			case 'SPAWN-SUCCESS':
+			case 'SPAWN-FAIL': {
 				if (!complexMessageValid(message)) {
 					console.warn(
 						'Message incomplete for a %s command!\n%O',
@@ -210,10 +207,7 @@ export function hub(chrome) {
 				/**
 				 * @TODO Handle the case when the Chrome blocks certain targets for certain sources
 				 */
-				const targetWindow = windowByAppId(
-					message.target,
-					event.source
-				);
+				const targetWindow = windowByApp(message.target, event.source);
 				debug(
 					'Routing %o from %o to %o - %O',
 					message.type,
@@ -223,11 +217,13 @@ export function hub(chrome) {
 				);
 				postMessage(message, targetWindow);
 				if (message.type.indexOf('SPAWN') === 0) {
-					handlers.spawn.onresolve(
-						message.source,
-						message.target,
-						message.topic,
-						message.data
+					call(
+						'spawn.submit',
+						Object.values({
+							app: message.source,
+							parent: message.target,
+							data: message.data
+						})
 					);
 				}
 				break;
@@ -248,24 +244,23 @@ export function hub(chrome) {
 					message
 				);
 				try {
-					const appId = handlers.spawn.onconstruct(
-						message.target,
-						message.source
+					const appId = call(
+						'spawn',
+						Object.values({
+							app: message.target,
+							parent: message.source
+						})
 					);
 					appSpawns.push({ appId, message });
 				} catch (e) {
 					postMessage({
-						type: 'SPAWN-REJECT',
+						type: 'SPAWN-FAIL',
 						source: CHROME_APP_ID,
 						target: message.source,
-						token: appWindows.get(windowByAppId(CHROME_APP_ID))
-							.token,
+						token: appWindows.get(windowByApp(CHROME_APP_ID)).token,
 						topic: message.topic,
-						data: new SpawnError(
-							`${
-								message.target
-							} is not activated on the current user's account`
-						)
+						data:
+							message.target + " is not activated on the current user's account"
 					});
 				}
 				break;
@@ -284,7 +279,8 @@ export function hub(chrome) {
 
 	hubInstance = {
 		top: app,
-		killApp
+		add,
+		call
 	};
 	return hubInstance;
 }

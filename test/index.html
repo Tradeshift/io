@@ -21,7 +21,7 @@ window.ts.chrome = true;
      * Get the appId from a frame.
      * @TODO What if there are more instances of the same app?
      */
-    appIdByWindow: function(win) {
+    appByWindow: function(win) {
       if (win === window.top) {
         return 'Tradeshift.Chrome';
       }
@@ -44,7 +44,7 @@ window.ts.chrome = true;
     /**
      * Get the frame's window object from a name.
      */
-    windowByAppId: function(appId, sourceWindow) {
+    windowByApp: function(appId, sourceWindow) {
       if (appId === 'Tradeshift.Chrome') {
         return window.top;
       }
@@ -68,14 +68,14 @@ window.ts.chrome = true;
     }, 3000);
 
     var top = hub.top();
-    top.on(message => {
+    top.on('*', message => {
       console.log('[hub.top] message %o', message);
     });
     setTimeout(function() {
-      top.publish('Tradeshift.ForeignSandbox', 'heyo1', 'yea');
-      top.publish('Tradeshift.Foreign', 'hey2o', 'yea');
-      top.publish('Tradeshift.SameSandbox', 'heyo3', 'yea');
-      top.publish('Tradeshift.Same', 'hey4o', 'yea');
+      top.emit('heyo1', 'Tradeshift.ForeignSandbox', 'yea');
+      top.emit('hey2o', 'Tradeshift.Foreign', 'yea');
+      top.emit('heyo3', 'Tradeshift.SameSandbox', 'yea');
+      top.emit('hey4o', 'Tradeshift.Same', 'yea');
     }, 1000);
   }, 0);
 })();

@@ -9,12 +9,12 @@
 (function() {
   var appId = window.location.search.substring(6);
   var appIds = [
-      'Tradeshift.Chrome',
-      'Tradeshift.ForeignSandbox',
-      'Tradeshift.Foreign',
-      'Tradeshift.SameSandbox',
-      'Tradeshift.Same'
-    ].filter(function(oneAppId) {
+    'Tradeshift.Chrome',
+    'Tradeshift.ForeignSandbox',
+    'Tradeshift.Foreign',
+    'Tradeshift.SameSandbox',
+    'Tradeshift.Same'
+  ].filter(function(oneAppId) {
     return oneAppId !== appId;
   });
 
@@ -26,30 +26,29 @@
       console.log('same instance for another ts.io()', app === sameApp);
     }, 3000);
 
-    app.on(function(message) {
+    app.on('*', function(message) {
       console.log(appId, '>', message.topic);
     });
     var unregister = app.on('hello', function() {
       console.log(appId, 'this handler will only be called once');
       unregister();
     });
+    app.once('hello', function() {
+      console.log('I am once() as well.');
+    });
 
     var target = appIds[Math.floor(Math.random() * appIds.length)];
-    // try {
-    //   app
-    //     .publish(target, 'hello', {
-    //       world: true
-    //     })
-    //     .publish(target, 'hello', {
-    //       world: false
-    //     })
-    //     .publish(target, 'bye');
-    // } catch (error) {
-    //   console.warn('Error caught:\n', error);
-    // }
+    app.emit('hello', target, {
+      world: true
+    });
+    app.emit('hello', target, {
+      world: false
+    });
+    app.emit('bye', target);
 
     setTimeout(function() {
-      app.spawn(target, 'some-topic', {some: 'data'});
+      console.log('spawning now!');
+      app.call('spawn', target, { some: 'data' });
     }, 500);
   }, 0);
 })();
