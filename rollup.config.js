@@ -51,7 +51,6 @@ export default [
 						'@babel/transform-runtime',
 						{
 							helpers: false,
-							polyfill: false,
 							regenerator: true
 						}
 					]
