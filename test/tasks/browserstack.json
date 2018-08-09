@@ -1,0 +1,17 @@
+{
+	"test_path": "test/jasmine/index.html",
+	"test_framework": "jasmine2",
+	"test_server_port": "8888",
+	"exit_with_fail": true,
+	"browsers": [
+		"chrome_previous",
+		"chrome_latest",
+		"firefox_previous",
+		"firefox_latest",
+		"safari_previous",
+		"safari_latest",
+		"edge_previous",
+		"edge_latest",
+		"ie_11"
+	]
+}

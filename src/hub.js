@@ -2,7 +2,7 @@ import uuid from 'uuid';
 import { log } from './log';
 import { app } from './app';
 import { postMessage, hubMessageValid, complexMessageValid } from './msg';
-import { HEARTBEAT, CHROME_APP_ID } from './lib';
+import { HEARTBEAT as _HEARTBEAT, CHROME_APP_ID } from './lib';
 
 let hubInstance;
 
@@ -27,6 +27,7 @@ export function hub(chrome) {
 	if (hubInstance) {
 		return hubInstance;
 	}
+	hubInstance = { HEARTBEAT: _HEARTBEAT };
 
 	const {
 		appByWindow = invalidFunction('appByWindow'),
@@ -91,7 +92,7 @@ export function hub(chrome) {
 			appPongs.delete(token);
 			appWindows.delete(targetWindow);
 		} catch (error) {
-			console.error(error);
+			debug("App couldn't be killed in %o - %o", targetWindow, error);
 		}
 	});
 
@@ -106,8 +107,10 @@ export function hub(chrome) {
 		const now = window.performance.now();
 		const appPongInfo = appPongs.get(token);
 		const lastPong = (appPongInfo && appPongInfo.lastPong) || now;
-		if (now - lastPong < 3 * HEARTBEAT) {
-			appPongInfo.timeoutIds.add(setTimeout(() => pingApp(opts), HEARTBEAT));
+		if (now - lastPong < 3 * hubInstance.HEARTBEAT) {
+			appPongInfo.timeoutIds.add(
+				setTimeout(() => pingApp(opts), hubInstance.HEARTBEAT)
+			);
 			postMessage(
 				{ type: 'PING', viaHub: true, target: appId, token },
 				targetWindow
@@ -156,7 +159,10 @@ export function hub(chrome) {
 				}
 				postMessage(connackMessage, event.source);
 				const pingOpts = { targetWindow: event.source, appId, token };
-				const timeoutId = setTimeout(() => pingApp(pingOpts), HEARTBEAT);
+				const timeoutId = setTimeout(
+					() => pingApp(pingOpts),
+					hubInstance.HEARTBEAT
+				);
 				appPongs.set(token, {
 					lastPong: window.performance.now(),
 					timeoutIds: new Set([timeoutId])
@@ -280,7 +286,8 @@ export function hub(chrome) {
 	hubInstance = {
 		top: app,
 		add,
-		call
+		call,
+		HEARTBEAT: hubInstance.HEARTBEAT
 	};
 	return hubInstance;
 }

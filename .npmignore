@@ -3,3 +3,4 @@ test
 .*
 rollup.config.js
 eslintrc.json
+browserstack.json

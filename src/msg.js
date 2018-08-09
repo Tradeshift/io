@@ -59,7 +59,7 @@ export function flushQueue(token) {
 					targetOrigin
 				)
 			);
-		return true;
+		return messageQueue.length;
 	}
 	return false;
 }

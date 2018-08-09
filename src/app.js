@@ -63,8 +63,8 @@ export function app() {
 		 */
 		once(topic, handler) {
 			const wrappedHandler = message => {
-				handler(message);
 				this.off(topic, wrappedHandler);
+				handler(message);
 			};
 			this.on(topic, wrappedHandler);
 
@@ -170,6 +170,9 @@ export function app() {
 			token = message.token || '';
 			debug = log('ts:io:sub:' + appId);
 			debug('CONNECTED %o', message);
+			if (methodHandlers.has('connect')) {
+				methodHandlers.get('connect')();
+			}
 			if (message.source) {
 				debug('SPAWNED from %o - %O', message.source, message);
 				if (methodHandlers.has('spawn')) {
@@ -202,8 +205,13 @@ export function app() {
 				}
 			}
 
-			if (flushQueue(token)) {
-				debug('Publishing queued messages');
+			let queueLength = flushQueue(token);
+			if (queueLength) {
+				debug(
+					'Publishing %s queued message%s',
+					queueLength,
+					queueLength === 1 ? '' : 's'
+				);
 			}
 			return;
 		}
@@ -211,7 +219,7 @@ export function app() {
 		// Call the matching handlers for the message topic.
 		if (message.type !== 'PING') {
 			debug(
-				'%s (%o) from %o - %O',
+				'Received %s (%o) from %o - %O',
 				message.type,
 				message.topic,
 				message.source,
