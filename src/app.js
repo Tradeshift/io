@@ -34,7 +34,7 @@ export function app() {
 	 * Set of `add()` handlers keyed by `method`.
 	 * @type {Map<method: string, handler: Function>}
 	 */
-	const methodHandlers = new Map();
+	const lifeCycleMethodHandlers = new Map();
 
 	appInstance = {
 		/**
@@ -115,8 +115,10 @@ export function app() {
 				queueMessage(message);
 			}
 		},
-		add(method, handler) {
-			methodHandlers.set(method, handler);
+		define(lifecyle) {
+			if (lifecyle.spawn) {
+				lifeCycleMethodHandlers.set('spawn', handler);
+			}
 		},
 		/**
 		 * Do something RPC-style (spawn, request, etc.)
@@ -126,27 +128,26 @@ export function app() {
 		 * @param {*=} data Data.
 		 * @returns {Promise}
 		 */
-		async call(method, target, data = {}) {
-			switch (method) {
-				case 'spawn':
-					const message = {
-						type: 'SPAWN',
-						target,
-						data,
-						token
-					};
-					if (token) {
-						debug('%o to %o - %o', 'SPAWN', target, data);
-						postMessage(message);
-					} else {
-						debug('%o to %o - %o', 'SPAWN(queued)', target, data);
-						queueMessage(message);
-					}
-					// Wait for response from the app or some sort of failure
-					return new Promise(resolve => {
-						spawnResolve = resolve;
-					});
+		async spawn(target, data = {}) {
+			const message = {
+				type: 'SPAWN',
+				target,
+				data,
+				token
+			};
+
+			if (token) {
+				debug('%o to %o - %o', 'SPAWN', target, data);
+				postMessage(message);
+			} else {
+				debug('%o to %o - %o', 'SPAWN(queued)', target, data);
+				queueMessage(message);
 			}
+
+			// Wait for response from the app or some sort of failure
+			return new Promise(resolve => {
+				spawnResolve = resolve;
+			});
 		}
 	};
 
@@ -155,11 +156,11 @@ export function app() {
 
 		debug('SPAWNED from %o - %O', message.source, message);
 
-		if (methodHandlers.has('spawn')) {
+		if (lifeCycleMethodHandlers.has('spawn')) {
 			/**
 			 * @TODO Timeout handling!
 			 */
-			methodHandlers.get('spawn').apply({}, [
+			lifeCycleMethodHandlers.get('spawn').apply({}, [
 				message.data,
 				function resolve(data) {
 					postMessage({
@@ -188,8 +189,8 @@ export function app() {
 	function handleConnect(event) {
 		const message = event.data;
 
-		if (methodHandlers.has('connect')) {
-			methodHandlers.get('connect')();
+		if (lifeCycleMethodHandlers.has('connect')) {
+			lifeCycleMethodHandlers.get('connect')();
 		}
 
 		if (message.source) {
