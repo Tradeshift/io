@@ -1,9 +1,9 @@
 /**
  * The Message.
  * @typedef {object} Message
- * @property {string} type The type of the message. (one of ['CONNECT', 'CONNACK', 'PUBLISH', 'PINGREQ', 'PINGRES'])
- * @property {string=} topic The topic of the message. (required for 'PUBLISH' type)
- * @property {string=} target Target appId. (required for ['PUBLISH', 'CONNACK', 'PINGREQ'] types)
+ * @property {string} type The type of the message. (one of ['CONNECT', 'CONNACK', 'EVENT', 'PINGREQ', 'PINGRES'])
+ * @property {string=} topic The topic of the message. (required for 'EVENT' type)
+ * @property {string=} target Target appId. (required for ['EVENT', 'CONNACK', 'PINGREQ'] types)
  * @property {boolean} viaHub The message was brokered by the Hub.
  * @property {string=} token Hack-proof session token. (required for all types except 'CONNECT')
  * @property {*=} data Data to be passed with the message. Can be any type that is compatible with the structured clone algorithm,
@@ -40,7 +40,7 @@ export function postMessage(message, targetWindow) {
 				error.code === 25) /* DATA_CLONE_ERR */
 		) {
 			throw new Error(
-				"ts.io.publish called with { data } argument that can't be cloned using the structural clone algorithm."
+				"ts.io.emit called with { data } argument that can't be cloned using the structural clone algorithm."
 			);
 		} else {
 			console.warn('Something went wrong while sending postMessage.', error);
@@ -84,7 +84,7 @@ export function messageValid(message) {
 }
 
 /**
- * Validate message for 'SPAWN', 'SPAWNED', 'PUBLISH', etc. complex types.
+ * Validate message for 'SPAWN', 'SPAWNED', 'EVENT', etc. complex types.
  * @param {Message} message
  */
 export function complexMessageValid(message) {
@@ -99,7 +99,7 @@ export function appMessageValid(message) {
 	return (
 		messageValid(message) &&
 		message.viaHub &&
-		['CONNACK', 'PUBLISH', 'PING', 'SPAWN-SUCCESS', 'SPAWN-FAIL'].includes(
+		['CONNACK', 'EVENT', 'PING', 'SPAWN-SUCCESS', 'SPAWN-FAIL'].includes(
 			message.type
 		)
 	);
@@ -115,7 +115,7 @@ export function hubMessageValid(message) {
 		!message.viaHub &&
 		[
 			'CONNECT',
-			'PUBLISH',
+			'EVENT',
 			'PONG',
 			'SPAWN',
 			'SPAWN-SUCCESS',

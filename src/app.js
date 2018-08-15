@@ -102,16 +102,16 @@ export function app() {
 		emit(topic, target, data = {}) {
 			if (arguments.length < 2) {
 				throw new Error(
-					'ts.io().publish() called with invalid arguments.',
+					'ts.io().emit() called with invalid arguments.',
 					arguments
 				);
 			}
-			const message = { type: 'PUBLISH', target, topic, data, token };
+			const message = { type: 'EVENT', target, topic, data, token };
 			if (token) {
-				debug('%o (%o) to %o - %o', 'PUBLISH', topic, target, data);
+				debug('%o (%o) to %o - %o', 'EVENT', topic, target, data);
 				postMessage(message);
 			} else {
-				debug('%o (%o) to %o - %o', 'PUBLISH(queued)', topic, target, data);
+				debug('%o (%o) to %o - %o', 'EVENT(queued)', topic, target, data);
 				queueMessage(message);
 			}
 		},
@@ -150,72 +150,66 @@ export function app() {
 		}
 	};
 
+	function handleSpawn(event) {
+		const message = event.data;
+
+		debug('SPAWNED from %o - %O', message.source, message);
+
+		if (methodHandlers.has('spawn')) {
+			/**
+			 * @TODO Timeout handling!
+			 */
+			methodHandlers.get('spawn').apply({}, [
+				message.data,
+				function resolve(data) {
+					postMessage({
+						type: 'SPAWN-SUCCESS',
+						target: message.source,
+						data,
+						token
+					});
+				},
+				message.source
+			]);
+		} else {
+			// this app can't be spawned and we should send an error back to the source app
+			postMessage({
+				type: 'SPAWN-FAIL',
+				target: message.source,
+				topic: message.topic,
+				data:
+					message.target +
+					" doesn't have a 'spawn' handler, it's not compatible with this SPAWN request.",
+				token
+			});
+		}
+	}
+
+	function handleConnect(event) {
+		const message = event.data;
+
+		if (methodHandlers.has('connect')) {
+			methodHandlers.get('connect')();
+		}
+
+		if (message.source) {
+		}
+	}
 	/**
 	 * Handle events this app is listening for.
 	 * @param {MessageEvent} event
 	 */
 	function eventHandler(event) {
 		const message = event.data;
+		appId = message.target || '';
+		token = message.token || '';
+		debug = log('ts:io:sub:' + appId);
 		// Only accept messages from the hub in window.top.
 		if (event.source !== window.top || !appMessageValid(message)) {
 			return;
 		}
 		// The hub.top will get its own messages back, they will be ignored.
 		if (message.target && appId && message.target !== appId) {
-			return;
-		}
-
-		if (message.type === 'CONNACK') {
-			appId = message.target || '';
-			token = message.token || '';
-			debug = log('ts:io:sub:' + appId);
-			debug('CONNECTED %o', message);
-
-			const queueLength = flushQueue(token);
-			if (queueLength) {
-				debug(
-					'Publishing %s queued message%s',
-					queueLength,
-					queueLength === 1 ? '' : 's'
-				);
-			}
-
-			if (methodHandlers.has('connect')) {
-				methodHandlers.get('connect')();
-			}
-
-			if (message.source) {
-				debug('SPAWNED from %o - %O', message.source, message);
-				if (methodHandlers.has('spawn')) {
-					/**
-					 * @TODO Timeout handling!
-					 */
-					methodHandlers.get('spawn').apply({}, [
-						message.data,
-						function resolve(data) {
-							postMessage({
-								type: 'SPAWN-SUCCESS',
-								target: message.source,
-								data,
-								token
-							});
-						},
-						message.source
-					]);
-				} else {
-					// this app can't be spawned and we should send an error back to the source app
-					postMessage({
-						type: 'SPAWN-FAIL',
-						target: message.source,
-						topic: message.topic,
-						data:
-							message.target +
-							" doesn't have a 'spawn' handler, it's not compatible with this SPAWN request.",
-						token
-					});
-				}
-			}
-
 			return;
 		}
 
@@ -231,7 +225,23 @@ export function app() {
 		}
 
 		switch (message.type) {
-			case 'PUBLISH':
+			case 'CONNACK': {
+				debug('CONNECTED %o', message);
+
+				handleConnect(event);
+
+				let queueLength = flushQueue(token);
+				if (queueLength) {
+					debug(
+						'Publishing %s queued events%s',
+						queueLength,
+						queueLength === 1 ? '' : 's'
+					);
+				}
+
+				break;
+			}
+			case 'EVENT':
 				handlersByTopic.forEach(
 					(handlers, topic) =>
 						matchTopic(topic, message.topic) &&

@@ -132,8 +132,105 @@ export function hub(chrome) {
 		}
 	}
 
+	function handleAppConnect(event) {
+		const appId = appByWindow(event.source);
+		const token = uuid();
+		const spawnWaiting = appSpawns.findIndex(spawn => spawn.appId === appId);
+		const connackMessage = {
+			type: 'CONNACK',
+			viaHub: true,
+			target: appId,
+			token
+		};
+		appWindows.set(event.source, { appId, token });
+
+		debug('CONNECT %o', appId);
+
+		if (spawnWaiting !== -1) {
+			const { data, source } = appSpawns[spawnWaiting].message;
+			connackMessage.source = source;
+			connackMessage.data = data;
+			appSpawns.splice(spawnWaiting, 1);
+		}
+
+		postMessage(connackMessage, event.source);
+
+		const pingOpts = { targetWindow: event.source, appId, token };
+		const timeoutId = setTimeout(
+			() => pingApp(pingOpts),
+			hubInstance.HEARTBEAT
+		);
+
+		appPongs.set(token, {
+			lastPong: window.performance.now(),
+			timeoutIds: new Set([timeoutId])
+		});
+	}
+
+	function handleSpawn(event) {
+		const message = event.data;
+		debug('Spawning %o from %o - %O', message.target, message.source, message);
+		try {
+			const appId = call(
+				'spawn',
+				Object.values({
+					app: message.target,
+					parent: message.source
+				})
+			);
+			appSpawns.push({ appId, message });
+		} catch (e) {
+			postMessage({
+				type: 'SPAWN-FAIL',
+				source: CHROME_APP_ID,
+				target: message.source,
+				token: appWindows.get(windowByApp(CHROME_APP_ID)).token,
+				topic: message.topic,
+				data: message.target + " is not activated on the current user's account"
+			});
+		}
+	}
+
+	function handlePong(token) {
+		appPongs.set(token, {
+			...appPongs.get(token),
+			lastPong: window.performance.now()
+		});
+	}
+
+	function handleEvent(event) {
+		const message = event.data;
+		/**
+		 * @TODO Handle the case when the Chrome blocks certain targets for certain sources
+		 */
+		const targetWindow = windowByApp(message.target, event.source);
+		debug(
+			'Routing %o from %o to %o - %O',
+			message.type,
+			message.source,
+			message.target,
+			message
+		);
+		postMessage(message, targetWindow);
+
+		if (message.type.indexOf('SPAWN') === 0) {
+			call(
+				'spawn.submit',
+				Object.values({
+					app: message.source,
+					parent: message.target,
+					data: message.data
+				})
+			);
+		}
+	}
+
 	window.addEventListener('message', function(event) {
 		const message = event.data;
+		const appWindow = appWindows.get(event.source);
+		const token = (message.token = appWindow.token);
+		message.source = appWindow.appId;
+		message.viaHub = true;
 
 		// Only accept valid messages from apps.
 		if (!hubMessageValid(message)) {
@@ -141,46 +238,13 @@ export function hub(chrome) {
 		}
 
 		// Message from a frame we don't know yet.
-		if (!appWindows.has(event.source)) {
-			// The only command should be CONNECT, we fail otherwise.
-			if (message.type === 'CONNECT') {
-				const appId = appByWindow(event.source);
-				const token = uuid();
-				debug('CONNECT %o', appId);
-				appWindows.set(event.source, { appId, token });
-				const spawnWaiting = appSpawns.findIndex(
-					spawn => spawn.appId === appId
-				);
-				const connackMessage = {
-					type: 'CONNACK',
-					viaHub: true,
-					target: appId,
-					token
-				};
-				if (spawnWaiting !== -1) {
-					const { data, source } = appSpawns[spawnWaiting].message;
-					connackMessage.source = source;
-					connackMessage.data = data;
-					appSpawns.splice(spawnWaiting, 1);
-				}
-				postMessage(connackMessage, event.source);
-				const pingOpts = { targetWindow: event.source, appId, token };
-				const timeoutId = setTimeout(
-					() => pingApp(pingOpts),
-					hubInstance.HEARTBEAT
-				);
-				appPongs.set(token, {
-					lastPong: window.performance.now(),
-					timeoutIds: new Set([timeoutId])
-				});
-				return;
-			} else {
-				console.warn(
-					'Unexpected error! ts.app sent message without being connected!',
-					event
-				);
-				return;
-			}
+		// The only command should be CONNECT, we fail otherwise.
+		if (!appWindows.has(event.source) && message.type !== 'CONNECT') {
+			console.warn(
+				'Unexpected critical error! app sent message without being connected!',
+				event
+			);
+			return;
 		}
 
 		if (message.token !== appWindows.get(event.source).token) {
@@ -191,11 +255,6 @@ export function hub(chrome) {
 			return;
 		}
 
-		const appWindow = appWindows.get(event.source);
-		const token = (message.token = appWindow.token);
-		message.source = appWindow.appId;
-		message.viaHub = true;
-
 		if (message.source === message.target) {
 			console.warn(
 				'Source and destination match, discarding message!\n' +
@@ -205,7 +264,17 @@ export function hub(chrome) {
 		}
 
 		switch (message.type) {
-			case 'PUBLISH':
+			case 'CONNECT': {
+				// Message from a frame we don't know yet.
+				if (!appWindows.has(event.source)) {
+					handleAppConnect(event);
+				} else {
+					console.warn('Already connected app trying to reconnect!', event);
+				}
+
+				break;
+			}
+			case 'EVENT':
 			case 'SPAWN-SUCCESS':
 			case 'SPAWN-FAIL': {
 				if (!complexMessageValid(message)) {
@@ -216,28 +285,7 @@ export function hub(chrome) {
 					);
 					return;
 				}
-				/**
-				 * @TODO Handle the case when the Chrome blocks certain targets for certain sources
-				 */
-				const targetWindow = windowByApp(message.target, event.source);
-				debug(
-					'Routing %o from %o to %o - %O',
-					message.type,
-					message.source,
-					message.target,
-					message
-				);
-				postMessage(message, targetWindow);
-				if (message.type.indexOf('SPAWN') === 0) {
-					call(
-						'spawn.submit',
-						Object.values({
-							app: message.source,
-							parent: message.target,
-							data: message.data
-						})
-					);
-				}
+				handleEvent(event);
 				break;
 			}
 			case 'SPAWN': {
@@ -249,39 +297,11 @@ export function hub(chrome) {
 					return;
 				}
 
-				debug(
-					'Spawning %o from %o - %O',
-					message.target,
-					message.source,
-					message
-				);
-				try {
-					const appId = call(
-						'spawn',
-						Object.values({
-							app: message.target,
-							parent: message.source
-						})
-					);
-					appSpawns.push({ appId, message });
-				} catch (e) {
-					postMessage({
-						type: 'SPAWN-FAIL',
-						source: CHROME_APP_ID,
-						target: message.source,
-						token: appWindows.get(windowByApp(CHROME_APP_ID)).token,
-						topic: message.topic,
-						data:
-							message.target + " is not activated on the current user's account"
-					});
-				}
+				handleSpawn(event);
 				break;
 			}
 			case 'PONG':
-				appPongs.set(token, {
-					...appPongs.get(token),
-					lastPong: window.performance.now()
-				});
+				handlePong(token);
 				break;
 			default:
 				debug('* %o', event.data);
