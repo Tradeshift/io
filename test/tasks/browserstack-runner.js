@@ -2,6 +2,9 @@ const chalk = require('chalk');
 const browserStackRunner = require('browserstack-runner');
 const config = require('./browserstack.json');
 const testServer = require('./test-server');
+const ports = require('../config.json');
+
+config['test_server_port'] = ports.base;
 
 /**
  * Check the report and pretty-print to the console
@@ -18,7 +21,7 @@ const checkReport = report => {
 			'No report received, probably because the build has been terminated...'
 		);
 		console.log(
-			'Check the tests runs! https://travis-ci.org/Tradeshift/tradeshift-ui/pull_requests'
+			'Check the tests runs! https://travis-ci.org/Tradeshift/io/pull_requests'
 		);
 		fail();
 		return false;
@@ -81,10 +84,12 @@ const checkReport = report => {
 	return !errOut.length;
 };
 
-testServer(() =>
+testServer((baseServer, crossdomainServer) =>
 	browserStackRunner.run(config, (err, report) => {
+		crossdomainServer.close();
+		baseServer.close();
+
 		if (err) {
-			console.log('Something went wrong with BrowserStack!');
 			console.log('Error:' + err);
 			process.exit(2);
 		}

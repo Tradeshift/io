@@ -3,6 +3,7 @@ import globals from 'rollup-plugin-node-globals';
 import builtins from 'rollup-plugin-node-builtins';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import json from 'rollup-plugin-json';
 import babel from 'rollup-plugin-babel';
 import pkg from './package.json';
 
@@ -36,6 +37,9 @@ const umd = (input, output) => ({
 		}),
 		commonjs({
 			include: 'node_modules/**'
+		}),
+		json({
+			preferConst: true // Default: false
 		}),
 		babel({
 			babelrc: false,

@@ -2348,8 +2348,15 @@
 	  performance.webkitNow  ||
 	  function(){ return (new Date()).getTime() };
 
-	var BASE_URL = '//localhost:8080/test/spec/';
-	var BASE_XD_URL = '//localhost:8081/test/spec/';
+	var base = 8090;
+	var crossdomain = 8091;
+	var ports = {
+	  base: base,
+	  crossdomain: crossdomain
+	};
+
+	var BASE_URL = '//localhost:' + ports.base + '/test/spec/';
+	var BASE_XD_URL = '//localhost:' + ports.crossdomain + '/test/spec/';
 	var CHROME_APP = 'Tradeshift.Chrome';
 	var NOT_FOUND_APP = 'Tradeshift.NotFound';
 	var TOPIC_BEFORE_CONNECT = 'before-connect';

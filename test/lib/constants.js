@@ -1,5 +1,7 @@
-export const BASE_URL = '//localhost:8080/test/spec/';
-export const BASE_XD_URL = '//localhost:8081/test/spec/';
+import ports from '../config.json';
+
+export const BASE_URL = '//localhost:' + ports.base + '/test/spec/';
+export const BASE_XD_URL = '//localhost:' + ports.crossdomain + '/test/spec/';
 
 export const CHROME_APP = 'Tradeshift.Chrome';
 
