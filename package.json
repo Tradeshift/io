@@ -16,13 +16,13 @@
 		"semantic-release": "semantic-release"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.0.0-beta.56",
-		"@babel/core": "^7.0.0-beta.56",
-		"@babel/plugin-proposal-class-properties": "^7.0.0-beta.56",
-		"@babel/plugin-transform-runtime": "^7.0.0-beta.56",
-		"@babel/polyfill": "^7.0.0-beta.56",
-		"@babel/preset-env": "^7.0.0-beta.56",
-		"@babel/runtime": "^7.0.0-beta.56",
+		"@babel/cli": "^7.0.0-rc.1",
+		"@babel/core": "^7.0.0-rc.1",
+		"@babel/plugin-proposal-class-properties": "^7.0.0-rc.1",
+		"@babel/plugin-transform-runtime": "^7.0.0-rc.1",
+		"@babel/polyfill": "^7.0.0-rc.1",
+		"@babel/preset-env": "^7.0.0-rc.1",
+		"@babel/runtime": "^7.0.0-rc.1",
 		"browserstack-runner": "^0.8.0",
 		"debug": "^3.1.0",
 		"eslint": "5.3.0",
@@ -36,7 +36,7 @@
 		"rollup-plugin-node-builtins": "^2.1.2",
 		"rollup-plugin-node-globals": "^1.2.1",
 		"rollup-plugin-node-resolve": "^3.3.0",
-		"semantic-release": "^15.9.6",
+		"semantic-release": "^15.9.8",
 		"travis-deploy-once": "^5.0.2"
 	},
 	"dependencies": {
