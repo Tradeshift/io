@@ -27,11 +27,15 @@ export function hub(chrome) {
 	if (hubInstance) {
 		return hubInstance;
 	}
+
 	hubInstance = { HEARTBEAT: _HEARTBEAT };
 
 	const {
 		appByWindow = invalidFunction('appByWindow'),
-		windowByApp = invalidFunction('windowByApp')
+		windowByApp = invalidFunction('windowByApp'),
+		hanleAppSpawn = invalidFunction('handleAppSpawn'),
+		hanleAppSubmit = invalidFunction('handleAppSubmit'),
+		hanleAppTimeout = invalidFunction('handleAppTimeout')
 	} = chrome;
 
 	/**
@@ -55,12 +59,6 @@ export function hub(chrome) {
 	const debug = log('ts:io:top');
 
 	/**
-	 * Set of `add()` handlers keyed by `method`.
-	 * @type {Map<method: string, handler: Function>}
-	 */
-	const methodHandlers = new Map();
-
-	/**
 	 * WeakMap of frames with apps.
 	 * @type {WeakMap<Window, Object<appId: string, token: string>}
 	 */
@@ -73,16 +71,7 @@ export function hub(chrome) {
 
 	const appSpawns = [];
 
-	const add = (method, handler) => {
-		methodHandlers.set(method, handler);
-	};
-	const call = (method, argsArr) => {
-		if (methodHandlers.has(method)) {
-			return methodHandlers.get(method).apply({}, argsArr);
-		}
-	};
-
-	add('kill', function(targetWindow) {
+	function forgetApp(targetWindow) {
 		try {
 			const { appId, token } = appWindows.get(targetWindow);
 			debug('Killing app %o', appId);
@@ -94,7 +83,7 @@ export function hub(chrome) {
 		} catch (error) {
 			debug("App couldn't be killed in %o - %o", targetWindow, error);
 		}
-	});
+	}
 
 	/*
 	1. after sending CONNACK to an app, PING it after HEARTBEAT ms
@@ -123,9 +112,9 @@ export function hub(chrome) {
 		}
 		if (!appAlive) {
 			debug('App timed out, considering it dead! %o', appId);
-			call('timeout', [targetWindow, appId]);
+			handleAppTimeout(appId, targetWindow);
 			try {
-				call('kill', [targetWindow]);
+				forgetApp(targetWindow);
 			} catch (error) {
 				console.warn("App couldn't be killed", error);
 			}
@@ -171,13 +160,7 @@ export function hub(chrome) {
 		const message = event.data;
 		debug('Spawning %o from %o - %O', message.target, message.source, message);
 		try {
-			const appId = call(
-				'spawn',
-				Object.values({
-					app: message.target,
-					parent: message.source
-				})
-			);
+			const appId = handleAppSpawn(message.target, message.source);
 			appSpawns.push({ appId, message });
 		} catch (e) {
 			postMessage({
@@ -214,14 +197,7 @@ export function hub(chrome) {
 		postMessage(message, targetWindow);
 
 		if (message.type.indexOf('SPAWN') === 0) {
-			call(
-				'spawn.submit',
-				Object.values({
-					app: message.source,
-					parent: message.target,
-					data: message.data
-				})
-			);
+			handleAppSubmit(message.source, message.target, message.data);
 		}
 	}
 
@@ -313,8 +289,7 @@ export function hub(chrome) {
 
 	hubInstance = {
 		top: app,
-		add,
-		call,
+		forgetApp,
 		HEARTBEAT: hubInstance.HEARTBEAT
 	};
 	return hubInstance;
