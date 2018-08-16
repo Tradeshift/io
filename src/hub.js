@@ -107,15 +107,21 @@ export function hub(chrome) {
 		const now = window.performance.now();
 		const appPongInfo = appPongs.get(token);
 		const lastPong = (appPongInfo && appPongInfo.lastPong) || now;
-		if (now - lastPong < 3 * hubInstance.HEARTBEAT) {
+		let appAlive = now - lastPong < 3 * hubInstance.HEARTBEAT;
+		if (appAlive) {
 			appPongInfo.timeoutIds.add(
 				setTimeout(() => pingApp(opts), hubInstance.HEARTBEAT)
 			);
-			postMessage(
-				{ type: 'PING', viaHub: true, target: appId, token },
-				targetWindow
-			);
-		} else {
+			try {
+				postMessage(
+					{ type: 'PING', viaHub: true, target: appId, token },
+					targetWindow
+				);
+			} catch (error) {
+				appAlive = false;
+			}
+		}
+		if (!appAlive) {
 			debug('App timed out, considering it dead! %o', appId);
 			call('timeout', [targetWindow, appId]);
 			try {
