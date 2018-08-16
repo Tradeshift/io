@@ -170,7 +170,7 @@ export function hub(chrome) {
 				return;
 			} else {
 				console.warn(
-					'Unexpected critical error! ts.app sent message without being connected!',
+					'Unexpected error! ts.app sent message without being connected!',
 					event
 				);
 				return;
