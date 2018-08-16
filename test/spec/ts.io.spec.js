@@ -1,10 +1,8 @@
-import util from 'util';
 import {
 	CHROME_APP,
 	NOT_FOUND_APP,
 	TOPIC_BEFORE_CONNECT,
-	TOPIC_AFTER_CONNECT,
-	TOPIC_ONCE
+	TOPIC_AFTER_CONNECT
 } from '../lib/constants';
 import {
 	sendCommand,
@@ -104,7 +102,6 @@ try {
 			const afterConnectHandler = message => {
 				expect(message.topic).toEqual(TOPIC_AFTER_CONNECT);
 				expect(message.target).toEqual(CHROME_APP);
-				expect(apps.includes(message.source)).toBeTruthy();
 				if (++messageCount === 4) {
 					topApp.off(TOPIC_AFTER_CONNECT, afterConnectHandler);
 					done();

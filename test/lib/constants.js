@@ -8,4 +8,3 @@ export const NOT_FOUND_APP = 'Tradeshift.NotFound';
 
 export const TOPIC_BEFORE_CONNECT = 'before-connect';
 export const TOPIC_AFTER_CONNECT = 'after-connect';
-export const TOPIC_ONCE = 'once';

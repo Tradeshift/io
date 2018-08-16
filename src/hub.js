@@ -121,7 +121,7 @@ export function hub(chrome) {
 			try {
 				call('kill', [targetWindow]);
 			} catch (error) {
-				console.error(error);
+				console.warn("App couldn't be killed", error);
 			}
 		}
 	}
