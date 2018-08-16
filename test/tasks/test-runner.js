@@ -8,15 +8,26 @@ const ports = require('./ports.json');
 
 config.test_server_port = ports.base;
 
+const seed = String(Math.random()).slice(-5);
+function setSeed() {
+	config.test_path += '?seed=' + seed;
+	console.log('Seed set to ' + seed);
+}
+
 switch (process.argv[2]) {
 	case '--desktop':
+		console.log('Running tests on desktop browsers.');
 		config.browsers = desktopBrowsers;
+		setSeed();
 		break;
 	case '--mobile':
+		console.log('Running tests on mobile browsers.');
 		config.browsers = desktopBrowsers;
+		setSeed();
 		break;
 	case '--local':
 	default:
+		console.log('Running test server locally.');
 		config.browsers = [];
 		break;
 }
