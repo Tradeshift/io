@@ -6,9 +6,10 @@ let hub;
 
 export const windowMapper = {
 	appByWindow(win) {
-		if (!win || win === window.top) {
+		if (win === window.top) {
 			return CHROME_APP;
 		}
+
 		if (apps.length) {
 			const frames = window.frames;
 			for (let i = 0; i < frames.length; i++) {
@@ -17,10 +18,12 @@ export const windowMapper = {
 				}
 			}
 		}
+
+		console.warn('App not found ', win);
 		return null;
 	},
 	windowByApp(app, sourceWindow) {
-		if (!app || app === CHROME_APP) {
+		if (app === CHROME_APP) {
 			return window.top;
 		}
 
@@ -31,6 +34,8 @@ export const windowMapper = {
 				console.warn('%o is not a valid frame!', app, error);
 			}
 		}
+
+		console.warn('Window not found ', app);
 		return null;
 	}
 };
@@ -55,19 +60,20 @@ export const killAllApps = () => {
 			console.log('frame error', e);
 		}
 		if (frame) {
-			if (frame.contentWindow) {
-				try {
+			try {
+				if (frame.contentWindow) {
 					hub.call('kill', [frame.contentWindow]);
-				} catch (e) {
-					console.log('kill error', e);
 				}
+			} catch (e) {
+				console.log('kill error', e);
 			}
-			if (frame.parentNode) {
-				try {
+
+			try {
+				if (frame.parentNode) {
 					frame.parentNode.removeChild(frame);
-				} catch (e) {
-					console.log('removeChild error', e);
 				}
+			} catch (e) {
+				console.log('removeChild error', e);
 			}
 		}
 	});

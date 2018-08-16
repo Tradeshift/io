@@ -20,6 +20,11 @@ export function postMessage(message, targetWindow) {
 	if (!targetWindow) {
 		targetWindow = window.top;
 	}
+	if (!targetWindow.postMessage) {
+		const errorMessage = 'postMessage called on a non Window object.';
+		console.error(errorMessage, targetWindow);
+		throw new Error(errorMessage);
+	}
 	try {
 		targetWindow.postMessage(message, targetOrigin);
 	} catch (error) {

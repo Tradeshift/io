@@ -36,7 +36,7 @@ try {
 			}
 		});
 
-		beforeEach(() => {
+		beforeEach(done => {
 			apps = [
 				'Tradeshift.Unsecure',
 				'Tradeshift.Sandbox',
@@ -50,14 +50,19 @@ try {
 				sandbox: true,
 				crossdomain: true
 			});
+			setTimeout(done, 0);
 		});
 		afterEach(done => {
-			delay(() => {
-				killAllApps();
-				delay(() => {
+			killAllApps();
+
+			function noFramesLeft() {
+				if (window.document.getElementsByTagName('iframe').length) {
+					setTimeout(noFramesLeft, 0);
+				} else {
 					done();
-				});
-			});
+				}
+			}
+			setTimeout(noFramesLeft, 0);
 		});
 
 		it('app.emit() before CONNECT', done => {
@@ -160,51 +165,41 @@ try {
 		});
 
 		it("hub.add('timeout')", done => {
-			let timeoutApp, timeoutWindow;
-
 			let connectCount = 0;
 			const connectListener = event => {
 				const message = event.data;
 				if (!verifyTestMessage(message, event.source)) {
 					return;
 				}
-				if (message.data.method === 'connect') {
-					if (++connectCount === 4) {
-						delay(() => {
-							const command = {
-								command: 'destroy'
-							};
-							timeoutWindow = event.source;
-							timeoutApp = windowMapper.appByWindow(event.source);
-
-							let frame;
-							try {
-								frame = window.document.getElementById(timeoutApp);
-							} catch (e) {
-								console.log('frame error', e);
+				if (message.data.method === 'connect' && ++connectCount === 4) {
+					const frames = window.document.getElementsByTagName('iframe');
+					expect(frames.length).toEqual(4);
+					for (let i = frames.length - 1; i >= 0; i--) {
+						const frame = frames[i];
+						try {
+							if (frame && frame.parentNode) {
+								frame.parentNode.removeChild(frame);
 							}
-							try {
-								if (frame && frame.parentNode) {
-									frame.parentNode.removeChild(frame);
-								}
-							} catch (e) {
-								console.log('removeChild error', e);
-							}
-						});
-						window.removeEventListener('message', connectListener);
+						} catch (e) {
+							console.log('removeChild error', e);
+						}
 					}
+					window.removeEventListener('message', connectListener);
 				}
 			};
 			window.addEventListener('message', connectListener);
 
+			let timeoutCount = 0;
 			hub.add('timeout', (win, app) => {
-				expect(win).toBe(timeoutWindow);
-				expect(app).toEqual(timeoutApp);
+				removeAppOrFail(
+					app,
+					apps,
+					'App timeout() called more than once for the same app!'
+				);
 
-				if (win === timeoutWindow && app === timeoutApp) {
+				if (++timeoutCount === 4) {
+					hub.add('timeout', () => {});
 					done();
-				} else {
-					fail('Wrong app timed out.');
 				}
 			});
 		});
