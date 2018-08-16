@@ -7,32 +7,60 @@ const desktopBrowsers = require('./browserstack.desktop.json');
 const mobileBrowsers = require('./browserstack.mobile.json');
 const ports = require('./ports.json');
 
-config.test_server_port = ports.base;
-
+const logger = new Console(process.stdout, process.stderr);
 const seed = String(Math.random()).slice(-5);
-function setSeed() {
-	config.test_path += '?seed=' + seed;
-	console.log('Seed set to ' + seed);
-}
 
-console.log('chalk.supportsColor', chalk.supportsColor);
+config.test_server_port = ports.base;
 
 switch (process.argv[2]) {
 	case '--desktop':
-		console.log('Running tests on desktop browsers.');
+		logger.log('Running tests on desktop browsers.');
 		config.browsers = desktopBrowsers;
-		setSeed();
+		setSeed(logger);
 		break;
 	case '--mobile':
-		console.log('Running tests on mobile browsers.');
+		logger.log('Running tests on mobile browsers.');
 		config.browsers = mobileBrowsers;
-		setSeed();
+		setSeed(logger);
 		break;
 	case '--local':
 	default:
-		console.log('Running test server locally.');
+		logger.log('Running test server locally.');
 		config.browsers = [];
 		break;
+}
+
+httpServer
+	.createServer({
+		cache: -1
+	})
+	.listen(ports.crossdomain, '0.0.0.0', () => {
+		logger.log(
+			'Started HTTP Server for crossdomain simulation on port ' +
+				ports.crossdomain +
+				'.'
+		);
+		logger.log('Starting Browserstack HTTP Server on port ' + ports.base + '…');
+		tsio(logger);
+		browserStackRunner.run(config, async (err, report) => {
+			if (err) {
+				logger.log('BrowserStack Error:' + err);
+				fail(logger);
+				process.exit(2);
+			}
+			if (checkReport(report, logger)) {
+				succ(logger);
+				process.exit(0);
+			} else {
+				fail(logger);
+				process.exit(1);
+			}
+		});
+	});
+
+function setSeed(logger) {
+	config.test_path += '?seed=' + seed;
+	logger.log('Seed set to ' + chalk.green.bold(seed));
 }
 
 /**
@@ -41,15 +69,15 @@ switch (process.argv[2]) {
  * @param report BrowserStack report
  * @returns {boolean} true on success, false on failure
  */
-const checkReport = report => {
+function checkReport(report, logger) {
 	let out = [];
 	let errOut = [];
 
 	if (!report.length) {
-		console.log(
+		logger.log(
 			'No report received, probably because the build has been terminated...'
 		);
-		console.log(
+		logger.log(
 			'Check the tests runs! https://travis-ci.org/Tradeshift/io/pull_requests'
 		);
 		return false;
@@ -66,9 +94,9 @@ const checkReport = report => {
 		if (browserRes.tests && browserRes.tests.length) {
 			browserRes.tests.forEach(test => {
 				let timeString = ` (${test.runtime}ms)`;
-				if (test.runtime > 500) {
+				if (test.runtime >= 999) {
 					timeString = chalk.red(timeString);
-				} else if (test.runtime < 100) {
+				} else if (test.runtime <= 333) {
 					timeString = chalk.green(timeString);
 				}
 
@@ -106,43 +134,42 @@ const checkReport = report => {
 		}
 	});
 
-	const logger = new Console(process.stdout, process.stderr);
+	const hadErrors = errOut.length;
 
-	logger.log('');
-	logger.log('stdout:');
-	logger.log('');
+	if (hadErrors) {
+		fail(logger);
+	} else {
+		succ(logger);
+	}
+
 	out.forEach(line => logger.log(line));
-	logger.log('');
-	logger.log('stderr:');
-	logger.log('');
-	errOut.forEach(line => logger.error(line));
-	logger.log('');
+	if (errOut.length) {
+		errOut.forEach(line => logger.error(line));
+	}
 
-	return !errOut.length;
-};
+	return !hadErrors;
+}
 
-httpServer
-	.createServer({
-		cache: -1
-	})
-	.listen(ports.crossdomain, '0.0.0.0', () => {
-		console.log(
-			'Started HTTP Server for crossdomain simulation on port ' +
-				ports.crossdomain +
-				'.'
-		);
-		console.log(
-			'Starting Browserstack HTTP Server on port ' + ports.base + '…'
-		);
-		browserStackRunner.run(config, async (err, report) => {
-			if (err) {
-				console.log('Error:' + err);
-				process.exit(2);
-			}
-			if (checkReport(report)) {
-				process.exit(0);
-			} else {
-				process.exit(1);
-			}
-		});
-	});
+// http://patorjk.com/software/taag/#p=display&f=JS%20Stick%20Letters&t=ts.io
+function tsio(logger) {
+	logger.log('___  __      __  ');
+	logger.log(' |  /__`  | /  \\ ');
+	logger.log(' |  .__/ .| \\__/ ');
+	logger.log('                 ');
+}
+
+// http://patorjk.com/software/taag/#p=display&f=JS%20Stick%20Letters&t=success!
+function succ(logger) {
+	logger.log(' __        __   __   ___  __   __    /');
+	logger.log('/__` |  | /  ` /  ` |__  /__` /__`  / ');
+	logger.log('.__/ \\__/ \\__, \\__, |___ .__/ .__/ .  ');
+	logger.log('                                      ');
+}
+
+// http://patorjk.com/software/taag/#p=display&f=JS%20Stick%20Letters&t=failure!
+function fail(logger) {
+	logger.log(' ___                   __   ___   /');
+	logger.log('|__   /\\  | |    |  | |__) |__   / ');
+	logger.log('|    /~~\\ | |___ \\__/ |  \\ |___ .  ');
+	logger.log('                                   ');
+}
