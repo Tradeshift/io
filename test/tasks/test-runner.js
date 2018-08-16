@@ -14,6 +14,8 @@ function setSeed() {
 	console.log('Seed set to ' + seed);
 }
 
+console.log('chalk.supportsColor', chalk.supportsColor);
+
 switch (process.argv[2]) {
 	case '--desktop':
 		console.log('Running tests on desktop browsers.');
@@ -22,7 +24,7 @@ switch (process.argv[2]) {
 		break;
 	case '--mobile':
 		console.log('Running tests on mobile browsers.');
-		config.browsers = desktopBrowsers;
+		config.browsers = mobileBrowsers;
 		setSeed();
 		break;
 	case '--local':
@@ -109,7 +111,7 @@ const checkReport = report => {
 	return !errOut.length;
 };
 
-const crossdomainServer = httpServer
+httpServer
 	.createServer({
 		cache: -1
 	})

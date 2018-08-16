@@ -1,6 +1,4 @@
-import { killAllApps } from './hub-mock';
-
-const isWindow = win => win && win.postMessage && win.frames;
+const isWindow = win => win && win.postMessage;
 
 export const verifyTestMessage = (message, source) =>
 	source && message && message.ioTest && message.data;
