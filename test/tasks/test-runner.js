@@ -1,10 +1,25 @@
 const chalk = require('chalk');
+const httpServer = require('http-server');
 const browserStackRunner = require('browserstack-runner');
 const config = require('./browserstack.json');
-const testServer = require('./test-server');
-const ports = require('../config.json');
+const desktopBrowsers = require('./browserstack.desktop.json');
+const mobileBrowsers = require('./browserstack.mobile.json');
+const ports = require('./ports.json');
 
-config['test_server_port'] = ports.base;
+config.test_server_port = ports.base;
+
+switch (process.argv[2]) {
+	case '--desktop':
+		config.browsers = desktopBrowsers;
+		break;
+	case '--mobile':
+		config.browsers = desktopBrowsers;
+		break;
+	case '--local':
+	default:
+		config.browsers = [];
+		break;
+}
 
 /**
  * Check the report and pretty-print to the console
@@ -23,7 +38,6 @@ const checkReport = report => {
 		console.log(
 			'Check the tests runs! https://travis-ci.org/Tradeshift/io/pull_requests'
 		);
-		fail();
 		return false;
 	}
 
@@ -84,19 +98,28 @@ const checkReport = report => {
 	return !errOut.length;
 };
 
-testServer((baseServer, crossdomainServer) =>
-	browserStackRunner.run(config, (err, report) => {
-		crossdomainServer.close();
-		baseServer.close();
-
-		if (err) {
-			console.log('Error:' + err);
-			process.exit(2);
-		}
-		if (checkReport(report)) {
-			process.exit(0);
-		} else {
-			process.exit(1);
-		}
+const crossdomainServer = httpServer
+	.createServer({
+		cache: -1
 	})
-);
+	.listen(ports.crossdomain, '0.0.0.0', () => {
+		console.log(
+			'Started HTTP Server for crossdomain simulation on port ' +
+				ports.crossdomain +
+				'.'
+		);
+		console.log(
+			'Starting Browserstack HTTP Server on port ' + ports.base + '…'
+		);
+		browserStackRunner.run(config, async (err, report) => {
+			if (err) {
+				console.log('Error:' + err);
+				process.exit(2);
+			}
+			if (checkReport(report)) {
+				process.exit(0);
+			} else {
+				process.exit(1);
+			}
+		});
+	});

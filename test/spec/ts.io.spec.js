@@ -22,7 +22,7 @@ try {
 		beforeAll(() => {
 			try {
 				hub = getHub();
-				hub.HEARTBEAT = 100;
+				hub.HEARTBEAT = 300;
 				hub.add('spawn', (app, parent) => {
 					if (app === NOT_FOUND_APP) {
 						throw new Error('App does not exist.');

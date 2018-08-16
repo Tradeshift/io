@@ -2348,8 +2348,8 @@
 	  performance.webkitNow  ||
 	  function(){ return (new Date()).getTime() };
 
-	var base = 8090;
-	var crossdomain = 8091;
+	var base = 9000;
+	var crossdomain = 9001;
 	var ports = {
 	  base: base,
 	  crossdomain: crossdomain
@@ -2536,7 +2536,7 @@
 	    beforeAll(function () {
 	      try {
 	        hub$1 = getHub();
-	        hub$1.HEARTBEAT = 100;
+	        hub$1.HEARTBEAT = 300;
 	        hub$1.add('spawn', function (app, parent) {
 	          if (app === NOT_FOUND_APP) {
 	            throw new Error('App does not exist.');

@@ -9,8 +9,8 @@
 		"lint": "eslint --version && eslint --config eslintrc.json --color src",
 		"postlint": "prettier --write --config .prettierrc-md \"*.md\"",
 		"pretest": "npm run lint && npm run build",
-		"test": "node test/tasks/browserstack-runner.js",
-		"test:local:server": "node test/tasks/local-runner.js",
+		"test": "node test/tasks/test-runner.js --desktop",
+		"test:local:server": "node test/tasks/test-runner.js --local",
 		"test:local": "run-p --aggregate-output test:local:server dev",
 		"travis-deploy-once": "travis-deploy-once",
 		"semantic-release": "semantic-release"
