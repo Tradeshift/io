@@ -61,3 +61,6 @@ node_modules/
 .vscode
 *.code-workspace
 
+# Generated files
+/lib/
+test/jasmine/spec/
