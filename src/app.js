@@ -31,10 +31,10 @@ export function app() {
 	const handlersByTopic = new Map();
 
 	/**
-	 * Set of `add()` handlers keyed by `method`.
+	 * Set of `defined()` handlers keyed by handler name.
 	 * @type {Map<method: string, handler: Function>}
 	 */
-	const lifeCycleMethodHandlers = new Map();
+	const lifeCycleHandlers = new Map();
 
 	appInstance = {
 		/**
@@ -99,13 +99,23 @@ export function app() {
 		 * @param {string} topic Topic.
 		 * @param {*=} data Data.
 		 */
-		emit(topic, target, data = {}) {
-			if (arguments.length < 2) {
+		emit(topic, ...args) {
+			if (args.length === 0 || args.length > 2) {
 				throw new Error(
 					'ts.io().emit() called with invalid arguments.',
 					arguments
 				);
 			}
+
+			let target, data;
+
+			if (args.length === 1) {
+				target = args[0];
+			} else {
+				data = args[0];
+				target = args[1];
+			}
+
 			const message = { type: 'EVENT', target, topic, data, token };
 			if (token) {
 				debug('%o (%o) to %o - %o', 'EVENT', topic, target, data);
@@ -117,7 +127,7 @@ export function app() {
 		},
 		define(lifecyle) {
 			if (lifecyle.spawn) {
-				lifeCycleMethodHandlers.set('spawn', handler);
+				lifeCycleHandlers.set('spawn', handler);
 			}
 		},
 		/**
@@ -156,11 +166,11 @@ export function app() {
 
 		debug('SPAWNED from %o - %O', message.source, message);
 
-		if (lifeCycleMethodHandlers.has('spawn')) {
+		if (lifeCycleHandlers.has('spawn')) {
 			/**
 			 * @TODO Timeout handling!
 			 */
-			lifeCycleMethodHandlers.get('spawn').apply({}, [
+			lifeCycleHandlers.get('spawn').apply({}, [
 				message.data,
 				function resolve(data) {
 					postMessage({
@@ -189,11 +199,12 @@ export function app() {
 	function handleConnect(event) {
 		const message = event.data;
 
-		if (lifeCycleMethodHandlers.has('connect')) {
-			lifeCycleMethodHandlers.get('connect')();
+		if (lifeCycleHandlers.has('connect')) {
+			lifeCycleHandlers.get('connect')();
 		}
 
 		if (message.source) {
+			handleSpawn(event);
 		}
 	}
 	/**
@@ -231,7 +242,7 @@ export function app() {
 
 				handleConnect(event);
 
-				let queueLength = flushQueue(token);
+				const queueLength = flushQueue(token);
 				if (queueLength) {
 					debug(
 						'Publishing %s queued events%s',

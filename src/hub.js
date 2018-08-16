@@ -33,9 +33,9 @@ export function hub(chrome) {
 	const {
 		appByWindow = invalidFunction('appByWindow'),
 		windowByApp = invalidFunction('windowByApp'),
-		hanleAppSpawn = invalidFunction('handleAppSpawn'),
-		hanleAppSubmit = invalidFunction('handleAppSubmit'),
-		hanleAppTimeout = invalidFunction('handleAppTimeout')
+		handleAppSpawn = invalidFunction('handleAppSpawn'),
+		handleAppSubmit = invalidFunction('handleAppSubmit'),
+		handleAppTimeout = invalidFunction('handleAppTimeout')
 	} = chrome;
 
 	/**
@@ -74,14 +74,14 @@ export function hub(chrome) {
 	function forgetApp(targetWindow) {
 		try {
 			const { appId, token } = appWindows.get(targetWindow);
-			debug('Killing app %o', appId);
+			debug('Forgetting app %o', appId);
 			appPongs
 				.get(token)
 				.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
 			appPongs.delete(token);
 			appWindows.delete(targetWindow);
 		} catch (error) {
-			debug("App couldn't be killed in %o - %o", targetWindow, error);
+			debug("App couldn't be forgotten in %o - %o", targetWindow, error);
 		}
 	}
 
@@ -204,8 +204,8 @@ export function hub(chrome) {
 	window.addEventListener('message', function(event) {
 		const message = event.data;
 		const appWindow = appWindows.get(event.source);
-		const token = (message.token = appWindow.token);
-		message.source = appWindow.appId;
+		const token = (message.token = _.get(appWindow, 'token'));
+		message.source = _.get(appWindow, 'appId');
 		message.viaHub = true;
 
 		// Only accept valid messages from apps.
@@ -215,15 +215,13 @@ export function hub(chrome) {
 
 		// Message from a frame we don't know yet.
 		// The only command should be CONNECT, we fail otherwise.
-		if (!appWindows.has(event.source) && message.type !== 'CONNECT') {
+		if (!appWindow && message.type !== 'CONNECT') {
 			console.warn(
 				'Unexpected critical error! app sent message without being connected!',
 				event
 			);
 			return;
-		}
-
-		if (message.token !== appWindows.get(event.source).token) {
+		} else if (message.token !== appWindows.get(event.source).token) {
 			console.warn(
 				'Token seems invalid, discarding message!\n' +
 					JSON.stringify(message, null, 2)
@@ -242,7 +240,7 @@ export function hub(chrome) {
 		switch (message.type) {
 			case 'CONNECT': {
 				// Message from a frame we don't know yet.
-				if (!appWindows.has(event.source)) {
+				if (!appWindow) {
 					handleAppConnect(event);
 				} else {
 					console.warn('Already connected app trying to reconnect!', event);

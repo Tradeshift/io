@@ -40,7 +40,7 @@ export function postMessage(message, targetWindow) {
 				error.code === 25) /* DATA_CLONE_ERR */
 		) {
 			throw new Error(
-				"ts.io.emit called with { data } argument that can't be cloned using the structural clone algorithm."
+				"ts.io method called with { data } argument that can't be cloned using the structural clone algorithm."
 			);
 		} else {
 			console.warn('Something went wrong while sending postMessage.', error);
@@ -113,14 +113,9 @@ export function hubMessageValid(message) {
 	return (
 		messageValid(message) &&
 		!message.viaHub &&
-		[
-			'CONNECT',
-			'EVENT',
-			'PONG',
-			'SPAWN',
-			'SPAWN-SUCCESS',
-			'SPAWN-FAIL'
-		].includes(message.type)
+		['CONNECT', 'EVENT', 'PONG', 'SPAWN-SUCCESS', 'SPAWN-FAIL'].includes(
+			message.type
+		)
 	);
 }
 
