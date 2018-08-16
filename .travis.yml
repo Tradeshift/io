@@ -7,13 +7,29 @@ cache:
 notifications:
   email: false
 before_install:
-  - npm i -g npm@latest greenkeeper-lockfile
+  - |
+    if [[ $TRAVIS_BRANCH == *"greenkeeper"* ]]; then
+      npm i -g greenkeeper-lockfile;
+    else
+      npm i -g npm@latest;
+    fi
 install:
-  - npm install # npm ci is not compatible with greenkeeper-lockfile
+  - |
+    if [[ $TRAVIS_BRANCH == *"greenkeeper"* ]]; then
+      npm install;
+    else
+      npm ci;
+    fi
 before_script:
-  - greenkeeper-lockfile-update
+  - |
+    if [[ $TRAVIS_BRANCH == *"greenkeeper"* ]]; then
+      greenkeeper-lockfile-update;
+    fi
 after_script:
-  - greenkeeper-lockfile-upload
+  - |
+    if [[ $TRAVIS_BRANCH == *"greenkeeper"* ]]; then
+      greenkeeper-lockfile-upload;
+    fi
 after_success:
   - npm run travis-deploy-once "npm run semantic-release"
 branches:
