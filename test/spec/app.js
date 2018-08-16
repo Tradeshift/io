@@ -3,7 +3,7 @@ import { CHROME_APP, TOPIC_BEFORE_CONNECT } from '../lib/constants';
 
 let app;
 
-window.addEventListener('message', async event => {
+window.addEventListener('message', event => {
 	const message = event.data;
 	if (!message || !message.command || message.ioTest === undefined) {
 		return;
@@ -18,15 +18,16 @@ window.addEventListener('message', async event => {
 			if (app.call) {
 				let err, data;
 				try {
-					[err, data] = await app.call(
-						message.method,
-						message.target,
-						message.data
-					);
+					app
+						.call(message.method, message.target, message.data)
+						.then(([_err, _data]) => {
+							err = _err;
+							data = _data;
+							forwardMessage({ method: 'call', err, data });
+						});
 				} catch (e) {
-					forwardMessage({ method: 'error', e, err });
+					forwardMessage({ method: 'error', e, err, data });
 				}
-				forwardMessage({ method: 'call', err, data });
 			}
 			break;
 		case 'destroy':

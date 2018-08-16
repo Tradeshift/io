@@ -117,6 +117,11 @@ class Log {
 		this.namespace = namespace;
 		this.color = color;
 		this.previousTime = 0;
+
+		this.noColors = console.log
+			.toString()
+			.toLowerCase()
+			.includes('browserstack');
 		/**
 		 * @param {string=} message Message
 		 * @param {any[]} optionalParams Optional Params
@@ -125,15 +130,24 @@ class Log {
 			const now = window.performance.now();
 			const deltaTime = now - (this.previousTime || now);
 			this.previousTime = now;
-			console.log(
-				`%c${this.namespace}%c - ${message} - %c${parseFloat(deltaTime).toFixed(
-					2
-				)}ms`,
-				`color: ${this.color};`,
-				'font-weight: normal;',
-				...optionalParams,
-				`color: ${this.color};`
-			);
+			if (this.noColors) {
+				console.log(
+					`${this.namespace} - ${message} - ${parseFloat(deltaTime).toFixed(
+						2
+					)}ms`,
+					...optionalParams
+				);
+			} else {
+				console.log(
+					`%c${this.namespace}%c - ${message} - %c${parseFloat(
+						deltaTime
+					).toFixed(2)}ms`,
+					`color: ${this.color};`,
+					'font-weight: normal;',
+					...optionalParams,
+					`color: ${this.color};`
+				);
+			}
 		};
 	}
 }

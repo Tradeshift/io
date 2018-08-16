@@ -11,6 +11,14 @@
 
 const targetOrigin = '*';
 
+function isWindow(win) {
+	try {
+		return win && win.postMessage;
+	} catch (error) {
+		return false;
+	}
+}
+
 /**
  * Send message to target window.
  * @param {Message} message
@@ -20,7 +28,7 @@ export function postMessage(message, targetWindow) {
 	if (!targetWindow) {
 		targetWindow = window.top;
 	}
-	if (!targetWindow.postMessage) {
+	if (!isWindow(targetWindow)) {
 		const errorMessage = 'postMessage called on a non Window object.';
 		console.warn(errorMessage, targetWindow);
 		throw new Error(errorMessage);
