@@ -170,9 +170,20 @@ export function app() {
 			token = message.token || '';
 			debug = log('ts:io:sub:' + appId);
 			debug('CONNECTED %o', message);
+
+			const queueLength = flushQueue(token);
+			if (queueLength) {
+				debug(
+					'Publishing %s queued message%s',
+					queueLength,
+					queueLength === 1 ? '' : 's'
+				);
+			}
+
 			if (methodHandlers.has('connect')) {
 				methodHandlers.get('connect')();
 			}
+
 			if (message.source) {
 				debug('SPAWNED from %o - %O', message.source, message);
 				if (methodHandlers.has('spawn')) {
@@ -205,14 +216,6 @@ export function app() {
 				}
 			}
 
-			let queueLength = flushQueue(token);
-			if (queueLength) {
-				debug(
-					'Publishing %s queued message%s',
-					queueLength,
-					queueLength === 1 ? '' : 's'
-				);
-			}
 			return;
 		}
 
