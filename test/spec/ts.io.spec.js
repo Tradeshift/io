@@ -62,14 +62,16 @@ try {
 
 		it('app.emit() before CONNECT', done => {
 			let messageCount = 0;
-			topApp.on(TOPIC_BEFORE_CONNECT, message => {
+			const beforeConnectHandler = message => {
 				expect(message.topic).toEqual(TOPIC_BEFORE_CONNECT);
 				expect(message.target).toEqual(CHROME_APP);
 				expect(apps.includes(message.source)).toBeTruthy();
 				if (++messageCount === 4) {
+					topApp.off(TOPIC_BEFORE_CONNECT, beforeConnectHandler);
 					done();
 				}
-			});
+			};
+			topApp.on(TOPIC_BEFORE_CONNECT, beforeConnectHandler);
 		});
 
 		it('app.emit() after CONNECT', done => {
@@ -94,15 +96,17 @@ try {
 			};
 			window.addEventListener('message', connectListener);
 
-			let messageCount = 0;
-			topApp.on(TOPIC_AFTER_CONNECT, message => {
+			const afterConnectHandler = message => {
 				expect(message.topic).toEqual(TOPIC_AFTER_CONNECT);
 				expect(message.target).toEqual(CHROME_APP);
 				expect(apps.includes(message.source)).toBeTruthy();
 				if (++messageCount === 4) {
+					topApp.off(TOPIC_AFTER_CONNECT, afterConnectHandler);
 					done();
 				}
-			});
+			};
+			let messageCount = 0;
+			topApp.on(TOPIC_AFTER_CONNECT, afterConnectHandler);
 		});
 
 		it('app.once() [on() + off()]', done => {
@@ -146,11 +150,13 @@ try {
 			topApp.once(apps[3], messageHandler);
 
 			let messageCount = 0;
-			topApp.on('*', msg => {
+			const topHandler = msg => {
 				if (++messageCount === 12) {
+					topApp.off('*', topHandler);
 					done();
 				}
-			});
+			};
+			topApp.on('*', topHandler);
 		});
 
 		it("hub.add('timeout')", done => {
