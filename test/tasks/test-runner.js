@@ -1,3 +1,4 @@
+const { Console } = require('console');
 const chalk = require('chalk');
 const httpServer = require('http-server');
 const browserStackRunner = require('browserstack-runner');
@@ -105,8 +106,17 @@ const checkReport = report => {
 		}
 	});
 
-	out.forEach(line => console.log(line));
-	errOut.forEach(line => console.log(line));
+	const logger = new Console(process.stdout, process.stderr);
+
+	logger.log('');
+	logger.log('stdout:');
+	logger.log('');
+	out.forEach(line => logger.log(line));
+	logger.log('');
+	logger.log('stderr:');
+	logger.log('');
+	errOut.forEach(line => logger.error(line));
+	logger.log('');
 
 	return !errOut.length;
 };
