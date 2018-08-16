@@ -31,7 +31,12 @@ after_script:
       greenkeeper-lockfile-upload;
     fi
 after_success:
-  - npm run travis-deploy-once "npm run semantic-release"
+  - |
+    if [[ $TRAVIS_PULL_REQUEST == 'true' ]]; then
+      npx semantic-release-github-pr;
+    else
+      npm run semantic-release;
+    fi
 branches:
   only:
     - master
