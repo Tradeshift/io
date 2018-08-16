@@ -283,6 +283,8 @@ export function hub(chrome) {
 		}
 	});
 
+	app();
+
 	hubInstance = {
 		top: app,
 		add,
