@@ -9,7 +9,7 @@
 		"lint": "eslint --version && eslint --config .eslintrc --color src && eslint --config .eslintrc --color test/ --ignore-pattern jasmine/",
 		"postlint": "prettier --write --config .prettierrc-md \"*.md\"",
 		"pretest": "npm run lint && npm run build",
-		"test": "node test/tasks/test-runner.js --desktop",
+		"test": "node test/tasks/test-runner.js --desktop --color=full",
 		"test:local:server": "node test/tasks/test-runner.js --local",
 		"test:local": "run-p --aggregate-output test:local:server dev",
 		"travis-deploy-once": "travis-deploy-once",
