@@ -125,15 +125,17 @@ export function app() {
 				queueMessage(message);
 			}
 		},
-		define(lifecyle) {
-			if (lifecyle.spawn) {
-				lifecycle.set('spawn', handler);
+		define(lifecycleHandlers) {
+			if (lifecycleHandlers.spawn) {
+				lifecycle.set('spawn', lifecycleHandlers.spawn);
+			}
+			if (lifecycleHandlers.connect) {
+				lifecycle.set('connect', lifecycleHandlers.connect);
 			}
 		},
 		/**
-		 * Do something RPC-style (spawn, request, etc.)
+		 * Spawn app method
 		 * @async
-		 * @param {string} method Remote method to call (spawn, request, etc.)
 		 * @param {string} target Target appId. - No wildcards supported
 		 * @param {*=} data Data.
 		 * @returns {Promise}
@@ -236,9 +238,6 @@ export function app() {
 		switch (message.type) {
 			case 'CONNACK': {
 				debug('CONNECTED %o', message);
-
-				handleConnect(event);
-
 				const queueLength = flushQueue(token);
 				if (queueLength) {
 					debug(
@@ -247,6 +246,8 @@ export function app() {
 						queueLength === 1 ? '' : 's'
 					);
 				}
+
+				handleConnect(event);
 
 				break;
 			}
