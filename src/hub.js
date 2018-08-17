@@ -121,8 +121,8 @@ export function hub(chrome) {
 		}
 	}
 
-	function handleAppConnect(event) {
-		const appId = appByWindow(event.source);
+	function handleAppConnect({ data: message, source: sourceWindow }) {
+		const appId = appByWindow(sourceWindow);
 		const token = uuid();
 		const spawnWaiting = appSpawns.findIndex(spawn => spawn.appId === appId);
 		const connackMessage = {
@@ -131,7 +131,7 @@ export function hub(chrome) {
 			target: appId,
 			token
 		};
-		appWindows.set(event.source, { appId, token });
+		appWindows.set(sourceWindow, { appId, token });
 
 		debug('CONNECT %o', appId);
 
@@ -142,9 +142,9 @@ export function hub(chrome) {
 			appSpawns.splice(spawnWaiting, 1);
 		}
 
-		postMessage(connackMessage, event.source);
+		postMessage(connackMessage, sourceWindow);
 
-		const pingOpts = { targetWindow: event.source, appId, token };
+		const pingOpts = { targetWindow: sourceWindow, appId, token };
 		const timeoutId = setTimeout(
 			() => pingApp(pingOpts),
 			hubInstance.HEARTBEAT
@@ -156,8 +156,7 @@ export function hub(chrome) {
 		});
 	}
 
-	function handleSpawn(event) {
-		const message = event.data;
+	function handleSpawn({ data: message, source: sourceWindow }) {
 		debug('Spawning %o from %o - %O', message.target, message.source, message);
 		try {
 			const appId = handleAppSpawn(message.target, message.source);
@@ -174,19 +173,20 @@ export function hub(chrome) {
 		}
 	}
 
-	function handlePong(token) {
+	function handlePong(event) {
+		const token = event.data.token;
+
 		appPongs.set(token, {
 			...appPongs.get(token),
 			lastPong: window.performance.now()
 		});
 	}
 
-	function handleEvent(event) {
-		const message = event.data;
+	function handleEvent({ data: message, source: sourceWindow }) {
 		/**
 		 * @TODO Handle the case when the Chrome blocks certain targets for certain sources
 		 */
-		const targetWindow = windowByApp(message.target, event.source);
+		const targetWindow = windowByApp(message.target, sourceWindow);
 		debug(
 			'Routing %o from %o to %o - %O',
 			message.type,
@@ -203,9 +203,8 @@ export function hub(chrome) {
 
 	window.addEventListener('message', function(event) {
 		const message = event.data;
-		const appWindow = appWindows.get(event.source);
-		const token = (message.token = _.get(appWindow, 'token'));
-		message.source = _.get(appWindow, 'appId');
+		const appWindow = appWindows.get(event.source) || {};
+		message.source = appWindow.appId;
 		message.viaHub = true;
 
 		// Only accept valid messages from apps.
@@ -221,7 +220,7 @@ export function hub(chrome) {
 				event
 			);
 			return;
-		} else if (message.token !== appWindows.get(event.source).token) {
+		} else if (message.token !== appWindow.token) {
 			console.warn(
 				'Token seems invalid, discarding message!\n' +
 					JSON.stringify(message, null, 2)
@@ -275,7 +274,7 @@ export function hub(chrome) {
 				break;
 			}
 			case 'PONG':
-				handlePong(token);
+				handlePong(event);
 				break;
 			default:
 				debug('* %o', event.data);

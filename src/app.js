@@ -22,7 +22,7 @@ export function app() {
 	let appId = '';
 	let token = '';
 
-	let spawnResolve;
+	let spawnSubmit;
 
 	/**
 	 * Set of `on()` handlers keyed by `topic`.
@@ -31,10 +31,10 @@ export function app() {
 	const handlersByTopic = new Map();
 
 	/**
-	 * Set of `defined()` handlers keyed by handler name.
+	 * Set of `define()` handlers keyed by handler name.
 	 * @type {Map<method: string, handler: Function>}
 	 */
-	const lifeCycleHandlers = new Map();
+	const lifecycle = new Map();
 
 	appInstance = {
 		/**
@@ -127,7 +127,7 @@ export function app() {
 		},
 		define(lifecyle) {
 			if (lifecyle.spawn) {
-				lifeCycleHandlers.set('spawn', handler);
+				lifecycle.set('spawn', handler);
 			}
 		},
 		/**
@@ -156,23 +156,21 @@ export function app() {
 
 			// Wait for response from the app or some sort of failure
 			return new Promise(resolve => {
-				spawnResolve = resolve;
+				spawnSubmit = resolve;
 			});
 		}
 	};
 
-	function handleSpawn(event) {
-		const message = event.data;
-
+	function handleSpawn({ data: message, source: sourceWindow }) {
 		debug('SPAWNED from %o - %O', message.source, message);
 
-		if (lifeCycleHandlers.has('spawn')) {
+		if (lifecycle.has('spawn')) {
 			/**
 			 * @TODO Timeout handling!
 			 */
-			lifeCycleHandlers.get('spawn').apply({}, [
+			lifecycle.get('spawn').apply({}, [
 				message.data,
-				function resolve(data) {
+				function submit(data) {
 					postMessage({
 						type: 'SPAWN-SUCCESS',
 						target: message.source,
@@ -196,17 +194,16 @@ export function app() {
 		}
 	}
 
-	function handleConnect(event) {
-		const message = event.data;
-
-		if (lifeCycleHandlers.has('connect')) {
-			lifeCycleHandlers.get('connect')();
+	function handleConnect({ data: message, source: sourceWindow }) {
+		if (lifecycle.has('connect')) {
+			lifecycle.get('connect')();
 		}
 
 		if (message.source) {
 			handleSpawn(event);
 		}
 	}
+
 	/**
 	 * Handle events this app is listening for.
 	 * @param {MessageEvent} event
@@ -263,9 +260,9 @@ export function app() {
 			case 'PING':
 				return postMessage({ type: 'PONG', token });
 			case 'SPAWN-SUCCESS':
-				return spawnResolve([null, message.data]);
+				return spawnSubmit([null, message.data]);
 			case 'SPAWN-FAIL':
-				return spawnResolve([message.data, null]);
+				return spawnSubmit([message.data, null]);
 			default:
 				break;
 		}
