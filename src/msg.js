@@ -1,13 +1,23 @@
 /**
  * The Message.
  * @typedef {object} Message
- * @property {string} type The type of the message. (one of ['CONNECT', 'CONNACK', 'PUBLISH', 'PINGREQ', 'PINGRES'])
- * @property {string=} topic The topic of the message. (required for 'PUBLISH' type)
- * @property {string=} target Target appId. (required for ['PUBLISH', 'CONNACK', 'PINGREQ'] types)
+ * @property {string} type The type of the message. (one of ['CONNECT', 'CONNACK', 'EVENT', 'PINGREQ', 'PINGRES'])
+ * @property {string=} topic The topic of the message. (required for 'EVENT' type)
+ * @property {string=} target Target appId. (required for ['EVENT', 'CONNACK', 'PINGREQ'] types)
  * @property {boolean} viaHub The message was brokered by the Hub.
  * @property {string=} token Hack-proof session token. (required for all types except 'CONNECT')
  * @property {*=} data Data to be passed with the message. Can be any type that is compatible with the structured clone algorithm,
  */
+
+const targetOrigin = '*';
+
+function isWindow(win) {
+	try {
+		return win && win.postMessage;
+	} catch (error) {
+		return false;
+	}
+}
 
 /**
  * Send message to target window.
@@ -18,8 +28,11 @@ export function postMessage(message, targetWindow) {
 	if (!targetWindow) {
 		targetWindow = window.top;
 	}
+	if (!isWindow(targetWindow)) {
+		throw new Error('postMessage called on a non Window object.');
+	}
 	try {
-		targetWindow.postMessage(message, '*');
+		targetWindow.postMessage(message, targetOrigin);
 	} catch (error) {
 		if (
 			error instanceof DOMException &&
@@ -27,12 +40,39 @@ export function postMessage(message, targetWindow) {
 				error.code === 25) /* DATA_CLONE_ERR */
 		) {
 			throw new Error(
-				"ts.io.publish called with { data } argument that can't be cloned using the structural clone algorithm."
+				"ts.io method called with { data } argument that can't be cloned using the structural clone algorithm."
 			);
 		} else {
 			console.warn('Something went wrong while sending postMessage.', error);
 		}
 	}
+}
+
+const messageQueue = [];
+
+export function queueMessage(message, targetWindow) {
+	if (!targetWindow) {
+		targetWindow = window.top;
+	}
+	messageQueue.push({
+		targetWindow,
+		message
+	});
+}
+
+export function flushQueue(token) {
+	if (messageQueue.length) {
+		messageQueue
+			.reverse()
+			.forEach(queuedMessage =>
+				queuedMessage.targetWindow.postMessage(
+					{ ...queuedMessage.message, token },
+					targetOrigin
+				)
+			);
+		return messageQueue.length;
+	}
+	return false;
 }
 
 /**
@@ -44,16 +84,11 @@ export function messageValid(message) {
 }
 
 /**
- * Validate message for 'PUBLISH' type.
+ * Validate message for 'SPAWN', 'SPAWNED', 'EVENT', etc. complex types.
  * @param {Message} message
  */
-export function publishMessageValid(message) {
-	return (
-		messageValid(message) &&
-		message.type === 'PUBLISH' &&
-		message.topic &&
-		message.target
-	);
+export function complexMessageValid(message) {
+	return messageValid(message) && message.target;
 }
 
 /**
@@ -64,7 +99,9 @@ export function appMessageValid(message) {
 	return (
 		messageValid(message) &&
 		message.viaHub &&
-		['CONNACK', 'PUBLISH', 'PING'].includes(message.type)
+		['CONNACK', 'EVENT', 'PING', 'SPAWN-SUCCESS', 'SPAWN-FAIL'].includes(
+			message.type
+		)
 	);
 }
 
@@ -76,7 +113,14 @@ export function hubMessageValid(message) {
 	return (
 		messageValid(message) &&
 		!message.viaHub &&
-		['CONNECT', 'PUBLISH', 'PONG'].includes(message.type)
+		[
+			'CONNECT',
+			'EVENT',
+			'PONG',
+			'SPAWN',
+			'SPAWN-SUCCESS',
+			'SPAWN-FAIL'
+		].includes(message.type)
 	);
 }
 
