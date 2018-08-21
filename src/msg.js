@@ -43,7 +43,10 @@ export function postMessage(message, targetWindow) {
 				"ts.io method called with { data } argument that can't be cloned using the structural clone algorithm."
 			);
 		} else {
-			console.warn('Something went wrong while sending postMessage.', error);
+			console.warn(
+				'Something went wrong while sending postMessage.\n' +
+					JSON.stringify(error, null, 2)
+			);
 		}
 	}
 }

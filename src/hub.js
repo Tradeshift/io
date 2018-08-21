@@ -115,7 +115,9 @@ export function hub(chrome) {
 			try {
 				forgetApp(targetWindow);
 			} catch (error) {
-				console.warn("App couldn't be killed", error);
+				console.warn(
+					"App couldn't be killed.\n" + JSON.stringify(error, null, 2)
+				);
 			}
 		}
 	}
@@ -219,15 +221,15 @@ export function hub(chrome) {
 		// The only command should be CONNECT, we fail otherwise.
 		if (!appWindow && message.type !== 'CONNECT') {
 			console.warn(
-				'Unexpected critical error! app sent message without being connected!',
-				event
+				'Unexpected critical error! App sent message without being connected!\n' +
+					JSON.stringfy(message, null, 2)
 			);
 			return;
 		}
 
 		if (message.token !== appWindow.token) {
 			console.warn(
-				'Token seems invalid, discarding message!\n' +
+				'Token invalid, discarding message!\n' +
 					JSON.stringify(message, null, 2)
 			);
 			return;
@@ -245,7 +247,10 @@ export function hub(chrome) {
 			case 'CONNECT':
 				// Message from a frame we don't know yet.
 				if (Object.keys(appWindow).length) {
-					console.warn('Already connected app trying to reconnect!', event);
+					console.warn(
+						'CONNECT received from known app, discarding message!\n' +
+							JSON.stringify(message, null, 2)
+					);
 					return;
 				}
 				return handleAppConnect(event);
@@ -255,9 +260,8 @@ export function hub(chrome) {
 			case 'SPAWN-FAIL':
 				if (!complexMessageValid(message)) {
 					console.warn(
-						'Message incomplete for a %s command!\n%O',
-						message.type,
-						JSON.stringify(message)
+						`Message incomplete for a ${message.type} command!\n` +
+							JSON.stringify(message, null, 2)
 					);
 					return;
 				}
@@ -267,7 +271,7 @@ export function hub(chrome) {
 				if (!complexMessageValid(message)) {
 					console.warn(
 						'Message incomplete for a SPAWN command!\n' +
-							JSON.stringify(message)
+							JSON.stringify(message, null, 2)
 					);
 					return;
 				}

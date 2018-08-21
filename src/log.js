@@ -67,12 +67,14 @@ function debugEnabled(namespace) {
 				error.code === 25) /* DATA_CLONE_ERR */
 		) {
 			console.warn(
-				'ts.io error while setting up debug logging. You should ignore this message or set %o while sandboxing your iframe. %O',
-				'allow-same-origin',
-				error
+				"ts.io error while setting up debug logging. You should ignore this message or set 'allow-same-origin' while sandboxing your iframe.\n" +
+					JSON.stringify(error, null, 2)
 			);
 		} else {
-			console.warn('ts.io error while setting up debug logging.', error);
+			console.warn(
+				'ts.io error while setting up debug logging.\n' +
+					JSON.stringify(error, null, 2)
+			);
 		}
 	}
 	// No expression, no logging.
