@@ -1,158 +1,235 @@
 import { log } from './log';
-import { postMessage, matchTopic, appMessageValid } from './msg';
+import {
+	postMessage,
+	queueMessage,
+	flushQueue,
+	matchTopic,
+	appMessageValid
+} from './msg';
+
+let appInstance;
+
+let debug = log('ts:io:sub:NEW');
+let appId = '';
+let token = '';
+
+let spawnSubmit;
+
+/**
+ * Set of `on*()` listeners keyed by `topic`.
+ * @type {Map<topic: string, handlers: Set<Function>>}
+ */
+const listeners = new Map();
+
+/**
+ * Set of `define()` handlers keyed by handler name.
+ * @type {Map<method: string, handler: Function>}
+ */
+const lifecycle = new Map();
 
 /**
  * The Message Client AKA The App.
  */
 export function app() {
-	let debug = log('ts:io:sub');
+	if (appInstance) {
+		return appInstance;
+	}
 
-	let appId = '';
-	let token = '';
-
-	/**
-	 * Set of `on()` handlers keyed by `topic`
-	 * @type {Map<topic: string, handlers: Set<Function>>}
-	 */
-	const handlersByTopic = new Map();
-
-	const api = {
+	appInstance = {
 		/**
 		 * Handle messages.
+		 * @param {string} topic Specific topic that we will call the handler for.
+		 * @param {Function} listener Event listener.
 		 * @returns {Function} Deregistrator of listener.
 		 */
-		on: function() {
-			/**
-			 * Specific topic that we will call the handler for.
-			 * @type {string|undefined}
-			 */
-			let topic = '*';
-			/**
-			 * Handler of the message.
-			 * @type {function}
-			 */
-			let handler = function() {};
-
-			if (arguments.length === 1 && typeof arguments[0] === 'function') {
-				/**
-				 * Single argument - handler.
-				 */
-				handler = arguments[0];
-			} else if (
-				arguments.length === 2 &&
-				typeof arguments[0] === 'string' &&
-				typeof arguments[1] === 'function'
-			) {
-				/**
-				 * Two arguments - topic and handler.
-				 */
-				topic = arguments[0];
-				handler = arguments[1];
+		on(topic, listener) {
+			if (listeners.has(topic)) {
+				listeners.get(topic).add(listener);
 			} else {
-				throw new Error('ts.app.on called with invalid arguments.', arguments);
-			}
-
-			if (handlersByTopic.has(topic)) {
-				handlersByTopic.get(topic).add(handler);
-			} else {
-				handlersByTopic.set(topic, new Set([handler]));
+				listeners.set(topic, new Set([listener]));
 			}
 
 			/**
 			 * Return the deregistrator.
 			 */
-			return () => {
-				const handlers = handlersByTopic.get(topic);
-				if (handlers) {
-					handlers.delete(handler);
-				}
-				debug(
-					'%s handler %o - %O',
-					handlers ? 'Deleted' : "Didn't find",
-					topic,
-					handler
-				);
-				return this;
+			return () => appInstance.off(topic, listener);
+		},
+		/**
+		 * Handle message once.
+		 * @param {string} topic Specific topic that we will call the handler for.
+		 * @param {Function} handler Event listener.
+		 * @returns {Function} Deregistrator of listener.
+		 */
+		once(topic, listener) {
+			const wrappedListener = message => {
+				this.off(topic, wrappedListener);
+				listener(message);
 			};
+			this.on(topic, wrappedListener);
+
+			/**
+			 * Return the deregistrator.
+			 */
+			return () => this.off(topic, wrappedListener);
+		},
+		/**
+		 * Remove message handler.
+		 * @param  {string} topic Same as the topic which the handler uses.
+		 * @param  {Function} listener Reference to the same listener to delete.
+		 * @return {boolean} true on success.
+		 */
+		off(topic, listener) {
+			const eventListeners = listeners.get(topic);
+			let deleted;
+			if (eventListeners) {
+				deleted = eventListeners.delete(listener);
+			}
+			debug(
+				'%s handler %o - %O',
+				deleted ? 'Deleted' : "Didn't find",
+				topic,
+				listener
+			);
+			return deleted;
 		},
 		/**
 		 * Publish message..
-		 * @alias publish
-		 * @returns {Object} Chainable
+		 * @param {string} target Target appId. - No wildcards supported
+		 * @param {string} topic Topic.
+		 * @param {*=} data Data.
 		 */
-		publish: function() {
-			/**
-			 * Target appId.
-			 * No wildcards supported.
-			 * @type {string}
-			 */
-			let target = '';
-			/**
-			 * Topic.
-			 * @optional
-			 * @type {string}
-			 */
-			let topic = '';
-			/**
-			 * Data.
-			 * @optional
-			 * @type {*}
-			 */
-			let data = {};
-
-			if (arguments.length === 1 && typeof arguments[0] === 'object') {
-				/**
-				 * Single argument - {target, topic, data}
-				 */
-				target = arguments[0].target;
-				topic = arguments[0].topic;
-				data = arguments[0].data;
-			} else if (
-				arguments.length >= 2 &&
-				typeof arguments[0] === 'string' &&
-				typeof arguments[1] === 'string'
-			) {
-				/**
-				 * Two arguments - target, topic
-				 */
-				target = arguments[0];
-				topic = arguments[1];
-				if (arguments.length === 3) {
-					/**
-					 * Three arguments - target, topic, data
-					 */
-					data = arguments[2];
-				}
+		emit(topic, ...args) {
+			if (args.length === 0 || args.length > 2) {
+				throw new Error(
+					'ts.io().emit() called with invalid arguments.',
+					arguments
+				);
 			}
-			debug('%o (%o) to %o - %o', 'PUBLISH', topic, target, data);
-			postMessage({ type: 'PUBLISH', target, topic, data, token });
-			return this;
+
+			let target, data;
+
+			if (args.length === 1) {
+				target = args[0];
+			} else {
+				data = args[0];
+				target = args[1];
+			}
+
+			const message = {
+				type: 'EVENT',
+				token,
+				target,
+				topic,
+				data
+			};
+			if (token) {
+				debug('%o (%o) to %o - %o', 'EVENT', topic, target, data);
+				postMessage(message);
+			} else {
+				debug('%o (%o) to %o - %o', 'EVENT(queued)', topic, target, data);
+				queueMessage(message);
+			}
+		},
+		define(handlers) {
+			if (!(typeof handlers === 'object')) {
+				return;
+			}
+
+			if (typeof handlers.spawn === 'function') {
+				lifecycle.set('spawn', handlers.spawn);
+			}
+			if (typeof handlers.connect === 'function') {
+				lifecycle.set('connect', handlers.connect);
+			}
 		},
 		/**
-		 * Request a response.
+		 * Spawn app method
+		 * @async
+		 * @param {string} target Target appId. - No wildcards supported
+		 * @param {*=} data Data.
 		 * @returns {Promise}
 		 */
-		request: function() {},
-		/**
-		 * Spawn an app...
-		 * @alias spawn
-		 * @returns {Promise}
-		 */
-		spawn: function() {},
-		/**
-		 * Open an app..
-		 * @alias open
-		 * @returns {Promise}
-		 */
-		open: function() {}
+		async spawn(target, data = {}) {
+			const message = {
+				type: 'SPAWN',
+				token,
+				target,
+				data
+			};
+
+			if (token) {
+				debug('%o to %o - %o', 'SPAWN', target, data);
+				postMessage(message);
+			} else {
+				debug('%o to %o - %o', 'SPAWN(queued)', target, data);
+				queueMessage(message);
+			}
+
+			// Wait for response from the app or some sort of failure
+			return new Promise(resolve => {
+				spawnSubmit = resolve;
+			});
+		}
 	};
+
+	function handleSpawn({ data: message, source: sourceWindow }) {
+		debug('SPAWNED from %o - %O', message.source, message);
+
+		if (lifecycle.has('spawn')) {
+			/**
+			 * @TODO Timeout handling!
+			 */
+			lifecycle.get('spawn').apply({}, [
+				message.data,
+				function submit(data) {
+					postMessage({
+						type: 'SPAWN-SUCCESS',
+						target: message.source,
+						token,
+						data
+					});
+				},
+				message.source
+			]);
+		} else {
+			// this app can't be spawned and we should send an error back to the source app
+			postMessage({
+				type: 'SPAWN-FAIL',
+				target: message.source,
+				topic: message.topic,
+				data:
+					message.target +
+					" doesn't have a 'spawn' handler, it's not compatible with this SPAWN request.",
+				token
+			});
+		}
+	}
+
+	function handleConnack({ data: message, source: sourceWindow }) {
+		appId = message.target || '';
+		token = message.token || '';
+
+		const queueLength = flushQueue(message.token);
+		if (queueLength) {
+			debug(
+				'Publishing %s queued events%s',
+				queueLength,
+				queueLength === 1 ? '' : 's'
+			);
+		}
+
+		if (lifecycle.has('connect')) {
+			lifecycle.get('connect')();
+		}
+	}
 
 	/**
 	 * Handle events this app is listening for.
 	 * @param {MessageEvent} event
 	 */
-	function eventHandler(event) {
+	const eventHandler = event => {
 		const message = event.data;
+		debug = log('ts:io:sub:' + appId);
 		// Only accept messages from the hub in window.top.
 		if (event.source !== window.top || !appMessageValid(message)) {
 			return;
@@ -162,38 +239,46 @@ export function app() {
 			return;
 		}
 
-		if (message.type === 'CONNACK') {
-			appId = message.target || '';
-			token = message.token || '';
-			debug = log('ts:io:sub:' + appId);
-			debug('CONNECTED');
-
-			return;
+		// Call the matching handlers for the message topic.
+		if (message.type !== 'PING') {
+			debug(
+				'Received %s %s from %o - %O',
+				message.type,
+				message.topic ? `('${message.topic}')` : '',
+				message.source,
+				message
+			);
 		}
 
-		// Call the matching handlers for the message topic.
 		switch (message.type) {
-			case 'PUBLISH':
-				debug(
-					'%o (%o) from %o - %O',
-					message.type,
-					message.topic,
-					message.source,
-					message
-				);
-				handlersByTopic.forEach(
-					(handlers, topic) =>
+			case 'CONNACK':
+				debug('CONNECTED %o', message);
+				handleConnack(event);
+				if (message.source) {
+					handleSpawn(event);
+				}
+				return;
+
+			case 'EVENT':
+				listeners.forEach(
+					(eventListeners, topic) =>
 						matchTopic(topic, message.topic) &&
-						handlers.forEach(handler => handler(message))
+						eventListeners.forEach(listener => listener(message))
 				);
 				break;
+
+			case 'SPAWN-SUCCESS':
+				return spawnSubmit([null, message.data]);
+
+			case 'SPAWN-FAIL':
+				return spawnSubmit([message.data, null]);
+
 			case 'PING':
-				postMessage({ type: 'PONG', token });
-				break;
+				return postMessage({ type: 'PONG', token });
 			default:
 				break;
 		}
-	}
+	};
 
 	/**
 	 * Start listening to messages from window.top.
@@ -206,5 +291,5 @@ export function app() {
 	debug('Connecting…');
 	postMessage({ type: 'CONNECT' });
 
-	return api;
+	return appInstance;
 }

@@ -67,12 +67,14 @@ function debugEnabled(namespace) {
 				error.code === 25) /* DATA_CLONE_ERR */
 		) {
 			console.warn(
-				'ts.io error while setting up debug logging. You should ignore this message or set %o while sandboxing your iframe. %O',
-				'allow-same-origin',
-				error
+				"ts.io error while setting up debug logging. You should ignore this message or set 'allow-same-origin' while sandboxing your iframe.\n" +
+					JSON.stringify(error, null, 2)
 			);
 		} else {
-			console.warn('ts.io error while setting up debug logging.', error);
+			console.warn(
+				'ts.io error while setting up debug logging.\n' +
+					JSON.stringify(error, null, 2)
+			);
 		}
 	}
 	// No expression, no logging.
@@ -117,6 +119,11 @@ class Log {
 		this.namespace = namespace;
 		this.color = color;
 		this.previousTime = 0;
+
+		this.noColors = console.log
+			.toString()
+			.toLowerCase()
+			.includes('browserstack');
 		/**
 		 * @param {string=} message Message
 		 * @param {any[]} optionalParams Optional Params
@@ -125,15 +132,24 @@ class Log {
 			const now = window.performance.now();
 			const deltaTime = now - (this.previousTime || now);
 			this.previousTime = now;
-			console.log(
-				`%c${this.namespace}%c - ${message} - %c${parseFloat(deltaTime).toFixed(
-					2
-				)}ms`,
-				`color: ${this.color};`,
-				'font-weight: normal;',
-				...optionalParams,
-				`color: ${this.color};`
-			);
+			if (this.noColors) {
+				console.log(
+					`${this.namespace} - ${message} - ${parseFloat(deltaTime).toFixed(
+						2
+					)}ms`,
+					...optionalParams
+				);
+			} else {
+				console.log(
+					`%c${this.namespace}%c - ${message} - %c${parseFloat(
+						deltaTime
+					).toFixed(2)}ms`,
+					`color: ${this.color};`,
+					'font-weight: normal;',
+					...optionalParams,
+					`color: ${this.color};`
+				);
+			}
 		};
 	}
 }

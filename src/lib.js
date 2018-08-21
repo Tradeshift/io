@@ -10,4 +10,10 @@ export function isChromeWindow() {
  * Heartbeat regularity in ms.
  * @type {number}
  */
-export const HEARTBEAT = 5000;
+export const HEARTBEAT = 3333;
+
+/**
+ * Harcoded appId for the Tradeshift® Chrome™
+ * @type {string}
+ */
+export const CHROME_APP_ID = 'Tradeshift.Chrome';

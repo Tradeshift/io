@@ -1,0 +1,5 @@
+{
+	"test_path": "test/jasmine/index.html",
+	"test_framework": "jasmine2",
+	"exit_with_fail": true
+}
