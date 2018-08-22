@@ -20,6 +20,8 @@ install:
     else
       travis_retry npm ci;
     fi
+script:
+  - travis_retry npm test
 before_script:
   - |
     if [[ $TRAVIS_BRANCH == *"greenkeeper"* ]]; then
