@@ -72,13 +72,15 @@ export function hub(chrome) {
 
 	function forgetApp(targetWindow) {
 		try {
-			const { appId, token } = appWindows.get(targetWindow);
-			debug('Forgetting app %o', appId);
-			appPongs
-				.get(token)
-				.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
-			appPongs.delete(token);
-			appWindows.delete(targetWindow);
+			const { appId, token } = appWindows.get(targetWindow) || {};
+			if (appId && token) {
+				debug('Forgetting app %o', appId);
+				appPongs
+					.get(token)
+					.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
+				appPongs.delete(token);
+				appWindows.delete(targetWindow);
+			}
 		} catch (error) {
 			debug("App couldn't be forgotten in %o - %o", targetWindow, error);
 		}
