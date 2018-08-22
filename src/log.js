@@ -59,7 +59,9 @@ const colors = [
 function debugEnabled(namespace) {
 	let debugExpression;
 	try {
-		debugExpression = window.localStorage.getItem('debug');
+		if (window.localStorage) {
+			debugExpression = window.localStorage.getItem('debug');
+		}
 	} catch (error) {
 		if (
 			error instanceof DOMException &&
