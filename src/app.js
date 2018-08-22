@@ -208,6 +208,9 @@ export function app() {
 	function handleConnack({ data: message, source: sourceWindow }) {
 		appId = message.target || '';
 		token = message.token || '';
+		debug = log('ts:io:sub:' + appId);
+
+		debug('CONNECTED %o', message);
 
 		const queueLength = flushQueue(message.token);
 		if (queueLength) {
@@ -229,7 +232,6 @@ export function app() {
 	 */
 	const eventHandler = event => {
 		const message = event.data;
-		debug = log('ts:io:sub:' + appId);
 		// Only accept messages from the hub in window.top.
 		if (event.source !== window.top || !appMessageValid(message)) {
 			return;
@@ -240,7 +242,7 @@ export function app() {
 		}
 
 		// Call the matching handlers for the message topic.
-		if (message.type !== 'PING') {
+		if (!['PING', 'CONNACK'].includes(message.type)) {
 			debug(
 				'Received %s %s from %o - %O',
 				message.type,
@@ -252,7 +254,6 @@ export function app() {
 
 		switch (message.type) {
 			case 'CONNACK':
-				debug('CONNECTED %o', message);
 				handleConnack(event);
 				if (message.source) {
 					handleSpawn(event);
