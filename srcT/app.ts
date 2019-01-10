@@ -5,7 +5,7 @@ import { AppDefinition, ConnackData } from './types';
 let appInstance: AppInstance;
 
 let debug = log('ts:io:sub:NEW');
-let appId = '';
+let appId: string | Window = '';
 let token = '';
 
 let spawnSubmit;
@@ -35,11 +35,12 @@ export function app(): AppInstance {
 	function handleSpawn({ data: message, source: sourceWindow }) {
 		debug('SPAWNED from %o - %O', message.source, message);
 
-		if (lifecycle.has('spawn')) {
+		const spawnHandler = lifecycle.get('spawn');
+		if (spawnHandler) {
 			/**
 			 * @TODO Timeout handling!
 			 */
-			lifecycle.get('spawn').apply({}, [
+			spawnHandler.apply({}, [
 				message.data,
 				function submit(data) {
 					const msg = new IoMessage(IoMessageType.SPAWN_SUCCESS);
@@ -81,8 +82,9 @@ export function app(): AppInstance {
 			);
 		}
 
-		if (lifecycle.has('connect')) {
-			lifecycle.get('connect')();
+		const connectHandler = lifecycle.get('connect');
+		if (connectHandler) {
+			connectHandler();
 		}
 	}
 

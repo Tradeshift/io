@@ -133,8 +133,13 @@ export function hub(chrome) {
 		}
 	}
 
-	function handleAppConnect(data: ConnackData): void {
-		const sourceWindow = data.source;
+	function handleAppConnect(data: MessageEvent): void {
+		const sourceWindow = data.source as Window;
+
+		if (!sourceWindow) {
+			return;
+		}
+
 		const appId = appByWindow(sourceWindow);
 		const token = uuid();
 		const spawnWaiting = appSpawns.findIndex(spawn => spawn.appId === appId);
@@ -166,7 +171,7 @@ export function hub(chrome) {
 		}
 	}
 
-	function handleSpawn(data: ConnackData) {
+	function handleSpawn(data: MessageEvent) {
 		const message = data.data;
 		debug('Spawning %o from %o - %O', message.target, message.source, message);
 		try {
@@ -197,7 +202,7 @@ export function hub(chrome) {
 		}
 	}
 
-	function handleEvent(data: ConnackData): void {
+	function handleEvent(data: MessageEvent): void {
 		const message = data.data;
 		const sourceWindow = data.source;
 		/**

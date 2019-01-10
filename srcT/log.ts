@@ -137,7 +137,7 @@ class Log {
 			this.previousTime = now;
 			if (this.noColors) {
 				console.log(
-					`${this.namespace} - ${message} - ${parseFloat(deltaTime).toFixed(
+					`${this.namespace} - ${message} - ${parseFloat(deltaTime.toString()).toFixed(
 						2
 					)}ms`,
 					...optionalParams
@@ -145,7 +145,7 @@ class Log {
 			} else {
 				console.log(
 					`%c${this.namespace}%c - ${message} - %c${parseFloat(
-						deltaTime
+						deltaTime.toString()
 					).toFixed(2)}ms`,
 					`color: ${this.color};`,
 					'font-weight: normal;',
