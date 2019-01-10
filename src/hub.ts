@@ -2,8 +2,8 @@ import * as uuid from 'uuid';
 import { app } from './app';
 import { CHROME_APP_ID, HEARTBEAT as _HEARTBEAT } from './lib';
 import { log } from './log';
-import { complexMessageValid, hubMessageValid, IoMessage, IoMessageType, postMessage } from './msg';
-import { AppPing, AppPongs, AppSpawn, AppWindows, HubInstance } from './types';
+import { complexMessageValid, hubMessageValid, postMessage } from './msg';
+import { AppPing, AppPongs, AppSpawn, AppWindows, HubInstance, IoMessage, IoMessageType } from './types';
 
 let hubInstance: HubInstance;
 
@@ -11,13 +11,11 @@ let hubInstance: HubInstance;
  * WeakMap of frames with apps.
  * @type {WeakMap<Window, Object<appId: string, token: string>}
  */
-
 const appWindows = new WeakMap<Window, AppWindows>();
 /**
  * Map of when the last PONG, or any other message was sent from an app.
  * @type {Map<token: string, Object<lastPong: DOMHighResTimeStamp, timeoutIds: Set<timeoutId: number>}
  */
-
 const appPongs = new Map<string, AppPongs>();
 
 const appSpawns: AppSpawn[] = [];

@@ -8,6 +8,7 @@
  * @property {string=} token Hack-proof session token. (required for all types except 'CONNECT')
  * @property {*=} data Data to be passed with the message. Can be any type that is compatible with the structured clone algorithm,
  */
+import { IoMessage, IoMessageType } from './types';
 
 const targetOrigin = '*';
 
@@ -142,27 +143,3 @@ export function matchTopic(topicExpression: string, topic: string): boolean {
 class MessageQueue {
 	constructor(public readonly targetWindow: Window, public readonly message: any) {}
 }
-
-export class IoMessage {
-	public message: string;
-	public viaHub: boolean;
-	public data: any;
-	public topic: string;
-	public token: string;
-	public target: string | Window;
-	public source: Window;
-
-	constructor(public type: IoMessageType) {}
-}
-
-export enum IoMessageType {
-	CONNACK = 'CONNACK',
-	PING = 'PING',
-	CONNECT = 'CONNECT',
-	EVENT = 'EVENT',
-	PONG = 'PONG',
-	SPAWN = 'SPAWN',
-	SPAWN_SUCCESS = 'SPAWN-SUCCESS',
-	SPAWN_FAIL = 'SPAWN-FAIL'
-}
-

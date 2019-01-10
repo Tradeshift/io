@@ -1,6 +1,6 @@
 import { log } from './log';
-import { appMessageValid, flushQueue, IoMessage, IoMessageType, matchTopic, postMessage, queueMessage } from './msg';
-import { AppDefinition } from './types';
+import { appMessageValid, flushQueue, matchTopic, postMessage, queueMessage } from './msg';
+import { AppDefinition, IoMessage, IoMessageType } from './types';
 
 let appInstance: AppInstance;
 
