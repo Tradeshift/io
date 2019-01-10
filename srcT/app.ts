@@ -1,5 +1,6 @@
 import { log } from './log';
 import { appMessageValid, flushQueue, IoMessage, IoMessageType, matchTopic, postMessage, queueMessage } from './msg';
+import { AppDefinition, ConnackData } from './types';
 
 let appInstance: AppInstance;
 
@@ -158,7 +159,7 @@ export function app(): AppInstance {
 }
 
 
-class AppInstance {
+export class AppInstance {
 	/**
 	 * Handle messages.
 	 * @param {string} topic Specific topic that we will call the handler for.
@@ -296,11 +297,6 @@ class AppInstance {
 	}
 }
 
-interface AppDefinition {
-	spawn?: () => void;
-	connect?: () => void
-}
-
 export function isIoMessage(message?: any): message is IoMessage {
 	if (!message) {
 		return false;
@@ -317,9 +313,4 @@ export function isIoMessage(message?: any): message is IoMessage {
 	}
 
 	return true;
-}
-
-interface ConnackData {
-	data: IoMessage;
-	source: Window;
 }

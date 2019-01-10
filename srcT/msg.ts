@@ -149,8 +149,8 @@ export class IoMessage {
 	public data: any;
 	public topic: string;
 	public token: string;
-	public target: string;
-	public source: string;
+	public target: string | Window;
+	public source: Window;
 
 	constructor(public type: IoMessageType) {}
 }
