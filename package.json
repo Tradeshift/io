@@ -40,7 +40,8 @@
 		"semantic-release": "^15.9.9"
 	},
 	"dependencies": {
-		"uuid": "^3.3.2"
+		"uuid": "^3.3.2",
+		"typescript": "3.2.2"
 	},
 	"publishConfig": {
 		"access": "public"
