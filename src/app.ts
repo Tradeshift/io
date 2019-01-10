@@ -1,6 +1,6 @@
 import { log } from './log';
 import { appMessageValid, flushQueue, IoMessage, IoMessageType, matchTopic, postMessage, queueMessage } from './msg';
-import { AppDefinition, ConnackData } from './types';
+import { AppDefinition } from './types';
 
 let appInstance: AppInstance;
 
@@ -32,7 +32,8 @@ export function app(): AppInstance {
 
 	appInstance = new AppInstance();
 
-	function handleSpawn({ data: message, source: sourceWindow }) {
+	function handleSpawn(data: MessageEvent): void {
+		const message = data.data;
 		debug('SPAWNED from %o - %O', message.source, message);
 
 		const spawnHandler = lifecycle.get('spawn');
@@ -63,9 +64,8 @@ export function app(): AppInstance {
 		}
 	}
 
-	function handleConnack(data: ConnackData) {
+	function handleConnack(data: MessageEvent) {
 		const message = data.data;
-		const sourceWindow = data.source;
 
 		appId = message.target || '';
 		token = message.token || '';
@@ -92,7 +92,7 @@ export function app(): AppInstance {
 	 * Handle events this app is listening for.
 	 * @param {MessageEvent} event
 	 */
-	const eventHandler = event => {
+	const eventHandler = (event: MessageEvent) => {
 		const message = event.data;
 
 		// Only accept messages from the hub in window.top.

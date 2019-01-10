@@ -1,23 +1,26 @@
-import uuid from 'uuid';
-import { log } from './log';
+import * as uuid from 'uuid';
 import { app } from './app';
-import { postMessage, hubMessageValid, complexMessageValid } from './msg';
-import { HEARTBEAT as _HEARTBEAT, CHROME_APP_ID } from './lib';
+import { CHROME_APP_ID, HEARTBEAT as _HEARTBEAT } from './lib';
+import { log } from './log';
+import { complexMessageValid, hubMessageValid, IoMessage, IoMessageType, postMessage } from './msg';
+import { AppPing, AppPongs, AppSpawn, AppWindows, HubInstance } from './types';
 
-let hubInstance;
+let hubInstance: HubInstance;
 
 /**
  * WeakMap of frames with apps.
  * @type {WeakMap<Window, Object<appId: string, token: string>}
  */
-const appWindows = new WeakMap();
+
+const appWindows = new WeakMap<Window, AppWindows>();
 /**
  * Map of when the last PONG, or any other message was sent from an app.
  * @type {Map<token: string, Object<lastPong: DOMHighResTimeStamp, timeoutIds: Set<timeoutId: number>}
  */
-const appPongs = new Map();
 
-const appSpawns = [];
+const appPongs = new Map<string, AppPongs>();
+
+const appSpawns: AppSpawn[] = [];
 
 /**
  * Special features supplied by the Tradeshift® Chrome™.
@@ -26,7 +29,7 @@ const appSpawns = [];
  * @property {function(string, Window): Window} windowByApp Called to get a window object based on an appId and the requesting app's Window object.
  */
 
-function invalidFunction(name) {
+function invalidFunction(name: string): () => void {
 	return function() {
 		throw new Error(`Can't initialize ts.io() Hub. ${name}() wasn't passed.`);
 	};
@@ -36,7 +39,7 @@ function invalidFunction(name) {
  * The Message Broker AKA The Hub.
  * @param {ChromeWindowFeatures} chrome Special features supplied by the Tradeshift® Chrome™
  */
-export function hub(chrome) {
+export function hub(chrome): HubInstance { // TODO
 	if (hubInstance) {
 		return hubInstance;
 	}
@@ -70,15 +73,20 @@ export function hub(chrome) {
 		}
 	}
 
-	function forgetApp(targetWindow) {
+	function forgetApp(targetWindow: Window): void {
 		try {
-			const { appId, token } = appWindows.get(targetWindow) || {};
+			const appWindow = appWindows.get(targetWindow);
+			const appId = appWindow ? appWindow.appId : undefined;
+			const token = appWindow ? appWindow.token : undefined;
+
 			if (appId && token) {
 				debug('Forgetting app %o', appId);
-				appPongs
-					.get(token)
-					.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
-				appPongs.delete(token);
+				const pongs = appPongs.get(token);
+				if (pongs) {
+					pongs.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId))
+					appPongs.delete(token);
+				}
+
 				appWindows.delete(targetWindow);
 			}
 		} catch (error) {
@@ -91,22 +99,23 @@ export function hub(chrome) {
 	2. if it replies, wait HEARTBEAT ms and PING again, - repeat forever
 	3. if it doesn't reply within 4 * HEARTBEAT ms, consider the client dead and remove it from the list while removing all traces of it
 	*/
-	function pingApp(opts) {
+	function pingApp(opts: AppPing): void {
 		const { appId, token, targetWindow } = opts;
 
 		const now = window.performance.now();
 		const appPongInfo = appPongs.get(token);
 		const lastPong = (appPongInfo && appPongInfo.lastPong) || now;
 		let appAlive = now - lastPong < 3 * hubInstance.HEARTBEAT;
-		if (appAlive) {
+		if (appAlive && appPongInfo) {
 			appPongInfo.timeoutIds.add(
-				setTimeout(() => pingApp(opts), hubInstance.HEARTBEAT)
+				window.setTimeout(() => pingApp(opts), hubInstance.HEARTBEAT)
 			);
 			try {
-				postMessage(
-					{ type: 'PING', viaHub: true, target: appId, token },
-					targetWindow
-				);
+				const msg = new IoMessage(IoMessageType.PING);
+				msg.viaHub = true;
+				msg.target = appId;
+				msg.token = token;
+				postMessage(msg, targetWindow);
 			} catch (error) {
 				appAlive = false;
 			}
@@ -124,16 +133,21 @@ export function hub(chrome) {
 		}
 	}
 
-	function handleAppConnect({ data: message, source: sourceWindow }) {
+	function handleAppConnect(data: MessageEvent): void {
+		const sourceWindow = data.source as Window;
+
+		if (!sourceWindow) {
+			return;
+		}
+
 		const appId = appByWindow(sourceWindow);
 		const token = uuid();
 		const spawnWaiting = appSpawns.findIndex(spawn => spawn.appId === appId);
-		const connackMessage = {
-			type: 'CONNACK',
-			viaHub: true,
-			target: appId,
-			token
-		};
+		const connackMessage = new IoMessage(IoMessageType.CONNACK);
+		connackMessage.viaHub = true;
+		connackMessage.target = appId;
+		connackMessage.token = token;
+
 		appWindows.set(sourceWindow, { appId, token });
 
 		debug('CONNECT %o', appId);
@@ -147,48 +161,50 @@ export function hub(chrome) {
 
 		postMessage(connackMessage, sourceWindow);
 
-		let timeoutId;
 		if (appId !== CHROME_APP_ID) {
-			const pingOpts = { targetWindow: sourceWindow, appId, token };
-			timeoutId = setTimeout(() => pingApp(pingOpts), hubInstance.HEARTBEAT);
+			const timeoutId = window.setTimeout(() => pingApp({ targetWindow: sourceWindow, appId, token }), hubInstance.HEARTBEAT);
 
 			appPongs.set(token, {
 				lastPong: window.performance.now(),
-				timeoutIds: new Set([timeoutId])
+				timeoutIds: new Set<number>([timeoutId])
 			});
 		}
 	}
 
-	function handleSpawn({ data: message, source: sourceWindow }) {
+	function handleSpawn(data: MessageEvent): void {
+		const message = data.data;
 		debug('Spawning %o from %o - %O', message.target, message.source, message);
 		try {
 			const appId = handleAppSpawn(message.target, message.source);
 			appSpawns.push({ appId, message });
 		} catch (e) {
-			postMessage(
-				{
-					type: 'SPAWN-FAIL',
-					target: message.source,
-					topic: message.topic,
-					data:
-						message.target + " is not activated on the current user's account",
-					viaHub: true
-				},
-				windowByApp(message.source, CHROME_APP_ID)
-			);
+			const msg = new IoMessage(IoMessageType.SPAWN_FAIL);
+			msg.target = message.source;
+			msg.topic = message.topic;
+			msg.data = `${message.target} is not activated on the current user's account`;
+			msg.viaHub = true;
+
+			postMessage(msg, windowByApp(message.source, CHROME_APP_ID));
 		}
 	}
 
-	function handlePong(event) {
+	function handlePong(event): void {
 		const token = event.data.token;
-
-		appPongs.set(token, {
-			...appPongs.get(token),
-			lastPong: window.performance.now()
-		});
+		const pongs = appPongs.get(token);
+		if (pongs) {
+			pongs.lastPong = window.performance.now();
+			appPongs.set(token, pongs);
+		} else {
+			appPongs.set(token, {
+				timeoutIds: new Set<number>(),
+				lastPong: window.performance.now()
+			});
+		}
 	}
 
-	function handleEvent({ data: message, source: sourceWindow }) {
+	function handleEvent(data: MessageEvent): void {
+		const message = data.data;
+		const sourceWindow = data.source;
 		/**
 		 * @TODO Handle the case when the Chrome blocks certain targets for certain sources
 		 */
@@ -207,7 +223,7 @@ export function hub(chrome) {
 		}
 	}
 
-	window.addEventListener('message', function(event) {
+	window.addEventListener('message', function(event: MessageEvent) {
 		const message = event.data;
 
 		// Only accept valid messages from apps.
@@ -215,21 +231,25 @@ export function hub(chrome) {
 			return;
 		}
 
-		const appWindow = appWindows.get(event.source) || {};
-		message.source = appWindow.appId;
+		if (!event.source) {
+			return;
+		}
+
+		const appWindow = appWindows.get(event.source as Window);
+		message.source = appWindow && appWindow.appId;
 		message.viaHub = true;
 
 		// Message from a frame we don't know yet.
 		// The only command should be CONNECT, we fail otherwise.
-		if (!appWindow && message.type !== 'CONNECT') {
+		if (!appWindow && message.type !== IoMessageType.CONNECT) {
 			console.warn(
 				'Unexpected critical error! App sent message without being connected!\n' +
-					JSON.stringfy(message, null, 2)
+					JSON.stringify(message, null, 2)
 			);
 			return;
 		}
 
-		if (message.token !== appWindow.token) {
+		if (appWindow && message.token !== appWindow.token) {
 			console.warn(
 				'Token invalid, discarding message!\n' +
 					JSON.stringify(message, null, 2)
@@ -246,9 +266,9 @@ export function hub(chrome) {
 		}
 
 		switch (message.type) {
-			case 'CONNECT':
+			case IoMessageType.CONNECT:
 				// Message from a frame we don't know yet.
-				if (Object.keys(appWindow).length) {
+				if (appWindow && Object.keys(appWindow).length) {
 					console.warn(
 						'CONNECT received from known app, discarding message!\n' +
 							JSON.stringify(message, null, 2)
@@ -257,9 +277,9 @@ export function hub(chrome) {
 				}
 				return handleAppConnect(event);
 
-			case 'EVENT':
-			case 'SPAWN-SUCCESS':
-			case 'SPAWN-FAIL':
+			case IoMessageType.EVENT:
+			case IoMessageType.SPAWN_SUCCESS:
+			case IoMessageType.SPAWN_FAIL:
 				if (!complexMessageValid(message)) {
 					console.warn(
 						`Message incomplete for a ${message.type} command!\n` +
@@ -269,7 +289,7 @@ export function hub(chrome) {
 				}
 				return handleEvent(event);
 
-			case 'SPAWN':
+			case IoMessageType.SPAWN:
 				if (!complexMessageValid(message)) {
 					console.warn(
 						'Message incomplete for a SPAWN command!\n' +
@@ -279,7 +299,7 @@ export function hub(chrome) {
 				}
 				return handleSpawn(event);
 
-			case 'PONG':
+			case IoMessageType.PONG:
 				return handlePong(event);
 			default:
 				debug('* %o', event.data);
@@ -293,5 +313,6 @@ export function hub(chrome) {
 		forgetApp,
 		HEARTBEAT: hubInstance.HEARTBEAT
 	};
+
 	return hubInstance;
 }

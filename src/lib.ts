@@ -3,7 +3,8 @@
  * @return {boolean}
  */
 export function isChromeWindow(): boolean {
-	return (window as any).ts && (window as any).ts.chrome !== undefined;
+	const tsExtension = (window as any).ts;
+	return tsExtension && tsExtension.chrome !== undefined;
 }
 
 /**

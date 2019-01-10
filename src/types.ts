@@ -27,12 +27,6 @@ export interface AppPing {
 	targetWindow: Window
 }
 
-export interface PingOptions {
-	targetWindow: Window;
-	appId: string;
-	token: string;
-}
-
 export interface HubInstance {
 	HEARTBEAT: number;
 	top?: () => AppInstance;

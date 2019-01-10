@@ -57,7 +57,7 @@ const colors = [
 ];
 
 function debugEnabled(namespace: string): boolean {
-	let debugExpression;
+	let debugExpression: string | null = null;
 	try {
 		if (window.localStorage) {
 			debugExpression = window.localStorage.getItem('debug');
@@ -131,7 +131,7 @@ class Log {
 	 * @param {string=} message Message
 	 * @param {any[]} optionalParams Optional Params
 	 */
-	public log(message, ...optionalParams) {
+	public log(message: string, ...optionalParams: any[]) {
 			const now = window.performance.now();
 			const deltaTime = now - (this.previousTime || now);
 			this.previousTime = now;
