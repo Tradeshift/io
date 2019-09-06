@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"noImplicitAny": false,
+		"allowSyntheticDefaultImports": true,
+		"strictNullChecks": true,
+		"alwaysStrict": true,
+		"module": "commonjs",
+		"jsx": "react",
+		"lib": ["es2015", "es2016", "es2017", "es2018", "dom"]
+	},
+	"exclude": ["node_modules"]
+}

@@ -2,8 +2,9 @@
  * Are we in the same frame as the Tradeshift® Chrome™?
  * @return {boolean}
  */
-export function isChromeWindow() {
-	return window.ts && window.ts.chrome !== undefined;
+export function isChromeWindow(): boolean {
+	const tsExtension = (window as any).ts;
+	return tsExtension && tsExtension.chrome !== undefined;
 }
 
 /**

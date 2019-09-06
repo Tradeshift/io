@@ -56,8 +56,8 @@ const colors = [
 	'hsl(329, 100%, 21%)'
 ];
 
-function debugEnabled(namespace) {
-	let debugExpression;
+function debugEnabled(namespace: string): boolean {
+	let debugExpression: string | null = null;
 	try {
 		if (window.localStorage) {
 			debugExpression = window.localStorage.getItem('debug');
@@ -112,31 +112,32 @@ function debugEnabled(namespace) {
  * Console debug logger.
  */
 class Log {
+	private previousTime = 0;
+	private readonly noColors: boolean;
+
 	/**
 	 * @constructor
 	 * @param {string} namespace Namespace
 	 * @param {string} color Color
 	 */
-	constructor(namespace, color) {
-		this.namespace = namespace;
-		this.color = color;
-		this.previousTime = 0;
-
+	constructor(private namespace: string, private color: string) {
 		this.noColors = console.log
 			.toString()
 			.toLowerCase()
 			.includes('browserstack');
-		/**
-		 * @param {string=} message Message
-		 * @param {any[]} optionalParams Optional Params
-		 */
-		this.log = (message, ...optionalParams) => {
+	}
+
+	/**
+	 * @param {string=} message Message
+	 * @param {any[]} optionalParams Optional Params
+	 */
+	public log(message: string, ...optionalParams: any[]) {
 			const now = window.performance.now();
 			const deltaTime = now - (this.previousTime || now);
 			this.previousTime = now;
 			if (this.noColors) {
 				console.log(
-					`${this.namespace} - ${message} - ${parseFloat(deltaTime).toFixed(
+					`${this.namespace} - ${message} - ${parseFloat(deltaTime.toString()).toFixed(
 						2
 					)}ms`,
 					...optionalParams
@@ -144,7 +145,7 @@ class Log {
 			} else {
 				console.log(
 					`%c${this.namespace}%c - ${message} - %c${parseFloat(
-						deltaTime
+						deltaTime.toString()
 					).toFixed(2)}ms`,
 					`color: ${this.color};`,
 					'font-weight: normal;',
@@ -152,8 +153,7 @@ class Log {
 					`color: ${this.color};`
 				);
 			}
-		};
-	}
+	};
 }
 
 /**
@@ -161,7 +161,7 @@ class Log {
  * @param {string} namespace Namespace
  * @return {Function}
  */
-export function log(namespace) {
+export function log(namespace: string) {
 	if (!debugEnabled(namespace)) {
 		return function() {};
 	}
