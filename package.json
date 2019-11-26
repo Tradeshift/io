@@ -2,7 +2,7 @@
 	"name": "@tradeshift/io",
 	"description": "ts.io - Tradeshift App Messaging Library",
 	"scripts": {
-		"prebuild": "mkdir -p ./lib && mkdir -p ./test/jasmine/spec && rm -rf ./lib/* && rm -rf ./test/jasmine/spec/* && cp ./src/idx.d.ts ./lib/ts.io.d.ts",
+		"prebuild": "mkdir -p ./lib && mkdir -p ./test/jasmine/spec && rm -rf ./lib/* && rm -rf ./test/jasmine/spec/* && cp ./src/index.d.ts ./lib/ts.io.d.ts",
 		"build": "rollup -c",
 		"dev": "rollup -c -w",
 		"prelint": "prettier --version && prettier --write --config .prettierrc \"src/**/*.{js,less,json}\"",

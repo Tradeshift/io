@@ -68,9 +68,9 @@ const umd = (input, output, extras = {}) => ({
 });
 
 const config = [
-	umd('src/idx.js', pkg.browser),
+	umd('src/index.js', pkg.browser),
 	{
-		input: 'src/idx.js',
+		input: 'src/index.js',
 		external: ['uuid'],
 		output: [
 			{
