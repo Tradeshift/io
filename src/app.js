@@ -175,23 +175,7 @@ export function app() {
 	function handleSpawn({ data: message, source: sourceWindow }) {
 		debug('SPAWNED from %o - %O', message.source, message);
 
-		if (lifecycle.has('spawn')) {
-			/**
-			 * @TODO Timeout handling!
-			 */
-			lifecycle.get('spawn').apply({}, [
-				message.data,
-				function submit(data) {
-					postMessage({
-						type: 'SPAWN-SUCCESS',
-						target: message.source,
-						token,
-						data
-					});
-				},
-				message.source
-			]);
-		} else {
+		if (!lifecycle.has('spawn')) {
 			// this app can't be spawned and we should send an error back to the source app
 			postMessage({
 				type: 'SPAWN-FAIL',
@@ -203,6 +187,36 @@ export function app() {
 				token
 			});
 		}
+		/**
+		 * @TODO Timeout handling!
+		 */
+		new Promise(resolve => {
+			const spawnValue = lifecycle
+				.get('spawn')
+				.apply({}, [message.data, resolve, message.source]);
+			// check for promise
+			if (Promise.resolve(spawnValue) === spawnValue) {
+				resolve(spawnValue);
+			}
+		}).then(
+			data => {
+				postMessage({
+					type: 'SPAWN-SUCCESS',
+					target: message.source,
+					token,
+					data
+				});
+			},
+			err => {
+				postMessage({
+					type: 'SPAWN-FAIL',
+					target: message.source,
+					topic: message.topic,
+					data: err,
+					token
+				});
+			}
+		);
 	}
 
 	function handleConnack({ data: message, source: sourceWindow }) {
