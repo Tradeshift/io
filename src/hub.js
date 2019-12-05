@@ -89,18 +89,23 @@ export function hub(chrome) {
 	/*
 	1. after sending CONNACK to an app, PING it after HEARTBEAT ms
 	2. if it replies, wait HEARTBEAT ms and PING again, - repeat forever
-	3. if it doesn't reply within 4 * HEARTBEAT ms, consider the client dead and remove it from the list while removing all traces of it
+	3. if it doesn't reply within 4 setTimeouts of HEARTBEAT ms, consider it dead
 	*/
-	function pingApp(opts) {
+	function pingApp(opts, { previousPong, attempt = 0 } = {}) {
 		const { appId, token, targetWindow } = opts;
 
 		const now = window.performance.now();
 		const appPongInfo = appPongs.get(token);
 		const lastPong = (appPongInfo && appPongInfo.lastPong) || now;
-		let appAlive = now - lastPong < 3 * hubInstance.HEARTBEAT;
+		const nextAttempt = lastPong !== previousPong ? 0 : attempt + 1;
+
+		let appAlive = nextAttempt <= 3;
 		if (appAlive) {
 			appPongInfo.timeoutIds.add(
-				setTimeout(() => pingApp(opts), hubInstance.HEARTBEAT)
+				setTimeout(
+					() => pingApp(opts, { previousPong: lastPong, attempt: nextAttempt }),
+					hubInstance.HEARTBEAT
+				)
 			);
 			try {
 				postMessage(
@@ -111,6 +116,7 @@ export function hub(chrome) {
 				appAlive = false;
 			}
 		}
+
 		if (!appAlive) {
 			debug('App timed out, considering it dead! %o', appId);
 			handleAppTimeout(appId, targetWindow);
