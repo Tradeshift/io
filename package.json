@@ -49,7 +49,6 @@
 	"main": "lib/ts.io-cjs.js",
 	"module": "lib/ts.io-esm.js",
 	"browser": "lib/ts.io-umd.js",
-	"types": "lib/ts.io.d.ts",
 	"repository": "github:Tradeshift/io",
 	"author": "Daniel Spitzer <dsp@tradeshift.com>",
 	"contributors": [
