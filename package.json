@@ -40,7 +40,7 @@
 		"semantic-release": "^15.13.31"
 	},
 	"dependencies": {
-		"uuid": "^3.3.2"
+		"uuid": "^7.0.1"
 	},
 	"publishConfig": {
 		"access": "public"
