@@ -25,75 +25,63 @@ const testGlobals = {
 if (!inBrowserstack()) {
 	console.log('------------  INIT BEG  ------------');
 }
-try {
-	testGlobals.hub = getHub();
-	testGlobals.hub.HEARTBEAT = 300;
-	testGlobals.topApp = testGlobals.hub.top();
-} catch (e) {
-	console.log('init error\n' + JSON.stringify(e, null, 2));
-} finally {
-	if (!inBrowserstack()) {
-		console.log('------------  INIT END  ------------');
-		console.log('');
-	}
-}
 
-try {
-	describe('ts.io', () => {
-		beforeEach(done => {
+testGlobals.hub = getHub();
+testGlobals.hub.HEARTBEAT = 300;
+testGlobals.topApp = testGlobals.hub.top();
+
+describe('ts.io', () => {
+	beforeEach(done => {
+		if (!inBrowserstack()) {
+			console.log('');
+			console.log('------------  SETUP BEG  ------------');
+		}
+		testGlobals.apps.splice(
+			0,
+			testGlobals.apps.length,
+			'Tradeshift.Unsecure',
+			'Tradeshift.Sandbox',
+			'Tradeshift.Crossdomain',
+			'Tradeshift.SandboxCrossdomain'
+		);
+		createApp(testGlobals.apps[0]);
+		createApp(testGlobals.apps[1], { sandbox: true });
+		createApp(testGlobals.apps[2], { crossdomain: true });
+		createApp(testGlobals.apps[3], {
+			sandbox: true,
+			crossdomain: true
+		});
+		setTimeout(() => {
 			if (!inBrowserstack()) {
+				console.log('------------  SETUP END  ------------');
 				console.log('');
-				console.log('------------  SETUP BEG  ------------');
 			}
-			testGlobals.apps.splice(
-				0,
-				testGlobals.apps.length,
-				'Tradeshift.Unsecure',
-				'Tradeshift.Sandbox',
-				'Tradeshift.Crossdomain',
-				'Tradeshift.SandboxCrossdomain'
-			);
-			createApp(testGlobals.apps[0]);
-			createApp(testGlobals.apps[1], { sandbox: true });
-			createApp(testGlobals.apps[2], { crossdomain: true });
-			createApp(testGlobals.apps[3], {
-				sandbox: true,
-				crossdomain: true
-			});
-			setTimeout(() => {
+			done();
+		}, 0);
+	});
+	afterEach(done => {
+		if (!inBrowserstack()) {
+			console.log('');
+			console.log('------------ CLEANUP BEG ------------');
+		}
+		killAllApps();
+		function noFramesLeft() {
+			if (window.document.getElementsByTagName('iframe').length) {
+				setTimeout(noFramesLeft, 0);
+			} else {
 				if (!inBrowserstack()) {
-					console.log('------------  SETUP END  ------------');
+					console.log('------------ CLEANUP END ------------');
 					console.log('');
 				}
 				done();
-			}, 0);
-		});
-		afterEach(done => {
-			if (!inBrowserstack()) {
-				console.log('');
-				console.log('------------ CLEANUP BEG ------------');
 			}
-			killAllApps();
-			function noFramesLeft() {
-				if (window.document.getElementsByTagName('iframe').length) {
-					setTimeout(noFramesLeft, 0);
-				} else {
-					if (!inBrowserstack()) {
-						console.log('------------ CLEANUP END ------------');
-						console.log('');
-					}
-					done();
-				}
-			}
+		}
 
-			setTimeout(noFramesLeft, 0);
-		});
-
-		testAppEmit(testGlobals);
-		testAppOn(testGlobals);
-		testAppSpawn(testGlobals);
-		testHub(testGlobals);
+		setTimeout(noFramesLeft, 0);
 	});
-} catch (e) {
-	console.log('[ERROR]\n' + JSON.stringify(e, null, 2));
-}
+
+	testAppEmit(testGlobals);
+	testAppOn(testGlobals);
+	testAppSpawn(testGlobals);
+	testHub(testGlobals);
+});

@@ -9,19 +9,19 @@ notifications:
 before_install:
   - |
     if [[ $TRAVIS_BRANCH == *"greenkeeper"* ]]; then
-      travis_retry npm i -g greenkeeper-lockfile;
+      npm i -g greenkeeper-lockfile;
     else
-      travis_retry npm i -g npm@latest;
+      npm i -g npm@latest;
     fi
 install:
   - |
     if [[ $TRAVIS_BRANCH == *"greenkeeper"* ]]; then
-      travis_retry npm install;
+      npm install;
     else
-      travis_retry npm ci;
+      npm ci;
     fi
 script:
-  - travis_retry npm test
+  - npm test
 before_script:
   - |
     if [[ $TRAVIS_BRANCH == *"greenkeeper"* ]]; then

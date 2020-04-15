@@ -2,7 +2,7 @@
 	"name": "@tradeshift/io",
 	"description": "ts.io - Tradeshift App Messaging Library",
 	"scripts": {
-		"prebuild": "mkdir -p ./lib && mkdir -p ./test/jasmine/spec && rm -rf ./lib/* && rm -rf ./test/jasmine/spec/* && cp ./src/index.d.ts ./lib/ts.io.d.ts",
+		"prebuild": "mkdir -p ./lib && mkdir -p ./test/jasmine/spec && rm -rf ./lib/* && rm -rf ./test/jasmine/spec/*",
 		"build": "rollup -c",
 		"dev": "rollup -c -w",
 		"prelint": "prettier --version && prettier --write --config .prettierrc \"src/**/*.{js,less,json}\"",
@@ -45,11 +45,10 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"version": "0.0.0-development",
+	"version": "0.0.0-semantically-released",
 	"main": "lib/ts.io-cjs.js",
 	"module": "lib/ts.io-esm.js",
 	"browser": "lib/ts.io-umd.js",
-	"types": "lib/ts.io.d.ts",
 	"repository": "github:Tradeshift/io",
 	"author": "Daniel Spitzer <dsp@tradeshift.com>",
 	"contributors": [
