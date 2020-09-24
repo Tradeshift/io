@@ -11,6 +11,9 @@ let hubInstance;
  * @type {WeakMap<Window, Object<appId: string, token: string>}
  */
 const appWindows = new WeakMap();
+
+const appTokens = {};
+
 /**
  * Map of when the last PONG, or any other message was sent from an app.
  * @type {Map<token: string, Object<lastPong: DOMHighResTimeStamp, timeoutIds: Set<timeoutId: number>}
@@ -70,15 +73,16 @@ export function hub(chrome) {
 		}
 	}
 
-	function forgetApp(targetWindow) {
+	function forgetApp(appId, targetWindow) {
 		try {
-			const { appId, token } = appWindows.get(targetWindow) || {};
+			const token = appTokens[appId];
 			if (appId && token) {
 				debug('Forgetting app %o', appId);
 				appPongs
 					.get(token)
 					.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
 				appPongs.delete(token);
+				delete appTokens[appId];
 				appWindows.delete(targetWindow);
 			}
 		} catch (error) {
@@ -121,7 +125,7 @@ export function hub(chrome) {
 			debug('App timed out, considering it dead! %o', appId);
 			handleAppTimeout(appId, targetWindow);
 			try {
-				forgetApp(targetWindow);
+				forgetApp(appId, targetWindow);
 			} catch (error) {
 				console.warn(
 					"App couldn't be killed.\n" + JSON.stringify(error, null, 2)
@@ -141,6 +145,7 @@ export function hub(chrome) {
 			token
 		};
 		appWindows.set(sourceWindow, { appId, token });
+		appTokens[appId] = token;
 
 		debug('CONNECT %o', appId);
 
