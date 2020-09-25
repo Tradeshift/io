@@ -62,9 +62,7 @@ export const killAllApps = () => {
 		}
 		if (frame) {
 			try {
-				if (frame.contentWindow) {
-					hub.forgetApp(frame.contentWindow);
-				}
+				hub.forgetApp(app, frame.contentWindow);
 			} catch (e) {
 				console.log(
 					'[killAllApps] frame.contentWindow OR hub.forgetApp failed.\n' +

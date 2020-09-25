@@ -1,4 +1,4 @@
-[![travis](https://travis-ci.org/Tradeshift/io.svg?branch=master)](https://travis-ci.org/Tradeshift/io) [![npm](https://img.shields.io/npm/v/@tradeshift/io.svg)](https://npmjs.org/package/@tradeshift/io) [![Greenkeeper badge](https://badges.greenkeeper.io/Tradeshift/io.svg)](https://greenkeeper.io/)
+![travis](https://travis-ci.org/Tradeshift/io.svg?branch=master)](https://travis-ci.org/Tradeshift/io) [![npm](https://img.shields.io/npm/v/@tradeshift/io.svg)](https://npmjs.org/package/@tradeshift/io) [![Greenkeeper badge](https://badges.greenkeeper.io/Tradeshift/io.svg)](https://greenkeeper.io/)
 
 # `ts.io`
 
@@ -191,7 +191,7 @@ const hub = io({
 });
 
 // Terminate App Instance in target Window
-hub.forgetApp(win);
+hub.forgetApp(app, win);
 
 // Create App (a client) for the Tradeshift® Chrome™ and connect to Hub (The Broker)
 const top = hub.top();

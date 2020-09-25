@@ -1,11 +1,6 @@
 import { verifyTestMessage, removeAppOrFail } from '../lib/helpers';
 
 export default ({ apps, hub }) => {
-	const waitForTimeout = () =>
-		new Promise(resolve => {
-			hub._fakeTimeout = resolve;
-		});
-
 	describe('hub', () => {
 		let onMessage;
 		const eventListener = evt => {
@@ -50,15 +45,17 @@ export default ({ apps, hub }) => {
 				}
 			}
 
-			for (let i = 0; i < 4; i++) {
-				const app = await waitForTimeout();
+			hub._fakeTimeout = app => {
 				removeAppOrFail(
 					app,
 					apps,
 					'App timeout() called more than once for the same app!'
 				);
-			}
-			done();
+
+				if (!apps.length) {
+					done();
+				}
+			};
 		}, 5000);
 	});
 };
