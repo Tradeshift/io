@@ -1,0 +1,12 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: io
+  description: Tradeshift App Messaging Library
+  annotations:
+    github.com/project-slug: tradeshift/io
+spec:
+  type: library
+  lifecycle: production
+  owner: partner-enablement-and-apps
