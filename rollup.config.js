@@ -49,7 +49,8 @@ const umd = (input, output, extras = {}) => ({
 					'@babel/env',
 					{
 						modules: false,
-						useBuiltIns: 'usage'
+						useBuiltIns: 'usage',
+						corejs: 2
 					}
 				]
 			],
