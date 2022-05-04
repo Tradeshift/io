@@ -97,7 +97,7 @@ export const createApp = (app, opts = {}, src = 'app.html') => {
 	apps.push(app);
 	return createIframe({
 		id: app,
-		src: src,
+		src,
 		...opts
 	});
 };
