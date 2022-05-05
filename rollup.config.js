@@ -1,5 +1,4 @@
 import globals from 'rollup-plugin-node-globals';
-import builtins from 'rollup-plugin-node-builtins';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
@@ -28,7 +27,6 @@ const umd = (input, output, extras = {}) => ({
 	],
 	plugins: [
 		globals(),
-		builtins(),
 		resolve({
 			module: true,
 			jsnext: true,
