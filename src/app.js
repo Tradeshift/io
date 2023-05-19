@@ -61,7 +61,7 @@ export function app() {
 		 * @returns {Function} Deregistrator of listener.
 		 */
 		once(topic, listener) {
-			const wrappedListener = message => {
+			const wrappedListener = (message) => {
 				this.off(topic, wrappedListener);
 				listener(message);
 			};
@@ -166,7 +166,7 @@ export function app() {
 			}
 
 			// Wait for response from the app or some sort of failure
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				spawnSubmit = resolve;
 			});
 		}
@@ -190,7 +190,7 @@ export function app() {
 		/**
 		 * @TODO Timeout handling!
 		 */
-		new Promise(resolve => {
+		new Promise((resolve) => {
 			const spawnValue = lifecycle
 				.get('spawn')
 				.apply({}, [message.data, resolve, message.source]);
@@ -199,7 +199,7 @@ export function app() {
 				resolve(spawnValue);
 			}
 		}).then(
-			data => {
+			(data) => {
 				postMessage({
 					type: 'SPAWN-SUCCESS',
 					target: message.source,
@@ -207,7 +207,7 @@ export function app() {
 					data
 				});
 			},
-			err => {
+			(err) => {
 				postMessage({
 					type: 'SPAWN-FAIL',
 					target: message.source,
@@ -244,7 +244,7 @@ export function app() {
 	 * Handle events this app is listening for.
 	 * @param {MessageEvent} event
 	 */
-	const eventHandler = event => {
+	const eventHandler = (event) => {
 		const message = event.data;
 		// Only accept messages from the hub in window.top.
 		if (event.source !== window.top || !appMessageValid(message)) {
@@ -278,7 +278,7 @@ export function app() {
 				listeners.forEach(
 					(eventListeners, topic) =>
 						matchTopic(topic, message.topic) &&
-						eventListeners.forEach(listener => listener(message))
+						eventListeners.forEach((listener) => listener(message))
 				);
 				break;
 

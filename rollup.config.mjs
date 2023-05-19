@@ -1,9 +1,8 @@
-import globals from 'rollup-plugin-node-globals';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import json from 'rollup-plugin-json';
-import babel from 'rollup-plugin-babel';
-import pkg from './package.json';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import { babel } from '@rollup/plugin-babel';
+import pkg from './package.json' assert { type: 'json' };;
 
 const name = 'ts.io';
 const extend = true;
@@ -26,8 +25,7 @@ const umd = (input, output, extras = {}) => ({
 		}
 	],
 	plugins: [
-		globals(),
-		resolve({
+		nodeResolve({
 			module: true,
 			jsnext: true,
 			main: true,
@@ -41,21 +39,21 @@ const umd = (input, output, extras = {}) => ({
 		}),
 		babel({
 			babelrc: false,
-			exclude: 'node_modules/**',
+			babelHelpers: "bundled",
+			exclude: /node_modules\/(?!uuid)/,
 			presets: [
 				[
-					'@babel/env',
+					"@babel/preset-env",
 					{
-						modules: false,
-						useBuiltIns: 'usage',
-						corejs: 2
+						"useBuiltIns": "usage",
+						"corejs": 3,
 					}
 				]
 			],
 			plugins: [
 				'@babel/proposal-class-properties',
 				[
-					'@babel/transform-runtime',
+					'@babel/plugin-transform-runtime',
 					{
 						helpers: false,
 						regenerator: true
