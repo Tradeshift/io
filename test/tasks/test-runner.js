@@ -70,15 +70,12 @@ function setSeed(logger) {
  * @returns {boolean} true on success, false on failure
  */
 function checkReport(report, logger) {
-	let out = [];
-	let errOut = [];
+	const out = [];
+	const errOut = [];
 
 	if (!report.length) {
 		logger.log(
 			'No report received, probably because the build has been terminated...'
-		);
-		logger.log(
-			'Check the tests runs! https://travis-ci.org/Tradeshift/io/pull_requests'
 		);
 		return false;
 	}

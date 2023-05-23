@@ -163,7 +163,7 @@ class Log {
  */
 export function log(namespace) {
 	if (!debugEnabled(namespace)) {
-		return function() {};
+		return function () {};
 	}
 
 	let hash = 0;

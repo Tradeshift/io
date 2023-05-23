@@ -1,4 +1,4 @@
-![travis](https://travis-ci.org/Tradeshift/io.svg?branch=master)](https://travis-ci.org/Tradeshift/io) [![npm](https://img.shields.io/npm/v/@tradeshift/io.svg)](https://npmjs.org/package/@tradeshift/io) [![Greenkeeper badge](https://badges.greenkeeper.io/Tradeshift/io.svg)](https://greenkeeper.io/)
+[![npm](https://img.shields.io/npm/v/@tradeshift/io.svg)](https://npmjs.org/package/@tradeshift/io)  [![Github](https://img.shields.io/github/v/release/tradeshift/io)](https://github.com/Tradeshift/io/releases/latest)
 
 # `ts.io`
 
@@ -41,25 +41,25 @@ const app = io();
 
 // Spawn an App:
 (async () => {
-	// Do the actual spawn call
-	const [err, data] = await app.spawn(targetApp, targetData);
+  // Do the actual spawn call
+  const [err, data] = await app.spawn(targetApp, targetData);
 
-	if (err) {
-		// Something went horribly wrong while spawning app
-	} else {
-		doSomethingWith(data);
-	}
+  if (err) {
+    // Something went horribly wrong while spawning app
+  } else {
+    doSomethingWith(data);
+  }
 })();
 
 // Allow your app to be spawned by others:
 app.define({
-	async spawn(data) {
-		// Wait for user input here...
-		const userData = await myPrompt();
+  async spawn(data) {
+    // Wait for user input here...
+    const userData = await myPrompt();
 
-		// Send response back to parent
-		return userData;
-	}
+    // Send response back to parent
+    return userData;
+  }
 });
 ```
 
@@ -83,17 +83,17 @@ import io from '@tradeshift/io';
 const app = io();
 
 app.define({
-	async spawn(data) {
-		// CODE HERE: Animate opening your UI and wait for user input.
+  async spawn(data) {
+    // CODE HERE: Animate opening your UI and wait for user input.
 
-		// Wait for user input here...
-		const userData = await myPrompt();
+    // Wait for user input here...
+    const userData = await myPrompt();
 
-		// CODE HERE: Animate closing your UI.
+    // CODE HERE: Animate closing your UI.
 
-		// Send response back to parent
-		return userData;
-	}
+    // Send response back to parent
+    return userData;
+  }
 });
 ```
 
@@ -101,10 +101,10 @@ Callback based Spawn handler if you prefer:
 
 ```js
 app.define({
-	spawn(data, submit, parent) {
-		// Send response back to parent
-		submit(userData);
-	}
+  spawn(data, submit, parent) {
+    // Send response back to parent
+    submit(userData);
+  }
 });
 ```
 
@@ -123,10 +123,10 @@ const app = io();
  */
 
 // Listen to all events sent to my App
-app.on('*', event => {});
+app.on('*', (event) => {});
 
 // Listen to events for a specific topic (sent to my App)
-const myListener = event => {};
+const myListener = (event) => {};
 const myTopic = 'my-topic';
 const unlisten = app.on(myTopic, myListener);
 // Stop listening
@@ -146,21 +146,21 @@ app.emit('fly-high', { flameColor: 'red' }, 'Tradeshift.FlamingSkull');
 
 ```js
 (async () => {
-	const [err, response] = await app1.emit('topic-with-request', 'App2', data);
-	if (err) {
-		// Something went horribly wrong while emitting
-	} else {
-		doSomethingWith(response);
-	}
+  const [err, response] = await app1.emit('topic-with-request', 'App2', data);
+  if (err) {
+    // Something went horribly wrong while emitting
+  } else {
+    doSomethingWith(response);
+  }
 })();
 app1.emit('topic-with-request', 'App2', data);
 app1.emit('topic-without-request', 'App2', data);
 
-app2.on('topic-with-request', event => {
-	return 'my-response';
+app2.on('topic-with-request', (event) => {
+  return 'my-response';
 });
 
-app2.on('topic-without-request', event => {});
+app2.on('topic-without-request', (event) => {});
 ```
 
 <!--

@@ -1,4 +1,5 @@
-import uuid from 'uuid';
+import './polyfills';
+import { v4 as uuidv4 } from 'uuid';
 import { log } from './log';
 import { app } from './app';
 import { postMessage, hubMessageValid, complexMessageValid } from './msg';
@@ -30,7 +31,7 @@ const appSpawns = [];
  */
 
 function invalidFunction(name) {
-	return function() {
+	return function () {
 		throw new Error(`Can't initialize ts.io() Hub. ${name}() wasn't passed.`);
 	};
 }
@@ -80,7 +81,7 @@ export function hub(chrome) {
 				debug('Forgetting app %o', appId);
 				appPongs
 					.get(token)
-					.timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
+					.timeoutIds.forEach((timeoutId) => clearTimeout(timeoutId));
 				appPongs.delete(token);
 				delete appTokens[appId];
 				appWindows.delete(targetWindow);
@@ -136,8 +137,8 @@ export function hub(chrome) {
 
 	function handleAppConnect({ data: message, source: sourceWindow }) {
 		const appId = appByWindow(sourceWindow);
-		const token = uuid();
-		const spawnWaiting = appSpawns.findIndex(spawn => spawn.appId === appId);
+		const token = uuidv4();
+		const spawnWaiting = appSpawns.findIndex((spawn) => spawn.appId === appId);
 		const connackMessage = {
 			type: 'CONNACK',
 			viaHub: true,
@@ -218,7 +219,7 @@ export function hub(chrome) {
 		}
 	}
 
-	window.addEventListener('message', function(event) {
+	window.addEventListener('message', function (event) {
 		const message = event.data;
 
 		// Only accept valid messages from apps.
