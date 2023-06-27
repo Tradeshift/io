@@ -6176,7 +6176,7 @@ getJasmineRequireObj().StackTrace = function(j$) {
 
     return messageLines.length;
   }
-  
+
   return StackTrace;
 };
 
