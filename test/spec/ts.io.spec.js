@@ -29,7 +29,7 @@ if (!inBrowserstack()) {
 }
 
 testGlobals.hub = getHub();
-testGlobals.hub.HEARTBEAT = 300;
+testGlobals.hub.HEARTBEAT = 1000;
 testGlobals.topApp = testGlobals.hub.top();
 
 describe('ts.io', () => {
