@@ -29,7 +29,7 @@ export default ({ apps, topApp }) => {
 		topApp.on(TOPIC_BEFORE_CONNECT, beforeConnectHandler);
 	});
 
-	it.skip('app.emit() after CONNECT', done => {
+	xit('app.emit() after CONNECT', done => {
 		let connectCount = 0;
 		const connectListener = event => {
 			const testMessage = event.data;
