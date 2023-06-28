@@ -1,9 +1,9 @@
-const isWindow = win => win && win.postMessage;
+const isWindow = (win) => win && win.postMessage;
 
 export const verifyTestMessage = (message, source) =>
 	source && message && message.io;
 
-export const forwardMessage = msg =>
+export const forwardMessage = (msg) =>
 	window.top.postMessage(
 		{
 			io: {
@@ -35,6 +35,12 @@ export const removeAppOrFail = (app, apps, message) => {
 	}
 };
 
-export const delay = cb => setTimeout(cb, 0);
+export const delay = (cb, timeout = 0) =>
+	new Promise((resolve) => {
+		setTimeout(() => {
+			cb();
+			resolve();
+		}, timeout);
+	});
 
 export const inBrowserstack = () => window.BrowserStack !== undefined;
