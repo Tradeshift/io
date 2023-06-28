@@ -56,6 +56,6 @@ export default ({ apps, hub }) => {
 					done();
 				}
 			};
-		}, 5000);
+		}, 60000);
 	});
 };
