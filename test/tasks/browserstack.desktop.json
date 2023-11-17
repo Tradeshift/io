@@ -1,11 +1,57 @@
 [
-	"chrome_previous",
-	"chrome_latest",
-	"firefox_previous",
-	"firefox_latest",
-	"safari_previous",
-	"safari_latest",
-	"edge_previous",
-	"edge_latest",
-	"ie_11"
+	{
+		"browser": "chrome",
+		"browser_version": "latest-1",
+		"os": "Windows",
+		"os_version": "11"
+	},
+	{
+		"browser": "chrome",
+		"browser_version": "latest",
+		"os": "Windows",
+		"os_version": "11"
+	},
+	{
+		"browser": "firefox",
+		"browser_version": "latest-1",
+		"os": "Windows",
+		"os_version": "11"
+	},
+	{
+		"browser": "firefox",
+		"browser_version": "latest",
+		"os": "Windows",
+		"os_version": "11"
+	},
+
+	{
+		"browser": "safari",
+		"browser_version": "latest",
+		"os": "OS X",
+		"os_version": "Monterey"
+	},
+	{
+		"browser": "safari",
+		"browser_version": "latest",
+		"os": "OS X",
+		"os_version": "Ventura"
+	},
+	{
+		"browser": "edge",
+		"browser_version": "latest-1",
+		"os": "Windows",
+		"os_version": "11"
+	},
+	{
+		"browser": "edge",
+		"browser_version": "latest",
+		"os": "Windows",
+		"os_version": "11"
+	},
+	{
+		"browser": "ie",
+		"browser_version": "11.0",
+		"os": "Windows",
+		"os_version": "10"
+	}
 ]

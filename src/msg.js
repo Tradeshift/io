@@ -67,7 +67,7 @@ export function flushQueue(token) {
 	if (messageQueue.length) {
 		messageQueue
 			.reverse()
-			.forEach(queuedMessage =>
+			.forEach((queuedMessage) =>
 				queuedMessage.targetWindow.postMessage(
 					{ ...queuedMessage.message, token },
 					targetOrigin
