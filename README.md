@@ -1,4 +1,4 @@
-[![npm](https://img.shields.io/npm/v/@tradeshift/io.svg)](https://npmjs.org/package/@tradeshift/io)  [![Github](https://img.shields.io/github/v/release/tradeshift/io)](https://github.com/Tradeshift/io/releases/latest)
+[![npm](https://img.shields.io/npm/v/@tradeshift/io.svg)](https://npmjs.org/package/@tradeshift/io) [![Github](https://img.shields.io/github/v/release/tradeshift/io)](https://github.com/Tradeshift/io/releases/latest)
 
 # `ts.io`
 
