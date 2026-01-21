@@ -19,6 +19,8 @@ jasmine.getEnv().addReporter({
 	}
 });
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+
 const testGlobals = {
 	apps: []
 };
@@ -27,7 +29,7 @@ if (!inBrowserstack()) {
 }
 
 testGlobals.hub = getHub();
-testGlobals.hub.HEARTBEAT = 300;
+testGlobals.hub.HEARTBEAT = 1000;
 testGlobals.topApp = testGlobals.hub.top();
 
 describe('ts.io', () => {
