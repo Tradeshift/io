@@ -26,7 +26,7 @@
 		"@rollup/plugin-node-resolve": "^15.0.2",
 		"browserstack-runner": "^0.9.4",
 		"core-js": "^3.30.2",
-		"debug": "^4.3.4",
+		"debug": "^4.3.7",
 		"eslint": "^8.40.0",
 		"eslint-config-tradeshift": "^9.0.0",
 		"http-server": "^14.1.1",
