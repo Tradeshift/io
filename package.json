@@ -23,7 +23,7 @@
 		"@rollup/plugin-babel": "^6.0.3",
 		"@rollup/plugin-commonjs": "^25.0.8",
 		"@rollup/plugin-json": "^6.0.0",
-		"@rollup/plugin-node-resolve": "^15.3.0",
+		"@rollup/plugin-node-resolve": "^15.3.1",
 		"browserstack-runner": "^0.9.4",
 		"core-js": "^3.30.2",
 		"debug": "^4.3.7",
