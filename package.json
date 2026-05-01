@@ -36,7 +36,7 @@
 		"semantic-release": "^23.1.1"
 	},
 	"dependencies": {
-		"uuid": "^9.0.1"
+		"uuid": "^14.0.0"
 	},
 	"publishConfig": {
 		"access": "public"
