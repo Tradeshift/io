@@ -22,7 +22,7 @@ jobs:
           cache: 'npm'
 
       - name: 📥 Download deps
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: ▶️ Run tests
         run: npm test
