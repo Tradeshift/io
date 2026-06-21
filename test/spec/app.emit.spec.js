@@ -31,19 +31,18 @@ export default ({ apps, topApp }) => {
 
 	it('app.emit() after CONNECT', done => {
 		let connectCount = 0;
-		const connectListener = event => {
+		const connectListener = async (event) => {
 			const testMessage = event.data;
 			if (!verifyTestMessage(testMessage, event.source)) {
 				return;
 			}
 			if (testMessage.io.method === 'connect') {
-				delay(() =>
-					sendCommand(event.source, {
-						command: 'emit',
-						topic: TOPIC_AFTER_CONNECT,
-						target: CHROME_APP
-					})
-				);
+				await delay(() =>
+				sendCommand(event.source, {
+					command: 'emit',
+					topic: TOPIC_AFTER_CONNECT,
+					target: CHROME_APP
+				}));
 				if (++connectCount === 4) {
 					window.removeEventListener('message', connectListener);
 				}

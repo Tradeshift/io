@@ -9,9 +9,9 @@ import {
 import { windowMapper } from '../lib/hub-mock';
 
 export default ({ apps, topApp }) => {
-	it('app.once() [on() + off()]', done => {
+	it('app.once() [on() + off()]', (done) => {
 		let connectCount = 0;
-		const connectListener = event => {
+		const connectListener = async (event) => {
 			const testMessage = event.data;
 			if (!verifyTestMessage(testMessage, event.source)) {
 				return;
@@ -23,7 +23,7 @@ export default ({ apps, topApp }) => {
 					target: CHROME_APP,
 					data: ''
 				};
-				delay(() => {
+				await delay(() => {
 					sendCommand(event.source, command);
 					sendCommand(event.source, command);
 				});
@@ -34,7 +34,7 @@ export default ({ apps, topApp }) => {
 		};
 		window.addEventListener('message', connectListener);
 
-		const messageHandler = message => {
+		const messageHandler = (message) => {
 			removeAppOrFail(
 				message.source,
 				apps,
@@ -51,7 +51,7 @@ export default ({ apps, topApp }) => {
 		topApp.once(apps[3], messageHandler);
 
 		let messageCount = 0;
-		const topHandler = msg => {
+		const topHandler = (msg) => {
 			if (++messageCount === 8) {
 				topApp.off('*', topHandler);
 				if (!inBrowserstack()) {
